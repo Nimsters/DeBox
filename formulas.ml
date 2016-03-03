@@ -35,7 +35,16 @@ val s = Atom #"s"
 val test = []
 (* Add new cases here at the top! *)
 (* Examples from HR p.81 *)
-val test = Land(Imp(p,q),Imp(Neg r, Lor(q, Land(Neg p, r))))::test
+val test = Land(Imp(p,q),Imp(Neg r, Lor(q, Land(Neg p, r))))::test (* l *)
+val test = Imp(Lor(Imp(s,Lor(r,l)),Land(Neg q,r)),Imp(Neg(Imp(p,s)),r))::test
+val test = Lor(s,Imp(Neg p, Neg p))::test (* j *)
+val test = Imp(Lor(s, Neg p),Neg p)::test (* i *)
+val test = Imp(Land(p,q),Lor(Neg r, Imp(q,r)))::test (* h *)
+val test = Lor(Neg p, Imp(p,q))::test (* g *)
+val test = Neg(Land(Land(Neg q, Imp(p,r)),Imp(r,q)))::test (* f *)
+val test = Imp(p, Lor(Neg q, Imp(q,p)))::test (* e *)
+val test = Land(p, Imp(Neg q, Neg p))::test (* d *)
+val test = Imp(Land(p,Neg q), Neg p)::test (* c *)
 (* ------- *)
 val test = Imp(p, Imp(q,r))::test
 val test = Imp(Imp(p,q),r)::test
