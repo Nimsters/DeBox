@@ -44,9 +44,13 @@ and negToNL(a as Atom _) = "not-"^toNL(a)
         end
   | negToNL(f as Imp _)  = "the implication \""^impToNL(f)^"\" does not hold" 
 
-and andToNL(f as Lor _)     = bracket(toNL(f))
-  | andToNL(f as Imp _)     = bracket(toNL(f))
-  | andToNL(f as _)         = toNL(f)
+and andToNL(Land(f1,f2))     = 
+        let val left = case f1 of Land _ => toList(f1) | _ => toNL(f1)
+            val right= case f2 of Land _ => ", "^andToNL(f2)
+                                     | _ => " and "^toNL(f2)
+        in left^right^" holds"
+        end
+  | andToNL(_)              = "**error**"
 
 and orToNL(Lor(f1,f2), s)   =
         let val left  = case f1 of Lor _ => toList(f1) | _ => toNL(f1)
