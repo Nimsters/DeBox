@@ -29,12 +29,12 @@ fun toNL(Atom c)        = Char.toString c
   | toNL(Neg f)         = negToNL(f)
   | toNL(f as Land _)   = andToNL(f)
   | toNL(f as Lor _)     = orToNL(f, " ")
-  | toNL(Imp (f1, f2))  = impToNL(f1)^" implies "^toNL(f2)
+  | toNL(Imp (f1, f2))  = impToNL(f1)^" implies that "^toNL(f2)
 
 and negToNL(a as Atom _) = "not-"^toNL(a)
-  | negToNL(f as Land _) = "not "^andToNL(f)
+  | negToNL(f as Land _) = "not all of "^andToNL(f)
   | negToNL(f as Lor _)  = "neither "^orToNL(f, " n")
-  | negToNL(Neg f)       = 
+  | negToNL(f as Neg _)       = 
         let val n      = "not-"
             val result = toNL(f)
         in
@@ -47,16 +47,18 @@ and negToNL(a as Atom _) = "not-"^toNL(a)
 and andToNL(Land(f1,f2))     = 
         let val left = case f1 of Land _ => toList(f1) | _ => toNL(f1)
             val right= case f2 of Land _ => ", "^andToNL(f2)
-                                     | _ => " and "^toNL(f2)
-        in left^right^" holds"
+                                 | Lor _ => " holds and also "^toNL(f2)
+                                     | _ => " and "^toNL(f2)^" holds"
+        in left^right
         end
   | andToNL(_)              = "**errorA**"
 
 and orToNL(Lor(f1,f2), s)   =
         let val left  = case f1 of Lor _ => toList(f1) | _ => toNL(f1)
             val right = case f2 of Lor _ => ", "^orToNL(f2,s) 
-                                     | _ => s^"or "^toNL(f2)
-        in left^right^" holds"
+                                | Land _ => " holds"^s^"or "^toNL(f2)
+                                |      _ => s^"or "^toNL(f2)^" holds"
+        in left^right
         end
   | orToNL(_)               = "**errorO**"
 
