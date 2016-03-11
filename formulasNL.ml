@@ -98,6 +98,14 @@ val test = Imp(p, Lor(Neg q, Imp(q,p)))::test (* e *)
 val test = Land(p, Imp(Neg q, Neg p))::test (* d *)
 val test = Imp(Land(p,Neg q), Neg p)::test (* c *)
 (* ------- *)
+val test = Neg(Imp(p, Imp(q,r)))::test
+val test = Neg(Imp(Imp(p,q),r))::test
+val test = Neg(Land(p, Lor(q,r)))::test
+val test = Neg(Lor(Land(p,q),r))::test
+val test = Neg(Land(Lor(p,q),r))::test
+val test = Neg(Lor(p, Land(q,r)))::test
+val test = Neg(Land(Land(p,q),r))::test
+val test = Neg(Land(p, Land(q,r)))::test
 val test = Imp(p, Imp(q,r))::test
 val test = Imp(Imp(p,q),r)::test
 val test = Land(p, Lor(q,r))::test
