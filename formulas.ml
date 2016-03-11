@@ -1,26 +1,26 @@
 datatype formula = Atom of char |
-                   Neg of formula |
-                   Land of formula*formula |
-                   Lor of formula*formula |
-                   Imp of formula*formula;
+                   NEG of formula |
+                   AND of formula*formula |
+                   OR of formula*formula |
+                   IMP of formula*formula;
 
 fun bracket(s) = "("^s^")";
 
 fun toString(Atom c)        = Char.toString c
-  | toString(Neg f)         = "¬"^negToString(f)
-  | toString(Land (f1,f2))  = andToString(f1)^"/\\"^andToString(f2)
-  | toString(Lor (f1, f2))  = impToString(f1)^"\\/"^impToString(f2)
-  | toString(Imp (f1, f2))  = impToString(f1)^"=>"^toString(f2)
+  | toString(NEG f)         = "¬"^negToString(f)
+  | toString(AND (f1,f2))  = andToString(f1)^"/\\"^andToString(f2)
+  | toString(OR (f1, f2))  = impToString(f1)^"\\/"^impToString(f2)
+  | toString(IMP (f1, f2))  = impToString(f1)^"=>"^toString(f2)
 
 and negToString(a as Atom _)    = toString(a)
-  | negToString(n as Neg _)     = toString(n)
+  | negToString(n as NEG _)     = toString(n)
   | negToString(f as _)         = bracket(toString(f))
 
-and andToString(f as Lor _)     = bracket(toString(f))
-  | andToString(f as Imp _)     = bracket(toString(f))
+and andToString(f as OR _)     = bracket(toString(f))
+  | andToString(f as IMP _)     = bracket(toString(f))
   | andToString(f as _)         = toString(f)
 
-and impToString(f as Imp _)      = bracket(toString(f))
+and impToString(f as IMP _)      = bracket(toString(f))
   | impToString(f as _)          = toString(f);
 
 fun printl s = print(s^"\n");
@@ -35,30 +35,30 @@ val s = Atom #"s"
 val test = []
 (* Add new cases here at the top! *)
 (* Examples from HR p.81 *)
-val test = Land(Imp(p,q),Imp(Neg r, Lor(q, Land(Neg p, r))))::test (* l *)
-val test = Imp(Lor(Imp(s,Lor(r,l)),Land(Neg q,r)),Imp(Neg(Imp(p,s)),r))::test
-val test = Lor(s,Imp(Neg p, Neg p))::test (* j *)
-val test = Imp(Lor(s, Neg p),Neg p)::test (* i *)
-val test = Imp(Land(p,q),Lor(Neg r, Imp(q,r)))::test (* h *)
-val test = Lor(Neg p, Imp(p,q))::test (* g *)
-val test = Neg(Land(Land(Neg q, Imp(p,r)),Imp(r,q)))::test (* f *)
-val test = Imp(p, Lor(Neg q, Imp(q,p)))::test (* e *)
-val test = Land(p, Imp(Neg q, Neg p))::test (* d *)
-val test = Imp(Land(p,Neg q), Neg p)::test (* c *)
+val test = AND(IMP(p,q),IMP(NEG r, OR(q, AND(NEG p, r))))::test (* l *)
+val test = IMP(OR(IMP(s,OR(r,l)),AND(NEG q,r)),IMP(NEG(IMP(p,s)),r))::test
+val test = OR(s,IMP(NEG p, NEG p))::test (* j *)
+val test = IMP(OR(s, NEG p),NEG p)::test (* i *)
+val test = IMP(AND(p,q),OR(NEG r, IMP(q,r)))::test (* h *)
+val test = OR(NEG p, IMP(p,q))::test (* g *)
+val test = NEG(AND(AND(NEG q, IMP(p,r)),IMP(r,q)))::test (* f *)
+val test = IMP(p, OR(NEG q, IMP(q,p)))::test (* e *)
+val test = AND(p, IMP(NEG q, NEG p))::test (* d *)
+val test = IMP(AND(p,NEG q), NEG p)::test (* c *)
 (* ------- *)
-val test = Imp(p, Imp(q,r))::test
-val test = Imp(Imp(p,q),r)::test
-val test = Land(p, Lor(q,r))::test
-val test = Lor(Land(p,q),r)::test
-val test = Land(Lor(p,q),r)::test
-val test = Lor(p, Land(q,r))::test
-val test = Land(Land(p,q),r)::test
-val test = Land(p, Land(q,r))::test
-val test = Neg(Neg p)::test
-val test = Imp(p,q)::test
-val test = Lor(p,q)::test
-val test = Land(p,q)::test
-val test = Neg(q)::test
+val test = IMP(p, IMP(q,r))::test
+val test = IMP(IMP(p,q),r)::test
+val test = AND(p, OR(q,r))::test
+val test = OR(AND(p,q),r)::test
+val test = AND(OR(p,q),r)::test
+val test = OR(p, AND(q,r))::test
+val test = AND(AND(p,q),r)::test
+val test = AND(p, AND(q,r))::test
+val test = NEG(NEG p)::test
+val test = IMP(p,q)::test
+val test = OR(p,q)::test
+val test = AND(p,q)::test
+val test = NEG(q)::test
 val test = p::test
 in
 val test_toString = map printl (map toString test)
