@@ -1,0 +1,123 @@
+\documentclass[a4paper]{article}
+
+\input{Preamble}
+\title{Natural deduction proofs in (pseudo) natural language}
+\fancyhead[c]{}
+\titlelabel{}
+\begin{document}
+\maketitle
+\section{Problem statement}
+    Is it possible to develop a tool for writing natural deduction proofs
+    in a subset of the English language that will read as natural language
+    (from here on, this subset will just be named `natural language'),
+    and have these proofs validated? Additionally, is it feasible to have
+    a round-tripping ability such that {\bf formal $\ra$ natural language
+    $\ra$ formal} is the identity function at the level of abstract syntax,
+    and {\bf natural language $\ra$ formal $\ra$ natural language} is the
+    identity function modulo lexical aspects such as whitespace and
+    punctuation.
+
+\section{Scope}
+    This project will limit itself to natural deduction proofs of
+    \emph{propositional} logic, and the validation is expected to be done
+    using the existing tool \s{BoxProver}\cite{box}. Furthermore, the tool
+    to be developed is specifically intended for use in the course `Logic
+    in computer science' at the University of Copenhagen, and for  
+    pedagogical reasons, the atoms used in the natural language syntax
+    will be characters rather than specified declarative sentences.
+
+\section{Motivation}
+    The course `Logic in computer science' rather closely follows the 
+    structure outlined in the textbook `Logic in computer science' by
+    Huth \& Ryan\cite{hr}. The introduction to formal logic is based on
+    reasoning about construction of (valid) arguments in natural 
+    language\cite[pp.~1-2]{hr}, which forms the basis for the presentation
+    of a formal notation using the symbols 
+    \(\neg, \lor, \land, \txt{ and } \ra\)\cite[p.~4]{hr}. 
+    The \emph{meaning} of these symbols is presented in natural language,
+    but with the exception of a few simple examples, the rest of the section 
+    on propositional logic, including the rules for natural deduction,
+    is presented solely in formal (i.e. symbol) notation.
+
+    Presenting students with a tool for writing natural deduction proofs
+    in natural language is hoped to bridge the potential gap between
+    understanding the structure and rules of natural deduction and
+    understanding the \emph{meaning} of the steps in such a process as well
+    as the conclusion reached. Furthermore, it is hoped the the
+    presentation of such proofs in natural language will emphasize the
+    \emph{independence} of the reached conclusion from the semantic 
+    content of atomic declarative sentences; \(p, p \ra q \vdash q\)
+    regardless
+    of what declarative sentences one may choose $p$ and $q$ to represent.
+
+\section{Tasks}
+
+\begin{itemize}
+\item 
+    Formulation of a concrete {\bf natural language} syntax for formulae and
+    proofs by natural deduction.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Should read as natural language: Ideally compliant
+                with Attempto Controlled English, otherwise arguably
+                consistent with standard English.
+                \item Should be arguably consistent with commonly used 
+                mathematical terminology.
+            \end{itemize}
+        \item[Time needed:] 2-3 weeks.
+    \end{description}
+
+\item
+    Formulation of a concrete {\bf formal} syntax and corresponding abstract
+    syntax for propositional formulae and proofs.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Should be consistent with \s{BoxProver}\cite{box}
+                syntax.
+            \end{itemize}
+        \item[Time needed:] 1-2 weeks.
+    \end{description}
+
+\item
+    Design, implementation and test of formal $\longleftrightarrow$ natural
+    language conversions.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Should convert correctly from {\bf formal} to
+                {\bf natural language}.
+                \item Should convert correctly form {\bf natural language}
+                to {\bf formal}.
+                \item Should, if possible, display round-trip ability as
+                described in the problem statement.
+            \end{itemize}
+        \item[Time needed:] 4-5 weeks.
+    \end{description}
+
+\item
+    Development of a library of formulae and proofs for test and validation,
+    including method and tool support for managing and adding to such a 
+    library.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Tool support for regression testing.
+                \item Should test a collection of examples from relevant
+                textbooks, specificaly Huth \& Ryan\cite{hr}.
+            \end{itemize}
+        \item[Time needed:] 1 week.
+    \end{description}
+\end{itemize}
+
+\section{Product}
+The project will result in a report documenting the syntax of the 
+natural language, the formal and abstract syntax of propositional 
+logic, and the design, implementation, and testing of a conversion tool 
+between the two.
+
+\label{LastBody}
+\bibliographystyle{plain}
+\bibliography{Bibliography}
+\end{document}

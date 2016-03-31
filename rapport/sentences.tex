@@ -1,0 +1,54 @@
+\documentclass[a4paper, landscape]{article}
+
+\usepackage[usenames, dvipsnames, svgnames, table]{xcolor}
+\usepackage[linguistics]{forest}
+
+\begin{document}
+
+\section{Sentence analysis}
+
+\begin{forest}
+    delay={for tree={if={instr("NEG",content)}
+                        {for tree ={color=Red}, calign=last}
+                        {},
+                     if={instr("IMP",content)}
+                        {for tree ={color=Purple}}
+                        {},
+                     if={instr("AND",content)}
+                        {for tree ={color=Green}}
+                        {},
+                     if={instr("OR",content)}
+                        {for tree ={color=Blue}}
+                        {},
+                        }},
+    where n children = 0{tier=atom}{},
+[PROP
+    [AND
+        [IMP
+            [A [p]]
+            [, phantom [implies]]
+            [A [q]]]
+        [, phantom  [and also]]
+        [IMP
+            [, phantom  [if]]
+            [NEG, 
+                [, phantom [not-]]
+                [A  [r]]]
+            [, phantom  [is valid then]]
+            [OR
+                [A  [q]]
+                [, phantom  [or else]]
+                [AND
+                    [NEG
+                        [,phantom [not-]]
+                        [A [p]]]
+                    [, phantom  [and]]
+                    [A  [r]]]]
+            [, phantom  [is valid]]
+        ]
+    ]
+]
+\end{forest}
+
+\label{LastBody}
+\end{document}
