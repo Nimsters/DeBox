@@ -8,8 +8,8 @@ fun bracket(s) = "("^s^")";
 
 fun toString(Atom c)        = Char.toString c
   | toString(NEG f)         = "¬"^negToString(f)
-  | toString(AND (f1,f2))  = andToString(f1)^"/\\"^andToString(f2)
-  | toString(OR (f1, f2))  = impToString(f1)^"\\/"^impToString(f2)
+  | toString(AND (f1,f2))  = negToString(f1)^"/\\"^andToString(f2)
+  | toString(OR (f1, f2))  = andToString(f1)^"\\/"^impToString(f2)
   | toString(IMP (f1, f2))  = impToString(f1)^"=>"^toString(f2)
 
 and negToString(a as Atom _)    = toString(a)
