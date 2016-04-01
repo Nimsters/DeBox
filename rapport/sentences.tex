@@ -2,49 +2,84 @@
 
 \usepackage[usenames, dvipsnames, svgnames, table]{xcolor}
 \usepackage[linguistics]{forest}
+\usepackage{fullpage}
 
 \begin{document}
 
 \section{Sentence analysis}
 
 \begin{forest}
-    delay={for tree={if={instr("NEG",content)}
-                        {for tree ={color=Red}, calign=last}
+    delay={for tree={if={instr("NEGATION",content)}
+                        {for tree ={color=OliveGreen}, calign=last}
                         {},
-                     if={instr("IMP",content)}
+                     if={instr("PROP",content)}
+                        {for tree ={color=BlueViolet}}
+                        {},
+                     if={instr("PROPOSITION",content)}
+                        {for tree ={color=Black}}
+                        {},
+                     if={instr("IMPLICATION",content)}
                         {for tree ={color=Purple}}
                         {},
-                     if={instr("AND",content)}
-                        {for tree ={color=Green}}
+                     if={instr("PAIR",content)}
+                        {for tree ={color=Teal}}
                         {},
-                     if={instr("OR",content)}
+                     if={instr("SIMPLE",content)}
                         {for tree ={color=Blue}}
                         {},
+                     if={instr("atom",content)}
+                        {for tree={color=Olive}, tier=atom}
+                        {},
+                     if={instr("SINGLE", content)}
+                        {for tree ={color=Green}}
+                        {}
                         }},
-    where n children = 0{tier=atom}{},
-[PROP
+    where n children = 0{tier=text}{},
+[PROPOSITION
     [AND
         [IMP
             [A [p]]
             [, phantom [implies]]
-            [A [q]]]
+            [A [q]]
+        ]
         [, phantom  [and also]]
-        [IMP
+        [IMPLICATION
             [, phantom  [if]]
-            [NEG, 
-                [, phantom [not-]]
-                [A  [r]]]
-            [, phantom  [is valid then]]
-            [OR
-                [A  [q]]
-                [, phantom  [or else]]
-                [AND
-                    [NEG
-                        [,phantom [not-]]
-                        [A [p]]]
-                    [, phantom  [and]]
-                    [A  [r]]]]
-            [, phantom  [is valid]]
+            [PROP
+                [SIMPLE
+                    [PAIR
+                        [SINGLE
+                            [NEGATION
+                                [, phantom [not-]]
+                                [atom  [r]]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+            [, phantom  [is provable then so is]]
+            [PROP
+                [SIMPLE
+                    [PAIR
+                        [SINGLE
+                            [atom [q]]
+                        ]
+                    ]
+                    [, phantom  [or else]]
+                    [PAIR
+                        [SINGLE
+                            [NEGATION
+                                [, phantom [not-]]
+                                [atom [p]]
+                            ]
+                        ]
+                        [, phantom  [and]]
+                        [SINGLE
+                            [atom [r]]
+                        ]
+                    ]
+                ]
+            ]
         ]
     ]
 ]

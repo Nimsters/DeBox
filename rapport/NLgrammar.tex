@@ -1,0 +1,21 @@
+\begin{quote}
+\ttfamily
+PROPOSITION $\ra$ IMPLICATION | PROP\\
+IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is the fact that } IMP'\\
+IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
+PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
+LIST \(~~~~~~~\)$\ra$ PAIR\txt{, } PAIR\txt{, and also } PAIR |
+                      PAIR\txt{, } PAIR\txt{, or else } PAIR\\
+\(~~~~~~~~~~~~~~~\) | PAIR\txt{, } LIST\\
+SIMPLE \(~~~~~\)$\ra$ PAIR \txt{ and also } PAIR |
+                      PAIR \txt{ or else } PAIR  | PAIR\\
+PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE
+                    | SINGLE | IMP\\
+IMP \(~~~~~~~~\)$\ra$ SINGLE \txt{ implies } SINGLE
+                    | SINGLE \txt{ does not imply } SINGLE\\
+SINGLE \(~~~~~\)$\ra$ DECL | \txt{the formula ``}PROPOSITION\txt{''} |
+                      \txt{the negation of ``}PROPOSITION\txt{''}\\
+DECLARATION $\ra$ \txt{not-}DECLARATION | \bf{atom}\\
+\end{quote}

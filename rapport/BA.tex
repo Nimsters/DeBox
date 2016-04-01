@@ -1,0 +1,56 @@
+\documentclass[a4paper]{article}
+
+\input{Preamble}
+\titlelabel{}
+\title{}
+\fancyhead[c]{}
+
+\begin{document}
+\pagenumbering{Alph}
+\begin{titlepage}
+\maketitle
+\thispagestyle{empty}
+\end{titlepage}
+
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+%\listoffigures
+%\pagebreak
+\pagenumbering{arabic}
+
+\ss{Abstract}
+
+\ss{Resumé}
+
+\section{Introduction}
+
+\section{Grammars}
+\ss{Context Free Gammars}
+
+\ss{Developing the Grammar for NL}
+
+\ss{Developing the Grammar for PL}
+
+\section{The tool}
+
+\section{Conclusions}
+
+
+\label{LastBody}
+\pagebreak
+\pagenumbering{roman}
+\fancyfoot[c]{Page \thepage\ of \pageref{LastPage}}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{Bibliography}
+\label{LastBio}
+%\pagebreak
+%\appendix
+%\titlelabel{\thetitle . \quad}
+%\section*{Appendices}
+%\addcontentsline{toc}{section}{Appendices}
+%\renewcommand \thesubsection{\Alph{subsection}}
+%\label{LastApp}
+\label{LastPage}
+\end{document}
