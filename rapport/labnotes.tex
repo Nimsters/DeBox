@@ -13,7 +13,7 @@ The grammar for NL formulas so far:
 PROPOSITION $\ra$ IMPLICATION | PROP\\
 IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
 \(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the fact that } IMP'\\
+\txt{if } PROP \txt{ is provable then so is the proposition that } IMP'\\
 IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
 PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
 LIST \(~~~~~~~\)$\ra$ PAIR\txt{, } PAIR\txt{, and also } PAIR |
@@ -25,9 +25,10 @@ PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE
                     | SINGLE | IMP\\
 IMP \(~~~~~~~~\)$\ra$ SINGLE \txt{ implies } SINGLE
                     | SINGLE \txt{ does not imply } SINGLE\\
-SINGLE \(~~~~~\)$\ra$ DECL | \txt{the formula ``}PROPOSITION\txt{''} |
+SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}PROPOSITION\txt{''} |
                       \txt{the negation of ``}PROPOSITION\txt{''}\\
-DECLARATION $\ra$ \txt{not-}DECLARATION | \bf{atom}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
+NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
 \end{quote}
 
 \sss{Quotation marks}
@@ -37,39 +38,17 @@ only cross in the \f{formula} and \f{negation} constructions:
 \begin{quote}
 \ttfamily
 PROPOSITION $\ra$ IMPLICATION | PROP\\
-IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
-\(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the fact that } IMP'\\
-IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
-PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
-LIST \(~~~~~~~\)$\ra$ SIMP\txt{, } SIMP\txt{, and also } SIMP |
-                      SIMP\txt{, } SIMP\txt{, or else } SIMP\\
-\(~~~~~~~~~~~~~~~\) | SIMP\txt{, } LIST\\
-SIMPLE \(~~~~~\)$\ra$ SIMP \txt{ and also } SIMP |
-                      SIMP \txt{ or else } SIMP  | SIMP\\
-SIMP \(~~~~~~~\)$\ra$ STAT \txt{ and } STAT | STAT \txt{ or } STAT | STAT
-                    | IMP\\
-IMP \(~~~~~~~~\)$\ra$ STAT \txt{ implies } STAT\\
-STAT \(~~~~~~~\)$\ra$ DECL | \txt{the formula ``}*PROPOSITION\txt{''} |
+$\vdots$\\
+SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}*PROPOSITION\txt{''} |
                       \txt{the negation of ``}*PROPOSITION\txt{''}\\
-DECLARATION $\ra$ \txt{not-}DECLARATION | {\bf atom}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
+NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
 ~\\
 *PROPOSITION $\ra$ IMPLICATION | PROP\\
-*IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
-\(~~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the fact that } IMP'\\
-*IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
-*PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
-*LIST \(~~~~~~~\)$\ra$ SIMP\txt{, } SIMP\txt{, and also } SIMP |
-                      SIMP\txt{, } SIMP\txt{, or else } SIMP\\
-\(~~~~~~~~~~~~~~~~\) | SIMP\txt{, } LIST\\
-*SIMPLE \(~~~~~\)$\ra$ SIMP \txt{ and also } SIMP |
-                      SIMP \txt{ or else } SIMP  | SIMP\\
-*SIMP \(~~~~~~~\)$\ra$ STAT \txt{ and } STAT | STAT \txt{ or } STAT | STAT
-                    | IMP\\
-*IMP \(~~~~~~~~\)$\ra$ STAT \txt{ implies } STAT\\
-*STAT \(~~~~~~~\)$\ra$ DECL | \txt{the formula `}PROPOSITION\txt{'} |
+$\vdots$\\
+*SINGLE \(~~~~~\)$\ra$ \txt{the statement `}PROPOSITION\txt{'} |
                       \txt{the negation of `}PROPOSITION\txt{'}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
 \end{quote}
 
 \sss{Linguistic negation}
@@ -91,7 +70,7 @@ Instead, these formulas should read:
 To account for this, one would have to make the grammar a lot more complex
 with special cases for \f{and also}, \f{or else} and \f{implication} for 
 every possible combination of negated and non-negated sub-propositions.
-\\~\\
+
 Linguistic negation of lists and \f{and also}/\f{or else} constructions
 seem difficult to do without introducing ambiguity.
 Must research further on linguistic negation to determine how exactly to 

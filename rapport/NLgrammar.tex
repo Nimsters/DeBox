@@ -3,7 +3,7 @@
 PROPOSITION $\ra$ IMPLICATION | PROP\\
 IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
 \(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the fact that } IMP'\\
+\txt{if } PROP \txt{ is provable then so is the proposition that } IMP'\\
 IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
 PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
 LIST \(~~~~~~~\)$\ra$ PAIR\txt{, } PAIR\txt{, and also } PAIR |
@@ -15,7 +15,8 @@ PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE
                     | SINGLE | IMP\\
 IMP \(~~~~~~~~\)$\ra$ SINGLE \txt{ implies } SINGLE
                     | SINGLE \txt{ does not imply } SINGLE\\
-SINGLE \(~~~~~\)$\ra$ DECL | \txt{the formula ``}PROPOSITION\txt{''} |
+SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}PROPOSITION\txt{''} |
                       \txt{the negation of ``}PROPOSITION\txt{''}\\
-DECLARATION $\ra$ \txt{not-}DECLARATION | \bf{atom}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
+NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
 \end{quote}
