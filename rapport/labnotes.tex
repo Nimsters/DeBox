@@ -75,5 +75,67 @@ Linguistic negation of lists and \f{and also}/\f{or else} constructions
 seem difficult to do without introducing ambiguity.
 Must research further on linguistic negation to determine how exactly to 
 handle these cases.
+
+\ss{April 8th}
+Some changes still need to be done on the grammar.
+\begin{itemize}
+    \item For \s{implication}: to ensure the distinction between the two
+    types, a \s{prop} should no longer convert to \s{imp}.
+
+    \item For \s{simple}:
+        \begin{itemize}
+            \item Not both first and second child should be \s{single}
+            \item For first child: \s{imp} should not be a possibily unless
+            in brackets (when read, it itroduces ambiguity despite the
+            distance created by `and also' and `or else').
+
+            \item For second child: unbracketed \s{implication} should be a
+            possibility.
+        \end{itemize}
+
+    \item For bracketing: only complex statements should be bracketed.
+
+    \item For negation statements: atom- and not-negations should never be
+    negated using statements
+
+\end{itemize}
+
+The new grammar looks as follows:
+
+\begin{quote}
+\ttfamily
+PROPOSITION $\ra$ COMPLEX | PAIR | NEGATION | UNIT\\
+PROP \(~~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION | STAT\\
+PROP* \(~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION\\
+PROP' \(~~~~~~\)$\ra$ COMPLEX | PAIR | SINGLE\\
+COMPLEX \(~~~~\)$\ra$ IMPLICATION | LIST | MULTI\\
+IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
+                    | SINGLE \txt{ implies that } IMPLICATION\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP\txt{ is provable then so is } PROP'\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP' \txt{ is provable then so is } PROP\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is the proposition that } 
+IMPLICATION\\
+LIST \(~~~~~~~\)$\ra$ ELEMENT\txt{, } ELEMENT\txt{, and also } ELEMENT |
+                      ELEMENT\txt{, } ELEMENT\txt{, or else } ELEMENT\\
+\(~~~~~~~~~~~~~~~\) | ELEMENT\txt{, } LIST\\
+MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
+                      SINGLE \txt{ and also } ELEMENT' |\\
+\(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
+                      SINGLE \txt{ or else } ELEMENT'\\
+ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\
+ELEMENT' \(~~~\)$\ra$ PAIR | IMPLICATION\\
+PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE\\
+SINGLE \(~~~~~\)$\ra$ STAT | UNIT | NEGATION\\
+STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMPLEX\txt{''}\\
+NEGATION \(~~~\)$\ra$ \txt{the negation of ``}PROP*\txt{''}\\
+UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
+NEG \(~~~~~~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
+\end{quote}
+Question: Should \s{implication} remain as possible \s{element}? Does the 
+Oxford comma remove the ambiguity?
+
 \label{LastBody}
 \end{document}

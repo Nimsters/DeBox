@@ -1,22 +1,38 @@
+\documentclass[a4]{article}
+
+\input{Preamble}
+
+\begin{document}
 \begin{quote}
 \ttfamily
-PROPOSITION $\ra$ IMPLICATION | PROP\\
-IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
+PROPOSITION $\ra$ COMPLEX | PAIR | NEGATION | UNIT\\
+PROP \(~~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION | STAT\\
+PROP* \(~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION\\
+PROP' \(~~~~~~\)$\ra$ COMPLEX | PAIR | SINGLE\\
+COMPLEX \(~~~~\)$\ra$ IMPLICATION | LIST | MULTI\\
+IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
+                    | SINGLE \txt{ implies that } IMPLICATION\\
 \(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the proposition that } IMP'\\
-IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
-PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
-LIST \(~~~~~~~\)$\ra$ PAIR\txt{, } PAIR\txt{, and also } PAIR |
-                      PAIR\txt{, } PAIR\txt{, or else } PAIR\\
-\(~~~~~~~~~~~~~~~\) | PAIR\txt{, } LIST\\
-SIMPLE \(~~~~~\)$\ra$ PAIR \txt{ and also } PAIR |
-                      PAIR \txt{ or else } PAIR  | PAIR\\
-PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE
-                    | SINGLE | IMP\\
-IMP \(~~~~~~~~\)$\ra$ SINGLE \txt{ implies } SINGLE
-                    | SINGLE \txt{ does not imply } SINGLE\\
-SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}PROPOSITION\txt{''} |
-                      \txt{the negation of ``}PROPOSITION\txt{''}\\
-\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
-NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
+\txt{if } PROP\txt{ is provable then so is } PROP'\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP' \txt{ is provable then so is } PROP\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is the proposition that } 
+IMPLICATION\\
+LIST \(~~~~~~~\)$\ra$ ELEMENT\txt{, } ELEMENT\txt{, and also } ELEMENT |
+                      ELEMENT\txt{, } ELEMENT\txt{, or else } ELEMENT\\
+\(~~~~~~~~~~~~~~~\) | ELEMENT\txt{, } LIST\\
+MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
+                      SINGLE \txt{ and also } ELEMENT' |\\
+\(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
+                      SINGLE \txt{ or else } ELEMENT'\\
+ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\
+ELEMENT' \(~~~\)$\ra$ PAIR | IMPLICATION\\
+PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE\\
+SINGLE \(~~~~~\)$\ra$ STAT | UNIT | NEGATION\\
+STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMPLEX\txt{''}\\
+NEGATION \(~~~\)$\ra$ \txt{the negation of ``}PROP*\txt{''}\\
+UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
+NEG \(~~~~~~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
 \end{quote}
+\end{document}
