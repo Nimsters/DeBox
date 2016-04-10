@@ -3,6 +3,28 @@ datatype formula = Atom of char |
                    AND of formula*formula |
                    OR of formula*formula |
                    IMP of formula*formula;
+                   
+datatype Proposition = PRPC of Complex | PRPP of Pair | PRPN of Negation 
+                     | PRPU of Unit
+and      Prop        = PL of List  | PM of Multi  | PP of Pair
+and      PropS       = PSL of List | PSM of Multi | PSP of  Pair 
+                     | PSS of Single
+and      PropC       = PCC of Complex | PCP of Pair | PCN of Negation
+and      Complex     = CI of Implication | CL of List | CM of Multi
+and      Implication = SIMPS of Single*Single | SIMPI of Single*Implication |
+                       PIMPS of Prop*PropS | SIMP of PropS*Prop |
+                       PIMPI of Prop*Implication
+and      List        = ALE of Element*Element*Element |
+                       OLE of Element*Element*Element | L of Element*List
+and      Multi       = ANDPE of Pair*Element | ANDSE of Single*Elem |
+                       ORPE  of Pair*Element | ORSE  of Single*Elem
+and      Element     = ELMP of Pair | ELMI of Implication | ELMS of Single
+and      Elem        = EP of Pair | EI of Implication
+and      Pair        = ANDS of Single*Single | ORS of Single*Single
+and      Single      = STAT of Complex | Negation | Unit
+and      Negation    = NEGP of PropC
+and      Neg         = NEGU of Unit
+and      Unit        = NOT of Neg | atom of char;
 
 fun bracket(s) = "("^s^")";
 
@@ -124,6 +146,6 @@ val test = NEG(q)::test
 val test = p::test
 in
 val test_toString = map printl (map toString test)
-val test_toNL = map printl (map toNL test)
+(* val test_toNL = map printl (map toNL test) *)
 end;
 quit();
