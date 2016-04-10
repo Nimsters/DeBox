@@ -8,8 +8,8 @@ fun bracket(s) = "("^s^")";
 
 fun toString(Atom c)        = Char.toString c
   | toString(NEG f)         = "¬"^negToString(f)
-  | toString(AND (f1,f2))  = negToString(f1)^"/\\"^andToString(f2)
-  | toString(OR (f1, f2))  = andToString(f1)^"\\/"^impToString(f2)
+  | toString(AND (f1,f2))  = andToString(f1)^"/\\"^negToString(f2)
+  | toString(OR (f1, f2))  = impToString(f1)^"\\/"^andToString(f2)
   | toString(IMP (f1, f2))  = impToString(f1)^"=>"^toString(f2)
 
 and negToString(a as Atom _)    = toString(a)
@@ -112,6 +112,8 @@ val test = AND(p, OR(q,r))::test
 val test = OR(AND(p,q),r)::test
 val test = AND(OR(p,q),r)::test
 val test = OR(p, AND(q,r))::test
+val test = OR(OR(p,q),r)::test
+val test = OR(p, OR(q,r))::test
 val test = AND(AND(p,q),r)::test
 val test = AND(p, AND(q,r))::test
 val test = NEG(NEG p)::test

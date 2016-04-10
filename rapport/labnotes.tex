@@ -105,9 +105,9 @@ The new grammar looks as follows:
 \begin{quote}
 \ttfamily
 PROPOSITION $\ra$ COMPLEX | PAIR | NEGATION | UNIT\\
-PROP \(~~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION | STAT\\
+PROP \(~~~~~~~\)$\ra$ LIST | MULTI | PAIR\\
+PROP' \(~~~~~~\)$\ra$ LIST | MULTI | PAIR | SINGLE\\
 PROP* \(~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION\\
-PROP' \(~~~~~~\)$\ra$ COMPLEX | PAIR | SINGLE\\
 COMPLEX \(~~~~\)$\ra$ IMPLICATION | LIST | MULTI\\
 IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
                     | SINGLE \txt{ implies that } IMPLICATION\\
