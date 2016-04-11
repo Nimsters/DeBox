@@ -6,13 +6,12 @@ datatype formula = Atom of char |
                    
 datatype Proposition = PRPC of Complex | PRPP of Pair | PRPN of Negation 
                      | PRPU of Unit
+and      PropS       = PSP of Prop | PSS of Single
 and      Prop        = PL of List  | PM of Multi  | PP of Pair
-and      PropS       = PSL of List | PSM of Multi | PSP of  Pair 
-                     | PSS of Single
 and      PropC       = PCC of Complex | PCP of Pair | PCN of Negation
 and      Complex     = CI of Implication | CL of List | CM of Multi
 and      Implication = SIMPS of Single*Single | SIMPI of Single*Implication |
-                       PIMPS of Prop*PropS | SIMP of PropS*Prop |
+                       PIMPS of Prop*PropS | SIMP of Single*Prop |
                        PIMPI of Prop*Implication
 and      List        = ALE of Element*Element*Element |
                        OLE of Element*Element*Element | L of Element*List
@@ -51,7 +50,7 @@ fun toProp(Atom c)        = PRPU (atom c)
   | toProp(NEG f)         = negToProp(f)
   | toProp(f as AND _)    = andToProp(f)
   | toProp(f as OR _)     = orToProp(f)
- (* | toProp(IMP (f1, f2))  = impToNL(f1)^" implies that "^toNL(f2) *)
+  | toProp(f as IMP _)    = impToProp(f)
 
 and negToProp(f) =
     let val prop = toProp(f)
@@ -104,10 +103,31 @@ and orToProp(f as OR(OR (OR _), _)) = toOlist(f)
                | (Pair p, Implication i) => PRPC (CM (ORPE (p, ELMI i)))
         end
 
-(*
-and impToNL(f as IMP _)      = bracket(toNL(f))
-  | impToNL(f as _)          = toNL(f); *)
-
+and impToProp(IMP(f1,f2))     = 
+    let val left  = case (toProp f1) of PRPU u      => SU u
+                                      | PRPN n      => SN n
+                                      | PRPP p      => PP p
+                                      | PRPC (CL l) => PL l
+                                      | PRPC (CM m) => PM m
+                                      | PRPC c      => STAT c
+        
+        val right = case (toProp f2) of PRPU u      => SU u
+                                      | PRPN n      => SN n
+                                      | PRPP p      => PP p
+                                      | PRPC (CL l) => PL l
+                                      | PRPC (CM m) => PM m
+                                      | PRPC (CI i) => i
+        val imp =
+        case (left,right) of (Single s1, Single s2) => SIMPS (s1, s2)
+                        | (Single s, Implication i) => SIMPI (s, i)
+                        | (Single s, Prop p)        => SIMP  (s, p)
+                        | (Prop p, Implication i)   => PIMPI (p, i)
+                        | (Prop p, Single s)        => PIMPS (p,  PSS s)
+                        | (Prop p1, Prop p2)        => PIMPS (p1, PSP p2)
+    in
+        PRPC (CI imp)
+    end
+ 
 and toAlist(AND (AND (AND (f, f1), f2),f3)) =
     let val elm1 = toElement(f1)
         val elm2 = toElement(f2)
@@ -188,7 +208,6 @@ val t0::t1::rest = test
 in
 val test_toString = map printl (map toString test)
 (* val test_toNL = map printl (map toNL test) *)
-val test0_toProp = toProp t0
-val test1_toProp = toProp t1
+val test_toProp = map toProp test
 end;
 quit();

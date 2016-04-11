@@ -137,7 +137,7 @@ UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
 Question: Should \s{implication} remain as possible \s{element}? Does the 
 Oxford comma remove the ambiguity?
 
-\ss{April 9th}
+\ss{April 10th}
 Discovered several errors while implementing NL grammar:
 \begin{itemize}
     \item \f{NEG} is superflous: \f{UNIT} = not-\f{UNIT} | {\bf atom}
@@ -152,6 +152,28 @@ Discovered several errors while implementing NL grammar:
 \end{itemize}
 Further question: should \f{PAIR} be replaced Lists with only two elements
 and thus be written "p, and also q or r"/ "p or q, and also r"?
+
+\ss{April 11th}
+Discovered another error: "if \f{PROP'} is provable then so is \f{PROP}"
+should be "if \f{SINGLE} is provable then so is \f{PROP}. This means that
+\f{PROP'} can be restructured to \f{PROP} | \f{SINGLE}.
+
+\sss{Solution to structure of lists?}
+If we extend the type of elements with:
+\begin{quote}
+    \f{EXT } $\ra$ \f{ELEMENT} | \f{EXT}, \f{ELEMENT}
+\end{quote}
+Then \f{LIST} could be reduced to:
+\begin{quote}
+    \f{LIST} $\ra$ \f{EXT}, and also \f{ELEMENT} 
+                 | \f{EXT}, or else  \f{ELEMENT}
+\end{quote}
+(presuming we also replace \f{MULTI} with two-element lists. A similar
+structure for triples could easily be constructed, but requires \f{EXT} to
+be split up further).
+
+This would preserve the structure of the nested \f{AND}s, and I think it
+would be a lot easier to work with when parsing NL to symbolic.
 
 \label{LastBody}
 \end{document}
