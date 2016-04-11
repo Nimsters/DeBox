@@ -137,5 +137,21 @@ UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
 Question: Should \s{implication} remain as possible \s{element}? Does the 
 Oxford comma remove the ambiguity?
 
+\ss{April 9th}
+Discovered several errors while implementing NL grammar:
+\begin{itemize}
+    \item \f{NEG} is superflous: \f{UNIT} = not-\f{UNIT} | {\bf atom}
+    \item The grammar accepts both:
+        \begin{quote}\f{SINGLE} and \f{IMPLICATION}\\
+                     \f{SINGLE} and the statement \f{IMPLICATION}
+        \end{quote}
+        The same goes for or.
+    \item Any list must either always start with a pair of the same type or
+    never start with a pair of the same type. This should be reflected in 
+    the grammar.
+\end{itemize}
+Further question: should \f{PAIR} be replaced Lists with only two elements
+and thus be written "p, and also q or r"/ "p or q, and also r"?
+
 \label{LastBody}
 \end{document}

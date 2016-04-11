@@ -21,10 +21,10 @@ and      Multi       = ANDPE of Pair*Element | ANDSE of Single*Elem |
 and      Element     = ELMP of Pair | ELMI of Implication | ELMS of Single
 and      Elem        = EP of Pair | EI of Implication
 and      Pair        = ANDS of Single*Single | ORS of Single*Single
-and      Single      = STAT of Complex | Negation | Unit
+and      Single      = STAT of Complex | SN of Negation | SU of Unit
 and      Negation    = NEGP of PropC
-and      Neg         = NEGU of Unit
-and      Unit        = NOT of Neg | atom of char;
+(*and      Neg         = NEGU of Unit*)
+and      Unit        = NOT of Unit | atom of char;
 
 fun bracket(s) = "("^s^")";
 
@@ -47,57 +47,97 @@ and impToString(f as IMP _)      = bracket(toString(f))
 
 fun printl s = print(s^"\n");
 
-fun toNL(Atom c)        = Char.toString c
-  | toNL(NEG f)         = negToNL(f)
-  | toNL(f as AND _)   = andToNL(f)
-  | toNL(f as OR _)     = orToNL(f, " ")
-  | toNL(IMP (f1, f2))  = impToNL(f1)^" implies that "^toNL(f2)
+fun toProp(Atom c)        = PRPU (atom c)
+  | toProp(NEG f)         = negToProp(f)
+  | toProp(f as AND _)    = andToProp(f)
+  | toProp(f as OR _)     = orToProp(f)
+ (* | toProp(IMP (f1, f2))  = impToNL(f1)^" implies that "^toNL(f2) *)
 
-and negToNL(a as Atom _) = "not-"^toNL(a)
-  | negToNL(f as AND _) = "not all of "^andToNL(f)
-  | negToNL(f as OR _)  = "neither "^orToNL(f, " n")
-  | negToNL(f as NEG _)       = 
-        let val n      = "not-"
-            val result = toNL(f)
+and negToProp(f) =
+    let val prop = toProp(f)
+    in
+        case prop of PRPU u => PRPU (NOT u)
+                   | PRPC c => PRPN (NEGP (PCC c))
+                   | PRPP p => PRPN (NEGP (PCP p))
+                   | PRPN n => PRPN (NEGP (PCN n))
+    end
+
+and andToProp(f as AND(AND (AND _, _), _)) = toAlist
+  | andToProp(AND(f1,f2))     = 
+          let val left  = case (toProp f1) of PRPU u => SU u
+                                            | PRPN n => SN n
+                                            | PRPC c => STAT c
+                                            | PRPP p => p
+              
+              val right = case (toProp f2) of PRPU u => SU u
+                                            | PRPN n => SN n
+                                            | PRPP p => p
+                                            | PRPC (CI i) => i
+                                            | PRPC c => STAT c
         in
-            if (String.isPrefix n result) 
-            then n^result
-            else "it is not the case that "^result
+          case (left, right) of (Single s1, Single s2) => PRPP (ANDS (s1,s2))
+               | (Single s, Pair p) => PRPC (CM (ANDSE (s, EP p)))
+               | (Single s, Implication i) => PRPC (CM (ANDSE (s, EI i)))
+               | (Pair p, Single s) => PRPC (CM (ANDPE (p,  ELMS s)))
+               | (Pair p1, Pair p2) => PRPC (CM (ANDPE (p1, ELMP p2)))
+               | (Pair p, Implication i) => PRPC (CM (ANDPE (p, ELMI i)))
         end
-  | negToNL(f as IMP _)  = "the implication \""^impToNL(f)^"\" does not hold" 
 
-and andToNL(AND(f1,f2))     = 
-        let val left = case f1 of AND _ => toList(f1) | _ => toNL(f1)
-            val right= case f2 of AND _ => ", "^andToNL(f2)
-                                 | OR _ => " holds and also "^toNL(f2)
-                                     | _ => " and "^toNL(f2)^" holds"
-        in left^right
+and orToProp(f as OR(OR (OR _), _)) = toOlist(f)
+  | orToProp(f as OR(f1,f2))     = 
+          let val left  = case (toProp f1) of PRPU u => SU u
+                                            | PRPN n => SN n
+                                            | PRPC c => STAT c
+                                            | PRPP p => p
+              
+              val right = case (toProp f2) of PRPU u => SU u
+                                            | PRPN n => SN n
+                                            | PRPP p => p
+                                            | PRPC (CI i) => i
+                                            | PRPC c => STAT c
+        in
+          case (left, right) of (Single s1, Single s2) => PRPP (ORS (s1,s2))
+               | (Single s, Pair p) => PRPC (CM (ORSE (s, EP p)))
+               | (Single s, Implication i) => PRPC (CM (ORSE (s, EI i)))
+               | (Pair p, Single s) => PRPC (CM (ORPE (p,  ELMS s)))
+               | (Pair p1, Pair p2) => PRPC (CM (ORPE (p1, ELMP p2)))
+               | (Pair p, Implication i) => PRPC (CM (ORPE (p, ELMI i)))
         end
-  | andToNL(_)              = "**errorA**"
 
-and orToNL(OR(f1,f2), s)   =
-        let val left  = case f1 of OR _ => toList(f1) | _ => toNL(f1)
-            val right = case f2 of OR _ => ", "^orToNL(f2,s) 
-                                | AND _ => " holds"^s^"or "^toNL(f2)
-                                |      _ => s^"or "^toNL(f2)^" holds"
-        in left^right
-        end
-  | orToNL(_)               = "**errorO**"
-
-and toList(OR(f1,f2))  =
-        let val left    = case f1 of OR _ => toList(f1) | _ => toNL(f1)
-            val right   = case f2 of OR _ => toList(f2) | _ => toNL(f2) 
-        in left^", "^right
-        end
-  | toList(AND(f1,f2)) =
-        let val left    = case f1 of AND _ => toList(f1) | _ => toNL(f1)
-            val right   = case f2 of AND _ => toList(f2) | _ => toNL(f2) 
-        in left^", "^right
-        end
-  | toList( _ )         = "**errorL**"
-
+(*
 and impToNL(f as IMP _)      = bracket(toNL(f))
-  | impToNL(f as _)          = toNL(f);
+  | impToNL(f as _)          = toNL(f); *)
+
+and toAlist(AND (AND (AND (f, f1), f2),f3)) =
+    let val elm1 = toElement(f1)
+        val elm2 = toElement(f2)
+        val elm3 = toElement(f3)
+    in
+        extendAlist(f, ALE (elm1, elm2, elm3))
+    end
+
+and extendAlist(AND (f1, f2), alist) =
+    extendAlist(f1, L(toElement(f2), alist))
+  | extendAlist(f, alist) = PRPC (CL (L (toElement(f), alist)))
+
+and toOlist(OR (OR (OR (f, f1), f2),f3)) =
+    let val elm1 = toElement(f1)
+        val elm2 = toElement(f2)
+        val elm3 = toElement(f3)
+    in
+        extendOlist(f, OLE (elm1, elm2, elm3))
+    end
+
+and extendOlist(OR (f1, f2), olist) =
+    extendOlist(f1, L(toElement(f2), olist))
+  | extendOlist(f, alist) = PRPC (CL (L (toElement(f), olist)))
+
+and toElement(f) = case (toProp f) of PRPU u => ELMS (SU u)
+                                    | PRPN n => ELMS (SN n)
+                                    | PRPP p => ELMP p
+                                    | PRPC (CI i) => ELMI i
+                                    | PRPC c => ELMS (STAT c)
+
 
 (* Tests *)
 local
@@ -144,8 +184,11 @@ val test = OR(p,q)::test
 val test = AND(p,q)::test
 val test = NEG(q)::test
 val test = p::test
+val t0::t1::rest = test
 in
 val test_toString = map printl (map toString test)
 (* val test_toNL = map printl (map toNL test) *)
+val test0_toProp = toProp t0
+val test1_toProp = toProp t1
 end;
 quit();
