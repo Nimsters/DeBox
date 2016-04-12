@@ -5,34 +5,35 @@
 \begin{document}
 \begin{quote}
 \ttfamily
-PROPOSITION $\ra$ COMPLEX | PAIR | NEGATION | UNIT\\
-PROP \(~~~~~~~\)$\ra$ LIST | MULTI | PAIR\\
-PROP' \(~~~~~~\)$\ra$ LIST | MULTI | PAIR | SINGLE\\
-PROP* \(~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION\\
-COMPLEX \(~~~~\)$\ra$ IMPLICATION | LIST | MULTI\\
+PROPOSITION $\ra$ COMPLEX | IMPLICATION | NEGATION | UNIT\\
+PROP* \(~~~~~~\)$\ra$ COMPLEX | IMPLICATION | NEGATION\\
+PROP \(~~~~~~~\)$\ra$ COMPLEX | \txt{the implication ``}IMPLICATION\txt{''}\\
+PROP' \(~~~~~~\)$\ra$ COMPLEX | SINGLE\\
+COMPLEX \(~~~~\)$\ra$ COMP | PAIR\\
+COMP \(~~~~~~~\)$\ra$ LIST | MULTI\\
 IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
                     | SINGLE \txt{ implies that } IMPLICATION\\
 \(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP\txt{ is provable then so is } PROP'\\
+\txt{if } SINGLE \txt{ is provable then so is } COMPLEX\\
 \(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP' \txt{ is provable then so is } PROP\\
+\txt{if } PROP \txt{ is provable then so is } PROP'\\
 \(~~~~~~~~~~~~~~~\) |
 \txt{if } PROP \txt{ is provable then so is the proposition that } 
 IMPLICATION\\
-LIST \(~~~~~~~\)$\ra$ ELEMENT\txt{, } ELEMENT\txt{, and also } ELEMENT |
-                      ELEMENT\txt{, } ELEMENT\txt{, or else } ELEMENT\\
-\(~~~~~~~~~~~~~~~\) | ELEMENT\txt{, } LIST\\
+LIST \(~~~~~~~\)$\ra$ EXTEND\txt{, and also } ELEMENT |
+                      EXTEND\txt{, or else } ELEMENT\\
 MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
                       SINGLE \txt{ and also } ELEMENT' |\\
 \(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
                       SINGLE \txt{ or else } ELEMENT'\\
+EXTEND \(~~~~~\)$\ra$ EXT\txt{,} ELEMENT\\
+EXT \(~~~~~~~~\)$\ra$ EXTEND | ELEMENT\\
 ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\
 ELEMENT' \(~~~\)$\ra$ PAIR | IMPLICATION\\
 PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE\\
-SINGLE \(~~~~~\)$\ra$ STAT | UNIT | NEGATION\\
-STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMPLEX\txt{''}\\
+SINGLE \(~~~~~\)$\ra$ STAT | NEGATION | UNIT\\
+STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMP\txt{''}\\
 NEGATION \(~~~\)$\ra$ \txt{the negation of ``}PROP*\txt{''}\\
-NEG \(~~~~~~~~\)$\ra$ \txt{not-}UNIT\\
-UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
+UNIT \(~~~~~~~\)$\ra$ \txt{not-}UNIT | {\bf atom}\\
 \end{quote}
 \end{document}
