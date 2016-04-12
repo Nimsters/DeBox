@@ -1,9 +1,11 @@
 \documentclass[a4paper]{article}
+\usepackage{marvosym, verbatim}
 
 \input{Preamble}
 \titlelabel{}
-\title{}
-\fancyhead[c]{}
+\newcommand{\tit}{Natural deduction proofs in (pseudo) natural language}
+\title{\tit}
+\fancyhead[c]{\tit}
 
 \begin{document}
 \pagenumbering{Alph}
@@ -24,15 +26,137 @@
 \ss{Resumé}
 
 \section{Introduction}
+\subsection{Problem statement}
+    Is it possible to develop a tool for writing natural deduction proofs
+    in a subset of the English language that will read as natural language
+    (from here on, this subset will just be named `natural language'),
+    and have these proofs validated? Additionally, is it feasible to have
+    a round-tripping ability such that {\bf formal $\ra$ natural language
+    $\ra$ formal} is the identity function at the level of abstract syntax,
+    and {\bf natural language $\ra$ formal $\ra$ natural language} is the
+    identity function modulo lexical aspects such as whitespace and
+    punctuation.
+
+\subsection{Scope}
+    This project will limit itself to natural deduction proofs of
+    \emph{propositional} logic, and the validation is expected to be done
+    using the existing tool \s{BoxProver}\cite{box}. Furthermore, the tool
+    to be developed is specifically intended for use in the course `Logic
+    in computer science' at the University of Copenhagen, and for  
+    pedagogical reasons, the atoms used in the natural language syntax
+    will be characters rather than specified declarative sentences.
+
+\subsection{Motivation}
+    The course `Logic in computer science' rather closely follows the 
+    structure outlined in the textbook `Logic in computer science' by
+    Huth \& Ryan\cite{hr}. The introduction to formal logic is based on
+    reasoning about construction of (valid) arguments in natural 
+    language\cite[pp.~1-2]{hr}, which forms the basis for the presentation
+    of a formal notation using the symbols 
+    \(\neg, \lor, \land, \txt{ and } \ra\)\cite[p.~4]{hr}. 
+    The \emph{meaning} of these symbols is presented in natural language,
+    but with the exception of a few simple examples, the rest of the section 
+    on propositional logic, including the rules for natural deduction,
+    is presented solely in formal (i.e. symbol) notation.
+
+    Presenting students with a tool for writing natural deduction proofs
+    in natural language is hoped to bridge the potential gap between
+    understanding the structure and rules of natural deduction and
+    understanding the \emph{meaning} of the steps in such a process as well
+    as the conclusion reached. Furthermore, it is hoped the the
+    presentation of such proofs in natural language will emphasize the
+    \emph{independence} of the reached conclusion from the semantic 
+    content of atomic declarative sentences; \(p, p \ra q \vdash q\)
+    regardless
+    of what declarative sentences one may choose $p$ and $q$ to represent.
+
+\subsection{Tasks}
+
+\begin{itemize}
+\item 
+    Formulation of a concrete {\bf natural language} syntax for formulae and
+    proofs by natural deduction.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Should read as natural language: Ideally compliant
+                with Attempto Controlled English, otherwise arguably
+                consistent with standard English.
+                \item Should be arguably consistent with commonly used 
+                mathematical terminology.
+            \end{itemize}
+        \item[Tasks:]~ \\ \vspace{-5 mm}
+            \begin{enumerate}[\HollowBox]
+               \item Define NL grammar for propositions
+               \item Define NL grammar for proofs
+               \item Verify or refute consistency with ACE
+               \item Argue consistency with standard English
+               \item Argue consistency with mathematical terminology
+            \end{enumerate}
+    \end{description}
+
+\item
+    Formulation of a concrete {\bf formal} syntax and corresponding abstract
+    syntax for propositional formulae and proofs.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Should be consistent with \s{BoxProver}\cite{box}
+                syntax.
+            \end{itemize}
+        \item[Tasks:]~ \\ \vspace{-5 mm}
+            \begin{enumerate}[\HollowBox]
+               \item Define formal syntax for formulae
+               \item Define abstract syntax for formulae
+               \item Define formal syntax for proofs
+               \item Define abstract syntax
+               \item Verify consistency with \s{BoxProver} syntax
+            \end{enumerate}
+    \end{description}
+
+\item
+    Design, implementation and test of formal $\longleftrightarrow$ natural
+    language conversions.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Should convert correctly from {\bf formal} to
+                {\bf natural language}.
+                \item Should convert correctly form {\bf natural language}
+                to {\bf formal}.
+                \item Should, if possible, display round-trip ability as
+                described in the problem statement.
+            \end{itemize}
+    \end{description}
+
+\item
+    Development of a library of formulae and proofs for test and validation,
+    including method and tool support for managing and adding to such a 
+    library.
+    \begin{description}
+        \item[Criteria:]~ \\ \vspace{-5 mm}
+            \begin{itemize}
+                \item Tool support for regression testing.
+                \item Should test a collection of examples from relevant
+                textbooks, specificaly Huth \& Ryan\cite{hr}.
+            \end{itemize}
+    \end{description}
+\end{itemize}
 
 \section{Grammars}
 \ss{Context Free Gammars}
 
-\ss{Developing the Grammar for NL}
+\ss{Developing the Grammar for Natural Language}
+\sss{Developing a Grammar for Propositions}
 
-\ss{Developing the Grammar for PL}
+\sss{Extending it to Proofs}
+
+\ss{Developing the Grammar for Propositional Logic}
+\sss{Developing Formal and Abstract Syntax for Formulae}
+\sss{Extending it to Proofs}
 
 \section{The tool}
+\ss{Implementing Grammars}
 
 \section{Conclusions}
 
@@ -41,16 +165,189 @@
 \pagebreak
 \pagenumbering{roman}
 \fancyfoot[c]{Page \thepage\ of \pageref{LastPage}}
-\nocite{*}
+%\nocite{*}
 \bibliographystyle{plain}
 \bibliography{Bibliography}
 \label{LastBio}
-%\pagebreak
-%\appendix
-%\titlelabel{\thetitle . \quad}
-%\section*{Appendices}
-%\addcontentsline{toc}{section}{Appendices}
+\pagebreak
+\appendix
+\titlelabel{\thetitle . \quad}
+\section*{Appendices}
+\addcontentsline{toc}{section}{Appendices}
 %\renewcommand \thesubsection{\Alph{subsection}}
-%\label{LastApp}
+\section{Code}
+\code{../formulasNL.ml}{formulasNL}
+
+\section{Labnotes}
+\ss{March 31st}
+The grammar for NL formulas so far:
+\begin{quote}
+\ttfamily
+PROPOSITION $\ra$ IMPLICATION | PROP\\
+IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is the proposition that } IMP'\\
+IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
+PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
+LIST \(~~~~~~~\)$\ra$ PAIR\txt{, } PAIR\txt{, and also } PAIR |
+                      PAIR\txt{, } PAIR\txt{, or else } PAIR\\
+\(~~~~~~~~~~~~~~~\) | PAIR\txt{, } LIST\\
+SIMPLE \(~~~~~\)$\ra$ PAIR \txt{ and also } PAIR |
+                      PAIR \txt{ or else } PAIR  | PAIR\\
+PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE
+                    | SINGLE | IMP\\
+IMP \(~~~~~~~~\)$\ra$ SINGLE \txt{ implies } SINGLE
+                    | SINGLE \txt{ does not imply } SINGLE\\
+SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}PROPOSITION\txt{''} |
+                      \txt{the negation of ``}PROPOSITION\txt{''}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
+NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
+\end{quote}
+
+\sss{Quotation marks}
+If the grammar is to account for correctly alternating quotation marks,
+then everything will have to be repeated and the two grammar "sets" should
+only cross in the \f{formula} and \f{negation} constructions:
+\begin{quote}
+\ttfamily
+PROPOSITION $\ra$ IMPLICATION | PROP\\
+$\vdots$\\
+SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}*PROPOSITION\txt{''} |
+                      \txt{the negation of ``}*PROPOSITION\txt{''}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
+NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
+~\\
+*PROPOSITION $\ra$ IMPLICATION | PROP\\
+$\vdots$\\
+*SINGLE \(~~~~~\)$\ra$ \txt{the statement `}PROPOSITION\txt{'} |
+                      \txt{the negation of `}PROPOSITION\txt{'}\\
+\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
+\end{quote}
+
+\sss{Linguistic negation}
+The linguistic negations of pairs:
+\begin{quote}
+not both p and q are valid\\
+neither p nor q is valid\\
+\end{quote}
+does not read properly when used within a longer formula:
+\begin{quote}
+    not both p and q are valid and also r\\
+    p and also neither q nor r is valid\\
+\end{quote}
+Instead, these formulas should read:
+\begin{quote}
+    not both p and q are valid but r is\\
+    p is valid but neither q nor r is
+\end{quote}
+To account for this, one would have to make the grammar a lot more complex
+with special cases for \f{and also}, \f{or else} and \f{implication} for 
+every possible combination of negated and non-negated sub-propositions.
+
+Linguistic negation of lists and \f{and also}/\f{or else} constructions
+seem difficult to do without introducing ambiguity.
+Must research further on linguistic negation to determine how exactly to 
+handle these cases, specifically \cite{negation}
+
+\ss{April 8th}
+Some changes still need to be done on the grammar.
+\begin{itemize}
+    \item For \s{implication}: to ensure the distinction between the two
+    types, a \s{prop} should no longer convert to \s{imp}.
+
+    \item For \s{simple}:
+        \begin{itemize}
+            \item Not both first and second child should be \s{single}
+            \item For first child: \s{imp} should not be a possibily unless
+            in brackets (when read, it itroduces ambiguity despite the
+            distance created by `and also' and `or else').
+
+            \item For second child: unbracketed \s{implication} should be a
+            possibility.
+        \end{itemize}
+
+    \item For bracketing: only complex statements should be bracketed.
+
+    \item For negation statements: atom- and not-negations should never be
+    negated using statements
+
+\end{itemize}
+
+The new grammar looks as follows:
+
+\begin{quote}
+\ttfamily
+PROPOSITION $\ra$ COMPLEX | PAIR | NEGATION | UNIT\\
+PROP \(~~~~~~~\)$\ra$ LIST | MULTI | PAIR\\
+PROP' \(~~~~~~\)$\ra$ LIST | MULTI | PAIR | SINGLE\\
+PROP* \(~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION\\
+COMPLEX \(~~~~\)$\ra$ IMPLICATION | LIST | MULTI\\
+IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
+                    | SINGLE \txt{ implies that } IMPLICATION\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP\txt{ is provable then so is } PROP'\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP' \txt{ is provable then so is } PROP\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is the proposition that } 
+IMPLICATION\\
+LIST \(~~~~~~~\)$\ra$ ELEMENT\txt{, } ELEMENT\txt{, and also } ELEMENT |
+                      ELEMENT\txt{, } ELEMENT\txt{, or else } ELEMENT\\
+\(~~~~~~~~~~~~~~~\) | ELEMENT\txt{, } LIST\\
+MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
+                      SINGLE \txt{ and also } ELEMENT' |\\
+\(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
+                      SINGLE \txt{ or else } ELEMENT'\\
+ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\
+ELEMENT' \(~~~\)$\ra$ PAIR | IMPLICATION\\
+PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE\\
+SINGLE \(~~~~~\)$\ra$ STAT | UNIT | NEGATION\\
+STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMPLEX\txt{''}\\
+NEGATION \(~~~\)$\ra$ \txt{the negation of ``}PROP*\txt{''}\\
+NEG \(~~~~~~~~\)$\ra$ \txt{not-}UNIT\\
+UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
+\end{quote}
+Question: Should \s{implication} remain as possible \s{element}? Does the 
+Oxford comma remove the ambiguity?
+
+\ss{April 10th}
+Discovered several errors while implementing NL grammar:
+\begin{itemize}
+    \item \f{NEG} is superflous: \f{UNIT} = not-\f{UNIT} | {\bf atom}
+    \item The grammar accepts both:
+        \begin{quote}\f{SINGLE} and \f{IMPLICATION}\\
+                     \f{SINGLE} and the statement \f{IMPLICATION}
+        \end{quote}
+        The same goes for or.
+    \item Any list must either always start with a pair of the same type or
+    never start with a pair of the same type. This should be reflected in 
+    the grammar.
+\end{itemize}
+Further question: should \f{PAIR} be replaced Lists with only two elements
+and thus be written "p, and also q or r"/ "p or q, and also r"?
+
+\ss{April 11th}
+Discovered another error: "if \f{PROP'} is provable then so is \f{PROP}"
+should be "if \f{SINGLE} is provable then so is \f{PROP}. This means that
+\f{PROP'} can be restructured to \f{PROP} | \f{SINGLE}.
+
+\sss{Solution to structure of lists?}
+If we extend the type of elements with:
+\begin{quote}
+    \f{EXT } $\ra$ \f{ELEMENT} | \f{EXT}, \f{ELEMENT}
+\end{quote}
+Then \f{LIST} could be reduced to:
+\begin{quote}
+    \f{LIST} $\ra$ \f{EXT}, and also \f{ELEMENT} 
+                 | \f{EXT}, or else  \f{ELEMENT}
+\end{quote}
+(presuming we also replace \f{MULTI} with two-element lists. A similar
+structure for triples could easily be constructed, but requires \f{EXT} to
+be split up further).
+
+This would preserve the structure of the nested \f{AND}s, and I think it
+would be a lot easier to work with when parsing NL to symbolic.
+
+\label{LastApp}
 \label{LastPage}
 \end{document}
