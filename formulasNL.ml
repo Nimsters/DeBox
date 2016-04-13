@@ -37,28 +37,59 @@ and negToProp(f) =
                    | PRPN n => PRPN (NEGP (PCN n))
     end
 
-(*
-and andToProp(f as AND(AND (AND _, _), _)) = toAlist
-  | andToProp(AND(f1,f2))     = 
-          let val left  = case (toProp f1) of PRPU u => SU u
-                                            | PRPN n => SN n
-                                            | PRPC c => STAT c
-                                            | PRPP p => p
-              
-              val right = case (toProp f2) of PRPU u => SU u
-                                            | PRPN n => SN n
-                                            | PRPP p => p
-                                            | PRPC (CI i) => i
-                                            | PRPC c => STAT c
+and andToProp(AND(AND(f1,f2),f3))   =
+        let val e1 = toAext f1
+            val e2 = toElement f2
+            val e3 = toElement f3
         in
-          case (left, right) of (Single s1, Single s2) => PRPP (ANDS (s1,s2))
-               | (Single s, Pair p) => PRPC (CM (ANDSE (s, EP p)))
-               | (Single s, Implication i) => PRPC (CM (ANDSE (s, EI i)))
-               | (Pair p, Single s) => PRPC (CM (ANDPE (p,  ELMS s)))
-               | (Pair p1, Pair p2) => PRPC (CM (ANDPE (p1, ELMP p2)))
-               | (Pair p, Implication i) => PRPC (CM (ANDPE (p, ELMI i)))
+            PRPC (CC (CL (AL (EEX (e1, e2), e3))))
         end
 
+  | andToProp(AND(f1,f2))           =
+        let val e1 = toElement f1
+            val e2 = toElement f2
+        in
+            case (e1, e2) of
+                (ELS s1, ELS s2)    => PRPC (CP (ASS (s1,s2)))
+                (ELS s1, ELP p2)    => PRPC (CC (CM (ASE (s1, EP p2))))
+                (ELS s1, ELI i2)    => PRPC (CC (CM (ASE (s1, EI i2))))
+                (ELP p1, _)         => PRPC (CC (CM (APE (p1, e2)
+                (ELI i1, _)         => PRPC (CC (CM (AIE (STTI i1, e2))))
+        end
+
+and toAext(AND (f1,f2)) = EXT (EEX (toAext f1, toElement f2))
+  | toAext f            = EL (toElement f)           
+
+and orToProp(OR(OR(f1,f2),f3))   =
+        let val e1 = toOext f1
+            val e2 = toElement f2
+            val e3 = toElement f3
+        in
+            PRPC (CC (CL (OL (EEX (e1, e2), e3))))
+        end
+
+  | orToProp(OR(f1,f2))             =
+        let val e1 = toElement f1
+            val e2 = toElement f2
+        in
+            case (e1, e2) of
+                (ELS s1, ELS s2)    => PRPC (CP (OSS (s1,s2)))
+                (ELS s1, ELP p2)    => PRPC (CC (CM (OSE (s1, EP p2))))
+                (ELS s1, ELI i2)    => PRPC (CC (CM (OSE (s1, EI i2))))
+                (ELP p1, _)         => PRPC (CC (CM (OPE (p1, e2)
+                (ELI i1, _)         => PRPC (CC (CM (OIE (STTI i1, e2))))
+        end
+
+and toOext(OR (f1,f2))  = EXT (EEX (toOext f1, toElement f2))
+  | toOext f            = EL (toElement f)           
+
+and toElement(f) = case (toProp f) of PRPU u        => ELS (SU u)
+                                    | PRPN n        => ELS (SN n)
+                                    | PRPI i        => ELI i
+                                    | PRPC (CP p)   => ELP p
+                                    | PRPC (CC c)   => ELS (STTC c)
+
+(*
 and impToProp(IMP(f1,f2))     = 
     let val left  = case (toProp f1) of PRPU u      => SU u
                                       | PRPN n      => SN n
@@ -83,34 +114,5 @@ and impToProp(IMP(f1,f2))     =
     in
         PRPC (CI imp)
     end
- 
-and toAlist(AND (AND (AND (f, f1), f2),f3)) =
-    let val elm1 = toElement(f1)
-        val elm2 = toElement(f2)
-        val elm3 = toElement(f3)
-    in
-        extendAlist(f, ALE (elm1, elm2, elm3))
-    end
+*) 
 
-and extendAlist(AND (f1, f2), alist) =
-    extendAlist(f1, L(toElement(f2), alist))
-  | extendAlist(f, alist) = PRPC (CL (L (toElement(f), alist)))
-
-and toOlist(OR (OR (OR (f, f1), f2),f3)) =
-    let val elm1 = toElement(f1)
-        val elm2 = toElement(f2)
-        val elm3 = toElement(f3)
-    in
-        extendOlist(f, OLE (elm1, elm2, elm3))
-    end
-
-and extendOlist(OR (f1, f2), olist) =
-    extendOlist(f1, L(toElement(f2), olist))
-  | extendOlist(f, alist) = PRPC (CL (L (toElement(f), olist)))
-
-and toElement(f) = case (toProp f) of PRPU u => ELMS (SU u)
-                                    | PRPN n => ELMS (SN n)
-                                    | PRPP p => ELMP p
-                                    | PRPC (CI i) => ELMI i
-                                    | PRPC c => ELMS (STAT c)
-*)
