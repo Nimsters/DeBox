@@ -7,10 +7,11 @@
 \ttfamily
 PROPOSITION $\ra$ COMPLEX | IMPLICATION | NEGATION | UNIT\\
 PROP* \(~~~~~~\)$\ra$ COMPLEX | IMPLICATION | NEGATION\\
-PROP \(~~~~~~~\)$\ra$ COMPLEX | \txt{the implication ``}IMPLICATION\txt{''}\\
 PROP' \(~~~~~~\)$\ra$ COMPLEX | SINGLE\\
+PROP \(~~~~~~~\)$\ra$ COMPLEX | IMP\\
 COMPLEX \(~~~~\)$\ra$ COMP | PAIR\\
 COMP \(~~~~~~~\)$\ra$ LIST | MULTI\\
+IMP \(~~~~~~~~\)$\ra$ \txt{the implication ``}IMPLICATION\txt{''}\\
 IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
                     | SINGLE \txt{ implies that } IMPLICATION\\
 \(~~~~~~~~~~~~~~~\) |
@@ -23,9 +24,11 @@ IMPLICATION\\
 LIST \(~~~~~~~\)$\ra$ EXTEND\txt{, and also } ELEMENT |
                       EXTEND\txt{, or else } ELEMENT\\
 MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
-                      SINGLE \txt{ and also } ELEMENT' |\\
+                      SINGLE \txt{ and also } ELEMENT'\\
 \(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
                       SINGLE \txt{ or else } ELEMENT'\\
+\(~~~~~~~~~~~~~~~\) | IMP ~\txt{ or else } ELEMENT  |
+                      IMP \txt{ and also } ELEMENT\\
 EXTEND \(~~~~~\)$\ra$ EXT\txt{,} ELEMENT\\
 EXT \(~~~~~~~~\)$\ra$ EXTEND | ELEMENT\\
 ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\

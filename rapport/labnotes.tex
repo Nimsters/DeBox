@@ -175,5 +175,68 @@ be split up further).
 This would preserve the structure of the nested \f{AND}s, and I think it
 would be a lot easier to work with when parsing NL to symbolic.
 
+\ss{April 12th}
+Reworked the grammar:
+\begin{quote}
+\ttfamily
+PROPOSITION $\ra$ COMPLEX | IMPLICATION | NEGATION | UNIT\\
+PROP* \(~~~~~~\)$\ra$ COMPLEX | IMPLICATION | NEGATION\\
+PROP' \(~~~~~~\)$\ra$ COMPLEX | SINGLE\\
+PROP \(~~~~~~~\)$\ra$ COMPLEX | IMP\\
+COMPLEX \(~~~~\)$\ra$ COMP | PAIR\\
+COMP \(~~~~~~~\)$\ra$ LIST | MULTI\\
+IMP \(~~~~~~~~\)$\ra$ \txt{the implication ``}IMPLICATION\txt{''}\\
+IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
+                    | SINGLE \txt{ implies that } IMPLICATION\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } SINGLE \txt{ is provable then so is } COMPLEX\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is } PROP'\\
+\(~~~~~~~~~~~~~~~\) |
+\txt{if } PROP \txt{ is provable then so is the proposition that } 
+IMPLICATION\\
+LIST \(~~~~~~~\)$\ra$ EXTEND\txt{, and also } ELEMENT |
+                      EXTEND\txt{, or else } ELEMENT\\
+MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
+                      SINGLE \txt{ and also } ELEMENT'\\
+\(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
+                      SINGLE \txt{ or else } ELEMENT'\\
+EXTEND \(~~~~~\)$\ra$ EXT\txt{,} ELEMENT\\
+EXT \(~~~~~~~~\)$\ra$ EXTEND | ELEMENT\\
+ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\
+ELEMENT' \(~~~\)$\ra$ PAIR | IMPLICATION\\
+PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE\\
+SINGLE \(~~~~~\)$\ra$ STAT | NEGATION | UNIT\\
+STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMP\txt{''}\\
+NEGATION \(~~~\)$\ra$ \txt{the negation of ``}PROP*\txt{''}\\
+UNIT \(~~~~~~~\)$\ra$ \txt{not-}UNIT | {\bf atom}\\
+\end{quote}
+
+\ss{April 13th}
+Noticed that \f{IMP} was missing as a possible first element in \f{MULTI}:
+\begin{quote}
+\ttfamily
+MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
+                      SINGLE \txt{ and also } ELEMENT' |\\
+\(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
+                      SINGLE \txt{ or else } ELEMENT'\\
+\(~~~~~~~~~~~~~~~\) | IMP ~\txt{ or else } ELEMENT  |
+                      IMP \txt{ and also } ELEMENT\\
+\end{quote}
+
+{\bf Questions:}\\
+\begin{itemize}
+    \item Should \f{IMP} be handled as \f{IMPLICATION} or as \s{STAT}? I.e.
+    what makes more sense, that implications are always in a \f{MULTI} 
+    regardless of what side of the operator they're on, or that leftside,
+    and thus bracketed, implications are treated as statements, and thus 
+    can be the first element in a \f{PAIR}?
+    So far, I'm treating both implications equally.
+
+    \item What to do with \f{MULTI} and \f{PAIR} with regards to \f{SINGLE}.
+    Should \f{SINGLE} be exchanged for \f{UNIT}?
+\end{itemize}
+
+
 \label{LastBody}
 \end{document}
