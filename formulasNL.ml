@@ -51,16 +51,16 @@ and andToProp(AND(AND(f1,f2),f3))   =
         in
             case (e1, e2) of
                 (ELS s1, ELS s2)    => PRPC (CP (ASS (s1,s2)))
-                (ELS s1, ELP p2)    => PRPC (CC (CM (ASE (s1, EP p2))))
-                (ELS s1, ELI i2)    => PRPC (CC (CM (ASE (s1, EI i2))))
-                (ELP p1, _)         => PRPC (CC (CM (APE (p1, e2)
-                (ELI i1, _)         => PRPC (CC (CM (AIE (STTI i1, e2))))
+              | (ELS s1, ELP p2)    => PRPC (CC (CM (ASE (s1, EP p2))))
+              | (ELS s1, ELI i2)    => PRPC (CC (CM (ASE (s1, EI i2))))
+              | (ELP p1, _)         => PRPC (CC (CM (APE (p1, e2))))
+              | (ELI i1, _)         => PRPC (CC (CM (AIE (STTI i1, e2))))
         end
 
 and toAext(AND (f1,f2)) = EXT (EEX (toAext f1, toElement f2))
   | toAext f            = EL (toElement f)           
 
-and orToProp(OR(OR(f1,f2),f3))   =
+and orToProp(OR(OR(f1,f2),f3))      =
         let val e1 = toOext f1
             val e2 = toElement f2
             val e3 = toElement f3
@@ -74,10 +74,10 @@ and orToProp(OR(OR(f1,f2),f3))   =
         in
             case (e1, e2) of
                 (ELS s1, ELS s2)    => PRPC (CP (OSS (s1,s2)))
-                (ELS s1, ELP p2)    => PRPC (CC (CM (OSE (s1, EP p2))))
-                (ELS s1, ELI i2)    => PRPC (CC (CM (OSE (s1, EI i2))))
-                (ELP p1, _)         => PRPC (CC (CM (OPE (p1, e2)
-                (ELI i1, _)         => PRPC (CC (CM (OIE (STTI i1, e2))))
+              | (ELS s1, ELP p2)    => PRPC (CC (CM (OSE (s1, EP p2))))
+              | (ELS s1, ELI i2)    => PRPC (CC (CM (OSE (s1, EI i2))))
+              | (ELP p1, _)         => PRPC (CC (CM (OPE (p1, e2))))
+              | (ELI i1, _)         => PRPC (CC (CM (OIE (STTI i1, e2))))
         end
 
 and toOext(OR (f1,f2))  = EXT (EEX (toOext f1, toElement f2))
@@ -89,30 +89,27 @@ and toElement(f) = case (toProp f) of PRPU u        => ELS (SU u)
                                     | PRPC (CP p)   => ELP p
                                     | PRPC (CC c)   => ELS (STTC c)
 
-(*
 and impToProp(IMP(f1,f2))     = 
-    let val left  = case (toProp f1) of PRPU u      => SU u
-                                      | PRPN n      => SN n
-                                      | PRPP p      => PP p
-                                      | PRPC (CL l) => PL l
-                                      | PRPC (CM m) => PM m
-                                      | PRPC c      => STAT c
-        
-        val right = case (toProp f2) of PRPU u      => SU u
-                                      | PRPN n      => SN n
-                                      | PRPP p      => PP p
-                                      | PRPC (CL l) => PL l
-                                      | PRPC (CM m) => PM m
-                                      | PRPC (CI i) => i
-        val imp =
-        case (left,right) of (Single s1, Single s2) => SIMPS (s1, s2)
-                        | (Single s, Implication i) => SIMPI (s, i)
-                        | (Single s, Prop p)        => SIMP  (s, p)
-                        | (Prop p, Implication i)   => PIMPI (p, i)
-                        | (Prop p, Single s)        => PIMPS (p,  PSS s)
-                        | (Prop p1, Prop p2)        => PIMPS (p1, PSP p2)
+    let val prop1 = toProp f1
+        val prop2 = toProp f2
     in
-        PRPC (CI imp)
+        case (prop1, prop2) of 
+             (PRPI i1, PRPI i2)     => PRPI (IPI (PI (STTI i1), i2))
+           | (PRPC c1, PRPI i2)     => PRPI (IPI (PC c1, i2))
+           | (PRPI i1, PRPC c2)     => PRPI (IPP (PI (STTI i1), PSC c2))
+           | (PRPC c1, PRPC c2)     => PRPI (IPP (PC c1, PSC c2))
+           | (PRPI i1, PRPU u2)     => PRPI (IPP (PI (STTI i1), PSS (SU u2)))
+           | (PRPC c1, PRPU u2)     => PRPI (IPP (PC c1, PSS (SU u2)))
+           | (PRPI i1, PRPN n2)     => PRPI (IPP (PI (STTI i1), PSS (SN n2)))
+           | (PRPC c1, PRPN n2)     => PRPI (IPP (PC c1, PSS (SN n2)))
+           | (PRPU u1, PRPI i2)     => PRPI (ISI (SU u1, i2))
+           | (PRPN n1, PRPI i2)     => PRPI (ISI (SN n1, i2))
+           | (PRPU u1, PRPC c2)     => PRPI (ISC (SU u1, c2))
+           | (PRPN n1, PRPC c2)     => PRPI (ISC (SN n1, c2))
+           | (PRPU u1, PRPU u2)     => PRPI (ISS (SU u1, SU u2))
+           | (PRPN n1, PRPU u2)     => PRPI (ISS (SN n1, SU u2))
+           | (PRPU u1, PRPN n2)     => PRPI (ISS (SU u1, SN n2))
+           | (PRPN n1, PRPN n2)     => PRPI (ISS (SN n1, SN n2))
     end
-*) 
+      
 

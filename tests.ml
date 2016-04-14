@@ -19,7 +19,6 @@ val test = NEG(AND(AND(NEG q, IMP(p,r)),IMP(r,q)))::test (* f *)
 val test = IMP(p, OR(NEG q, IMP(q,p)))::test (* e *)
 val test = AND(p, IMP(NEG q, NEG p))::test (* d *)
 val test = IMP(AND(p,NEG q), NEG p)::test (* c *)
-(* ------- *)
 val test = NEG(IMP(p, IMP(q,r)))::test
 val test = NEG(IMP(IMP(p,q),r))::test
 val test = NEG(AND(p, OR(q,r)))::test
@@ -29,6 +28,7 @@ val test = NEG(OR(p, AND(q,r)))::test
 val test = NEG(AND(AND(p,q),r))::test
 val test = NEG(AND(p, AND(q,r)))::test
 val test = IMP(p, IMP(q,r))::test
+(* --- *)
 val test = IMP(IMP(p,q),r)::test
 val test = AND(p, OR(q,r))::test
 val test = OR(AND(p,q),r)::test
@@ -47,7 +47,7 @@ val test = p::test
 val t0::t1::rest = test
 in
 val test_toString = map printl (map toString test)
-(* val test_toNL = map printl (map toNL test) 
-val test_toProp = map toProp test*)
+(* val test_toNL = map printl (map toNL test) *)
+val test_toProp = map toProp test
 end;
 quit();
