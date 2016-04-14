@@ -48,6 +48,6 @@ val t0::t1::rest = test
 in
 val test_toString = map printl (map toString test)
 (* val test_toNL = map printl (map toNL test) *)
-val test_toProp = map toProp test
+val test_toProp = map printl (map propositionNL ( map toProp test))
 end;
 quit();

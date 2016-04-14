@@ -112,4 +112,70 @@ and impToProp(IMP(f1,f2))     =
            | (PRPN n1, PRPN n2)     => PRPI (ISS (SN n1, SN n2))
     end
       
+fun propositionNL (PRPC c)      = complexNL c
+  | propositionNL (PRPI i)      = implicationNL i
+  | propositionNL (PRPN n)      = negationNL n
+  | propositionNL (PRPU u)      = unitNL u
 
+and propCNL (PCC  c)            = complexNL c
+  | propCNL (PCI  i)            = implicationNL i
+  | propCNL (PCN  n)            = negationNL n
+
+and propSNL (PSC  c)            = complexNL c
+  | propSNL (PSS  s)            = singleNL s
+
+and propNL (PC   c)             = complexNL c
+  | propNL (PI   i)             = impNL i
+
+and complexNL (CC   c)          = compNL c
+  | complexNL (CP   p)          = pairNL p
+
+and compNL (CL   l)             = listNL l
+  | compNL (CM   m)             = multiNL m
+
+and impNL (STTI  i)             = "the implication \""^(implicationNL i)^"\""
+
+and implicationNL (ISS (l, r))  = (singleNL l)^" implies "^(singleNL r)
+  | implicationNL (ISI (s, i))  = 
+            (singleNL s)^" implies that "^(implicationNL i)
+  | implicationNL (ISC (s, c))  = 
+            "if "^(singleNL s)^" is provable then so is "^(complexNL c)
+  | implicationNL (IPP (l, r))  = 
+            "if "^(propNL l)^" is provable then so is "^(propSNL r)
+  | implicationNL (IPI (p, i))  =
+            "if "^(propNL p)^" is provable then so is the proposition that "
+            ^(implicationNL i)
+
+and listNL (AL  (x, e)) = (extendNL x)^   ", and also "   ^(elementNL e)
+  | listNL (OL  (x, e)) = (extendNL x)^   ", or else "    ^(elementNL e)
+
+and multiNL (APE (p, e)) = (pairNL p)^   " and also "    ^(elementNL e)
+  | multiNL (ASE (s, e)) = (singleNL s)^   " and also "    ^(elemNL e)
+  | multiNL (OPE (p, e)) = (pairNL p)^   " or else "     ^(elementNL e)
+  | multiNL (OSE (s, e)) = (singleNL s)^   " or else "     ^(elemNL e)
+  | multiNL (AIE (i, e)) = (impNL i)^   " and also "    ^(elementNL e)
+  | multiNL (OIE (i, e)) = (impNL i)^   " or else "     ^(elementNL e)
+
+and extendNL (EEX (x, e)) = (extNL x)^   ", "            ^(elementNL e)
+
+and extNL (EL   e)     = elementNL e
+  | extNL (EXT  e)     = extendNL e
+
+and elementNL (ELP  p)     = pairNL p
+  | elementNL (ELI  i)     = implicationNL i
+  | elementNL (ELS  s)     = singleNL s
+
+and elemNL (EP   p)     = pairNL p
+  | elemNL (EI   i)     = implicationNL i
+
+and pairNL (ASS (l, r)) = (singleNL l)^   " and "         ^(singleNL r)
+  | pairNL (OSS (l, r)) = (singleNL l)^   " or "          ^(singleNL r)
+
+and singleNL (STTC c)     = "the statement \""    ^(compNL c)^    "\""
+  | singleNL (SN   n)     = negationNL n
+  | singleNL (SU   u)     = unitNL u
+
+and negationNL (NEGP p)     = "the negation of \""  ^(propCNL p)^    "\""
+
+and unitNL (NOT  u)     = "not-"                ^(unitNL u)
+  | unitNL (atom c)     = Char.toString c
