@@ -22,6 +22,7 @@ and impToString(f as IMP _)      = bracket(toString(f))
 fun printl s = print(s^"\n");
 
 
+
 fun toProp(Atom c)        = PRPU (atom c)
   | toProp(NEG f)         = negToProp(f)
   | toProp(f as AND _)    = andToProp(f)
@@ -179,3 +180,71 @@ and negationNL (NEGP p)     = "the negation of \""  ^(propCNL p)^    "\""
 
 and unitNL (NOT  u)     = "not-"                ^(unitNL u)
   | unitNL (atom c)     = Char.toString c
+
+
+fun toFormula (PRPC c)  = complexF c
+  | toFormula (PRPI i)  = implicationF i
+  | toFormula (PRPN n)  = negationF n
+  | toFormula (PRPU u)  = unitF u
+
+and propCF (PCC  c)     = complexF c
+  | propCF (PCI  i)     = implicationF i
+  | propCF (PCN  n)     = negationF n
+
+and propSF (PSC  c)     = complexF c
+  | propSF (PSS  s)     = singleF s
+
+and propF (PC   c)      = complexF c
+  | propF (PI   i)      = impF i
+
+and complexF (CC   c)   = compF c
+  | complexF (CP   p)   = pairF p
+
+and compF (CL   l)      = listF l
+  | compF (CM   m)      = multiF m
+
+and impF (STTI  i)      = implicationF i
+
+and implicationF (ISS (l, r))  = IMP (singleF l, singleF r)
+  | implicationF (ISI (s, i))  = IMP (singleF s, implicationF i)
+  | implicationF (ISC (s, c))  = IMP (singleF s, complexF c)
+  | implicationF (IPP (l, r))  = IMP (propF l, propSF r)
+  | implicationF (IPI (p, i))  = IMP (propF p, implicationF i)
+
+and listF (AL  (x, e))  = AND (extendA x, elementF e)
+  | listF (OL  (x, e))  = OR (extendO x, elementF e)
+
+and multiF (APE (p, e)) = AND (pairF p, elementF e)
+  | multiF (ASE (s, e)) = AND (singleF s, elemF e)
+  | multiF (OPE (p, e)) = OR (pairF p, elementF e)
+  | multiF (OSE (s, e)) = OR (singleF s, elemF e)
+  | multiF (AIE (i, e)) = AND (impF i, elementF e)
+  | multiF (OIE (i, e)) = OR (impF i, elementF e)
+
+and extendA (EEX (x,e)) = AND (extA x, elementF e)
+and extendO (EEX (x,e)) = OR (extO x, elementF e)
+
+and extA (EL   e)       = elementF e
+  | extA (EXT  e)       = extendA e
+
+and extO (EL   e)       = elementF e
+  | extO (EXT  e)       = extendO e
+
+and elementF (ELP  p)   = pairF p
+  | elementF (ELI  i)   = implicationF i
+  | elementF (ELS  s)   = singleF s
+
+and elemF (EP p)        = pairF p
+  | elemF (EI i)        = implicationF i
+
+and pairF (ASS (l, r))  = AND (singleF l, singleF r)
+  | pairF (OSS (l, r))  = OR (singleF l, singleF r)
+
+and singleF (STTC c)    = compF c
+  | singleF (SN   n)    = negationF n
+  | singleF (SU   u)    = unitF u
+
+and negationF (NEGP p)  = NEG (propCF p)
+
+and unitF (NOT  u)      = NEG (unitF u)
+  | unitF (atom c)      = Atom c

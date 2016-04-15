@@ -45,9 +45,10 @@ val test = AND(p,q)::test
 val test = NEG(q)::test
 val test = p::test
 val t0::t1::rest = test
-in
 val test_toString = map printl (map toString test)
-(* val test_toNL = map printl (map toNL test) *)
 val test_toProp = map printl (map propositionNL ( map toProp test))
+val test_toForm = map toFormula (map toProp test)
+in
+val test_roundT = (test = test_toForm)
 end;
 quit();
