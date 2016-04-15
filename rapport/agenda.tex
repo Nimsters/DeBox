@@ -1,0 +1,71 @@
+\documentclass[a4paper]{article}
+
+\input{Preamble}
+\fancyhead[c]{Agenda}
+\titlelabel{}
+
+\begin{document}
+
+\section{Agenda}
+
+\ss{April 15th}
+
+\begin{enumerate}
+  \item Status
+    \begin{itemize}
+      \item Grammar for propositions is implemented as mutually recursive 
+      datatypes in SML
+
+      \item Conversion to \f{string} is implemented for propositions
+      
+      \item Conversion to symbol syntax (\emph{not} \s{BoxProver}) is
+      implemented for formulas
+
+      \item Conversion of formulas to propositions is implemented
+    \end{itemize}
+
+  \item Discussion points
+    \begin{description}
+      \item[Question:] Should quotation marks alternate between `p' and 
+      ``p''?
+
+      \item[Question:] Should disjunctions be negated with 'neither/nor'
+      constructions?
+
+      \item[Question:] Are non-bracketed implications fine as elements in
+      lists, or should they be bracketed?
+
+      \item[Question:] Are non-bracketed implications fine as final elements
+      in \s{and also} constuctions? See result of tests for reference.
+
+      \item[Question:] When an \s{and} list starts with an \s{and}-pair, 
+      should this be split into two elements (which is what happens now), 
+      or should the pair be kept as the first element?
+
+      \item[Question:] Do bracketed statements and negations work in
+      \s{pair}-constructions, or should \f{SINGLE} be exchanged for 
+      \f{UNIT}?
+
+      \item[Question:] Are we satisfied with how the propositions read in
+      general? See result of tests for reference.
+    \end{description}
+
+  \item Action items
+    \begin{enumerate}[\HollowBox]
+      \item Update NL proposition grammar to account for the fact that
+      implications only take \f{UNIT} and \f{NEGATION}, not \f{STAT}
+      \item Update NL proposition grammar to account for decisions
+      \item Extend NL grammar to proofs
+        \begin{enumerate}[\HollowBox]
+          \item Account for rules
+          \item Account for references
+          \item Account for preamble
+        \end{enumerate}
+    \end{enumerate}
+
+  \item Misc
+
+\end{enumerate}
+
+\label{LastBody}
+\end{document}

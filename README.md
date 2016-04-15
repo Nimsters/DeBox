@@ -1,20 +1,15 @@
 # BA
 BA project on natural language natural deduction
 
-#### Agenda for April 15th
-1. Status
-    * A grammar for propositions is implemented as recursively defined SML datatypes
-    * Conversion to **string** is implemented for propositions
-    * Conversion to symbol syntax (_not_ boxprover) is implemented for formulas
-    * Conversion of formulas to propositions is implemented
-
-2. Discussion points
-    * Question: Should quotationmarks alternate between 'p' and "p"?
-    - Answer:
-    * Question: Should disjunctions be negated with neither/nor?
-    - Answer:
-
-3. Action items
-    - [ ] Extend NL grammar to proofs
-
-4. Misc
+####Development to-do list:
+- [ ] Formulation of natural language (NL) syntax for natural deduction proofs
+    - [x] Formulation of NL grammar for propositions
+    - [x] Implementation of concrete NL syntax for propositions
+        - [x] Datatype definitions
+        - [x] Implementation of string conversion
+    - [ ] Implementation of abstract NL syntax for propositions?
+    - [ ] Formulation of NL syntax for proofs
+    - [ ] Implementation of NL syntax for proof
+- [ ] Formulation of formal syntax and corresponding abstract syntax for natural deduction proofs in propositional logic
+    - [ ] Formulation of 
+####Report to-do list:
