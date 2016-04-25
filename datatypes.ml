@@ -1,30 +1,24 @@
-datatype formula = Atom of char |
-                   NEG  of formula |
-                   AND  of formula*formula |
-                   OR   of formula*formula |
-                   IMP  of formula*formula;
-                   
-datatype Proposition = PRPC of Complex  | PRPI  of Implication | 
-                       PRPN of Negation | PRPU  of Unit
-and      PropC       = PCC  of Complex  | PCI   of Implication | 
-                       PCN  of Negation
-and      PropS       = PSC  of Complex  | PSS   of Single
-and      Prop        = PC   of Complex  | PI    of Imp
-and      Complex     = CC   of Comp     | CP    of Pair 
-and      Comp        = CL   of List     | CM    of Multi
-and      Imp         = STTI of Implication
-and      Implication = ISS  of Single*Single    | ISI of Single*Implication |
-                       ISC  of Single*Complex   | IPP of Prop*PropS | 
-                       IPI  of Prop*Implication
-and      List        = AL   of Extend*Element   | OL  of Extend*Element
-and      Multi       = APE  of Pair*Element     | ASE of Single*Elem |
-                       OPE  of Pair*Element     | OSE of Single*Elem |
-                       AIE  of Imp*Element      | OIE of Imp*Element
-and      Extend      = EEX  of Ext*Element 
-and      Ext         = EL   of Element | EXT   of Extend 
-and      Element     = ELP  of Pair    | ELI   of Implication | ELS of Single
-and      Elem        = EP   of Pair    | EI    of Implication
-and      Pair        = ASS  of Single*Single    | OSS  of Single*Single 
-and      Single      = STTC of Comp    | SN of Negation       | SU of Unit
-and      Negation    = NEGP of PropC
-and      Unit        = NOT  of Unit | atom of char;
+datatype formula    = Atom of char |
+                      NEG  of formula |
+                      AND  of formula*formula |
+                      OR   of formula*formula |
+                      IMP  of formula*formula;
+
+datatype rule       = Ass | Prm | Cpy | (* assumption, premise, copy *)
+                      Ain | Ae1 | Ae2 | (* AND introduction/elimination *)
+                      Oi1 | Oi2 | Oel | (* OR introduction/elimination *)
+                      Iin | Iel |       (* IMP introduction/elimination *)
+                      Nin | Nel |       (* NEG introduction/elimination *)
+                      Din | Del |       (* double-negative (D) in/el *)
+                      Bel |             (* absurdity (Bottom) elimination *)
+                      Mod |             (* Modus Tollens *)
+                      Pbc |             (* Proof by Contradiction *)
+                      Lem               (* Law of the excluded middle *);
+
+datatype reference  = Line of string | Box of string*string | Conclusion;
+
+datatype proofstep  = Step of formula*rule*reference list *reference;
+
+datatype sequent    = Sequent of formula list * formula;
+
+datatype proof      = Proof of string * sequent * proofstep list;
