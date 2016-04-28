@@ -8,12 +8,80 @@
 
 \section{Agenda}
 
-\ss{April 29th}
+%\ss{DATE}
+%\begin{enumerate}
+%  \item Status
+%    \begin{enumerate}[\HollowBox]
+%    \end{enumerate}
+%  \item Discussion points
+%    \begin{description}
+%    \end{description}
+%  \item Action items
+%  \item Misc
+%\end{enumerate}
 
+\ss{April 29th}
+\begin{enumerate}
+  \item Status
+    \begin{enumerate}[\HollowBox]
+      \item[\Checkedbox] Write natural language grammar for proofs
+        \begin{enumerate}[\HollowBox]
+          \item[\Checkedbox] Account for rules
+          \item[\Checkedbox] Account for references
+          \item[\Checkedbox] Account for preamble
+        \end{enumerate}
+    \end{enumerate}
+  \item Discussion points
+    \begin{description}
+      \item[Question:] The implementation of proofs allows for errors, but
+      presumably the formal grammar for proofs should not?
+      \item[Question:] What ouput should the validation function produce?\\
+      My thought was feedback on each step (either in the terminal or an 
+      output file), and if the proof is valid and closed, a file with the
+      proof in \s{BoxProver} syntax, ready to be copy/pasted. What are your
+      thought?
+      \item[Question:] Is it considered an error if a proof goes on after
+      the sought conclusion has been reached outside any boxes?
+      \item[SML question:] Since we want to give feedback on errors, should
+      errors like using the wrong rule be implemented by raising and 
+      handling exceptions, or simply incorporated in the regular code, so
+      to speak?
+      \item[SML question:] Is it possible to prompt the user for input by
+      giving them an editable default string? I have not been able to figure
+      out a way to do this, but it would be nice if the system could be 
+      interactive without the user having to retype the whole proof (or
+      alternatively ``just'' everything since the first error, every time
+      they want to check their progress.
+      \item[Regression testing format]
+    \end{description}
+  \item Action items
+    \begin{enumerate}[\HollowBox]
+      \item Finish validation of proofs
+        \begin{enumerate}[\HollowBox]
+          \item Handle rule validation
+          \item Handle step validation
+          \item Handle id validation
+        \end{enumerate}
+      \item Handle error feedback
+        \begin{enumerate}[\HollowBox]
+          \item Number of references inconsistent with rule requirements
+          \item Pattern of references inconsistent with rule requirements
+          \item A reference is to a proofstep in a closed box
+          \item The id given to a proofstep has already been used
+        \end{enumerate}
+    \end{enumerate}
+  \item Misc.
+    \begin{description}
+      \item[Question] Fritz, you seemed to want to change how I deliver the
+      agenda?
+      Should I edit the calendar event instead, or keep it on gitHub?
+    \end{description}
+\end{enumerate}
+
+\newpage
 \section{Minutes}
 
 \ss{April 15th}
-
 \begin{enumerate}
   \item Status
     \begin{itemize}
