@@ -20,6 +20,43 @@
 %  \item Misc
 %\end{enumerate}
 
+\ss{May 6th}
+\begin{enumerate}
+  \item Status
+    \begin{enumerate}[\HollowBox]
+      \item Add subsection on discharging to structural outline
+      \item Finish validation of proofs
+        \begin{enumerate}[\HollowBox]
+          \item Handle rule validation, including checking premises
+          \item Handle step validation
+          \item Handle id validation
+          \item Handle proof validation
+            \begin{enumerate}[\HollowBox]
+              \item Check all assumptions are discharged
+              \item Check that the conclusion in the last step is the goal
+            \end{enumerate}
+        \end{enumerate}
+      \item Handle error feedback
+        \begin{enumerate}[\HollowBox]
+          \item Number of references inconsistent with rule requirements
+          \item Pattern of references inconsistent with rule requirements
+          \item A reference is to a proofstep in a closed box
+          \item The id given to a proofstep has already been used
+          \item The conlclusion of the last step is not the goal
+        \end{enumerate}
+      \item Try printing with indentation
+    \end{enumerate}
+  \item Discussion points
+    \begin{description}
+      \item[Question:] What form should the regression testing take?
+    \end{description}
+  \item Action items
+  \item Misc
+\end{enumerate}
+
+\newpage
+\section{Minutes}
+
 \ss{April 29th}
 \begin{enumerate}
   \item Status
@@ -35,32 +72,52 @@
     \begin{description}
       \item[Question:] The implementation of proofs allows for errors, but
       presumably the formal grammar for proofs should not?
+      \item[Answer:] The grammar on which the parser is built, should match
+      the implementation and allow for errrors; this grammar should be seen
+      as the an extention of a more restrictive one, that only allows for
+      correctly structured proofs.
+      \item[NB!] Some parts of validation are not context-free, e.g. that
+      a specific rule can only be used on references which refer to formulas
+      in specific relation to each other; thus a context-free grammar cannot
+      be restrictive enough to only accept valid proofs.
       \item[Question:] What ouput should the validation function produce?\\
       My thought was feedback on each step (either in the terminal or an 
       output file), and if the proof is valid and closed, a file with the
       proof in \s{BoxProver} syntax, ready to be copy/pasted. What are your
       thought?
+      \item[Answer:] Output should be file of either feedback or a valid
+      proof in \s{BoxProver} syntax.
       \item[Question:] Is it considered an error if a proof goes on after
       the sought conclusion has been reached outside any boxes?
+      \item[Answer:] Yes, this should be added to error handling.
       \item[SML question:] Since we want to give feedback on errors, should
       errors like using the wrong rule be implemented by raising and 
       handling exceptions, or simply incorporated in the regular code, so
       to speak?
+      \item[Answer:] Giving feedback is correct use of the program, so
+      exceptions should not be used for these types of errors.
       \item[SML question:] Is it possible to prompt the user for input by
       giving them an editable default string? I have not been able to figure
       out a way to do this, but it would be nice if the system could be 
       interactive without the user having to retype the whole proof (or
       alternatively ``just'' everything since the first error, every time
       they want to check their progress.
-      \item[Regression testing format]
+      \item[Answer:] There's a library for that.
+      \item[Regression testing format] Forgotten, moved to next session.
     \end{description}
   \item Action items
     \begin{enumerate}[\HollowBox]
+      \item Add subsection on discharging to structural outline
       \item Finish validation of proofs
         \begin{enumerate}[\HollowBox]
-          \item Handle rule validation
+          \item Handle rule validation, including checking premises
           \item Handle step validation
           \item Handle id validation
+          \item Handle proof validation
+            \begin{enumerate}[\HollowBox]
+              \item Check all assumptions are discharged
+              \item Check that the conclusion in the last step is the goal
+            \end{enumerate}
         \end{enumerate}
       \item Handle error feedback
         \begin{enumerate}[\HollowBox]
@@ -68,18 +125,24 @@
           \item Pattern of references inconsistent with rule requirements
           \item A reference is to a proofstep in a closed box
           \item The id given to a proofstep has already been used
+          \item The conlclusion of the last step is not the goal
         \end{enumerate}
+      \item Try printing with indentation
     \end{enumerate}
   \item Misc.
     \begin{description}
-      \item[Question] Fritz, you seemed to want to change how I deliver the
+      \item[Question:] Fritz, you seemed to want to change how I deliver the
       agenda?
       Should I edit the calendar event instead, or keep it on gitHub?
+      \item[Answer:] Material is to be sent wednesday night or thursdag 
+      morning.
+      \item[NB!] Boxes in fitch-style proofs discharge assumptions when
+      closing a box, and thus independently of the conclusion drawn from it,
+      whereas existing nomenclature uses ``discharge'' when applying a rule
+      to a box and thus drawing conclusions based on findings under the
+      assumption in question.
     \end{description}
 \end{enumerate}
-
-\newpage
-\section{Minutes}
 
 \ss{April 15th}
 \begin{enumerate}
