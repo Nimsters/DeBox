@@ -8,7 +8,7 @@ BA project on natural language natural deduction
         - [x] Datatype definitions
         - [x] Implementation of string conversion
     - [x] Formulation of restrictive context-free grammar for natural deduction proofs in NL
-    - [x] Formulation of error-inclusive extention of above mentioned grammar
+    - [ ] Formulation of error-inclusive extention of above mentioned grammar
     - [ ] Implementation of string conversion
         - [x] Basic string conversion
         - [ ] Indentation and layout
