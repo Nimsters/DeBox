@@ -13,12 +13,12 @@ GOAL $~~~~~~$\tra \txt{we wish to prove } FORMULA\txt{.}\\
 STEPS $~~~~~$\tra STEP | STEP STEPS\\
 STEP $~~~~~~$\tra LINE [\rf]. | BOX\\
 BOX $~~~~~~~$\tra OPEN CLOSE | OPEN STEPS CLOSE\\
-OPEN $~~~~~~$\tra \txt{We now assume } FORMULA [\rf].\\
+OPEN $~~~~~~$\tra \txt{Assume } FORMULA [\rf].\\
 CLOSE $~~~~~$\tra ARGUMENT \txt{ we get the part-conclusion } FORMULA [\rf] 
-                 \txt{from the }\\
-$~~~~~~~~~~~~~~~$\txt{assumption } [\rf].\\
+                 \txt{and discharge}\\
+$~~~~~~~~~~~~~~~$\txt{the assumption } [\rf].\\
 LINE $~~~~~~$\tra ARGUMENT \txt{ we get } FORMULA\\
-CONCLUSION \tra ARGUMENT \txt{ we may conclude } FORMULA.\\
+CONCLUSION \tra ARGUMENT \txt{ we conclude } FORMULA.\\
 ARGUMENT $~~$\tra \txt{By applying } PATTERN\\
 PATTERN $~~~$\tra LEM | RULE1\txt{ to }[\rf] 
             | RULE2\txt{ to }[\rf]\txt{ and }[\rf] |\\$~~~~~~~~~~~~~~$
