@@ -29,11 +29,12 @@
         \begin{enumerate}[\HollowBox]
           \item Handle rule validation, including checking premises
           \item Handle step validation
-          \item Handle id validation
+          \item[\Checkedbox] Handle id validation
           \item Handle proof validation
             \begin{enumerate}[\HollowBox]
-              \item Check all assumptions are discharged
-              \item Check that the conclusion in the last step is the goal
+              \item[\Checkedbox] Check all assumptions are discharged
+              \item[\Checkedbox] Check that the conclusion in the last step
+              is the goal
             \end{enumerate}
         \end{enumerate}
       \item Handle error feedback
@@ -41,8 +42,10 @@
           \item Number of references inconsistent with rule requirements
           \item Pattern of references inconsistent with rule requirements
           \item A reference is to a proofstep in a closed box
-          \item The id given to a proofstep has already been used
-          \item The conlclusion of the last step is not the goal
+          \item[\Checkedbox] The id given to a proofstep has already been 
+          used
+          \item[\Checkedbox] Not all assumptions are discharged
+          \item[\Checkedbox] The conlclusion of the last step is not the goal
         \end{enumerate}
       \item Try printing with indentation
     \end{enumerate}

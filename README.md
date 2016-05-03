@@ -23,11 +23,13 @@ BA project on natural language natural deduction
             - [ ] References exist
             - [ ] Rule pattern requirement matches the referenced formula(e)
             - [ ] References are acessible (i.e. not in a closed box)
-            - [ ] The reference id given to the step is unique
+            - [x] The reference id given to the step is unique
         - [ ] Validity checks for proof
-            - [ ] All assumption discharged
-            - [ ] The conclusion of the last line is identical to the goal
+            - [x] All assumption discharged
+            - [x] The conclusion of the last line is identical to the goal
         - [ ] Error feedback for all failed checks
+    - [ ] Implementation of output
+        - [ ] Create valid filename from title (checks!)
 
 ####Report to-do list:
 - [ ] Resumé
