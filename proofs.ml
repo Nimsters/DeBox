@@ -3,11 +3,14 @@ use "datatypes.ml";
 fun bracket(s) = "("^s^")";
 
 fun formulaToString(Atom c)         = Char.toString c
-  | formulaToString(BOT)            = "_|_"
-  | formulaToString(NEG f)          = "¬"^negToString(f)
-  | formulaToString(AND (f1,f2))    = andToString(f1)^"/\\"^negToString(f2)
-  | formulaToString(OR (f1, f2))    = impToString(f1)^"\\/"^andToString(f2)
-  | formulaToString(IMP (f1, f2))   = impToString(f1)^"→"^formulaToString(f2)
+  | formulaToString(BOT)            = "\226\138\165"
+  | formulaToString(NEG f)          = "\194\172"^negToString(f)
+  | formulaToString(AND (f1,f2))    = andToString(f1)^"\226\136\167"^
+                                      negToString(f2)
+  | formulaToString(OR (f1, f2))    = impToString(f1)^"\226\136\168"^
+                                      andToString(f2)
+  | formulaToString(IMP (f1, f2))   = impToString(f1)^"\226\134\146"^
+                                      formulaToString(f2)
 
 and negToString(a as Atom _)        = formulaToString(a)
   | negToString(n as NEG _)         = formulaToString(n)
