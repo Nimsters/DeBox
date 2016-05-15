@@ -2,7 +2,8 @@ datatype formula    = Atom of char |
                       NEG  of formula |
                       AND  of formula*formula |
                       OR   of formula*formula |
-                      IMP  of formula*formula;
+                      IMP  of formula*formula |
+                      BOT;
 
 datatype rule       = Ass | Prm | Cpy | (* assumption, premise, copy *)
                       Ain | Ae1 | Ae2 | (* AND introduction/elimination *)
@@ -17,7 +18,7 @@ datatype rule       = Ass | Prm | Cpy | (* assumption, premise, copy *)
 
 datatype reference  = Line of string | Box of string*string | Conclusion;
 
-datatype proofstep  = Step of formula*rule*reference list *reference;
+datatype proofstep  = Step of formula*rule*reference list * reference;
 
 datatype sequent    = Sequent of formula list * formula;
 
