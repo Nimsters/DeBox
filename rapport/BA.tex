@@ -20,9 +20,9 @@
 %\pagebreak
 \pagenumbering{arabic}
 
-\ss{Abstract}
-
 \ss{Resumé}
+
+\ss{Abstract}
 
 \section{Introduction}
 \subsection{Problem statement}
@@ -142,22 +142,32 @@
     \end{description}
 \end{itemize}
 
-\section{Grammars}
-\ss{Context Free Gammars}
+\section{Analysis and Theory}
+\ss{Context Free Grammars}
+% Inlude restrictions here?
 
-\ss{Developing the Grammar for Natural Language}
-\sss{Developing a Grammar for Propositions}
-\subfile{NLgrammar}
+\ss{Logical formulae in natural language}
+\sss{Grammar for formulae in words}
+\sss{Article}
+\sss{Grammar for formulae using symbols}
 
-\sss{Extending it to Proofs}
+\ss{Grammar for proofs in natural language}
+\sss{Limitations}
+\sss{Feedback as a teaching tool}
+\sss{Extention of the grammar}
 
-\ss{Developing the Grammar for Propositional Logic}
-\sss{Developing Formal and Abstract Syntax for Formulae}
-\sss{Extending it to Proofs}
+\ss{Grammar for proofs in propositional logic}
+\sss{Abstract syntax for formulae}
+\sss{Abstract syntax for proofs}
 
 \section{The tool}
-\ss{Implementing Grammars}
+\ss{Choice of programming language}
+\ss{Overall design}
+\ss{Implementation of grammars}
+\ss{Decisions on specific implementation details}
+\sss{Handling boxes}
 
+\section{Testing and results}
 \section{Conclusions}
 
 
@@ -172,182 +182,11 @@
 \pagebreak
 \appendix
 \titlelabel{\thetitle . \quad}
-\section*{Appendices}
+\section*{Appendices}\label{FirstApp}
 \addcontentsline{toc}{section}{Appendices}
 %\renewcommand \thesubsection{\Alph{subsection}}
 \section{Code}
 %\code{../formulasNL.ml}{formulasNL}
-
-\section{Labnotes}
-\ss{March 31st}
-The grammar for NL formulas so far:
-\begin{quote}
-\ttfamily
-PROPOSITION $\ra$ IMPLICATION | PROP\\
-IMPLICATION $\ra$ \txt{if } PROP \txt{ is provable then so is } PROP\\
-\(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the proposition that } IMP'\\
-IMP' \(~~~~~~~\)$\ra$ IMPLICATION | IMP \\
-PROP \(~~~~~~~\)$\ra$ SIMPLE | LIST \\
-LIST \(~~~~~~~\)$\ra$ PAIR\txt{, } PAIR\txt{, and also } PAIR |
-                      PAIR\txt{, } PAIR\txt{, or else } PAIR\\
-\(~~~~~~~~~~~~~~~\) | PAIR\txt{, } LIST\\
-SIMPLE \(~~~~~\)$\ra$ PAIR \txt{ and also } PAIR |
-                      PAIR \txt{ or else } PAIR  | PAIR\\
-PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE
-                    | SINGLE | IMP\\
-IMP \(~~~~~~~~\)$\ra$ SINGLE \txt{ implies } SINGLE
-                    | SINGLE \txt{ does not imply } SINGLE\\
-SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}PROPOSITION\txt{''} |
-                      \txt{the negation of ``}PROPOSITION\txt{''}\\
-\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
-NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
-\end{quote}
-
-\sss{Quotation marks}
-If the grammar is to account for correctly alternating quotation marks,
-then everything will have to be repeated and the two grammar "sets" should
-only cross in the \f{formula} and \f{negation} constructions:
-\begin{quote}
-\ttfamily
-PROPOSITION $\ra$ IMPLICATION | PROP\\
-$\vdots$\\
-SINGLE \(~~~~~\)$\ra$ \txt{the statement ``}*PROPOSITION\txt{''} |
-                      \txt{the negation of ``}*PROPOSITION\txt{''}\\
-\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
-NEGATION \(~~~\)$\ra$ \txt{not-}NEGATION | \txt{not-}{\bf atom}\\
-~\\
-*PROPOSITION $\ra$ IMPLICATION | PROP\\
-$\vdots$\\
-*SINGLE \(~~~~~\)$\ra$ \txt{the statement `}PROPOSITION\txt{'} |
-                      \txt{the negation of `}PROPOSITION\txt{'}\\
-\(~~~~~~~~~~~~~~~\) | NEGATION | {\bf atom}\\
-\end{quote}
-
-\sss{Linguistic negation}
-The linguistic negations of pairs:
-\begin{quote}
-not both p and q are valid\\
-neither p nor q is valid\\
-\end{quote}
-does not read properly when used within a longer formula:
-\begin{quote}
-    not both p and q are valid and also r\\
-    p and also neither q nor r is valid\\
-\end{quote}
-Instead, these formulas should read:
-\begin{quote}
-    not both p and q are valid but r is\\
-    p is valid but neither q nor r is
-\end{quote}
-To account for this, one would have to make the grammar a lot more complex
-with special cases for \f{and also}, \f{or else} and \f{implication} for 
-every possible combination of negated and non-negated sub-propositions.
-
-Linguistic negation of lists and \f{and also}/\f{or else} constructions
-seem difficult to do without introducing ambiguity.
-Must research further on linguistic negation to determine how exactly to 
-handle these cases, specifically \cite{negation}
-
-\ss{April 8th}
-Some changes still need to be done on the grammar.
-\begin{itemize}
-    \item For \s{implication}: to ensure the distinction between the two
-    types, a \s{prop} should no longer convert to \s{imp}.
-
-    \item For \s{simple}:
-        \begin{itemize}
-            \item Not both first and second child should be \s{single}
-            \item For first child: \s{imp} should not be a possibily unless
-            in brackets (when read, it itroduces ambiguity despite the
-            distance created by `and also' and `or else').
-
-            \item For second child: unbracketed \s{implication} should be a
-            possibility.
-        \end{itemize}
-
-    \item For bracketing: only complex statements should be bracketed.
-
-    \item For negation statements: atom- and not-negations should never be
-    negated using statements
-
-\end{itemize}
-
-The new grammar looks as follows:
-
-\begin{quote}
-\ttfamily
-PROPOSITION $\ra$ COMPLEX | PAIR | NEGATION | UNIT\\
-PROP \(~~~~~~~\)$\ra$ LIST | MULTI | PAIR\\
-PROP' \(~~~~~~\)$\ra$ LIST | MULTI | PAIR | SINGLE\\
-PROP* \(~~~~~~\)$\ra$ COMPLEX | PAIR | NEGATION\\
-COMPLEX \(~~~~\)$\ra$ IMPLICATION | LIST | MULTI\\
-IMPLICATION $\ra$ SINGLE \txt{ implies } SINGLE
-                    | SINGLE \txt{ implies that } IMPLICATION\\
-\(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP\txt{ is provable then so is } PROP'\\
-\(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP' \txt{ is provable then so is } PROP\\
-\(~~~~~~~~~~~~~~~\) |
-\txt{if } PROP \txt{ is provable then so is the proposition that } 
-IMPLICATION\\
-LIST \(~~~~~~~\)$\ra$ ELEMENT\txt{, } ELEMENT\txt{, and also } ELEMENT |
-                      ELEMENT\txt{, } ELEMENT\txt{, or else } ELEMENT\\
-\(~~~~~~~~~~~~~~~\) | ELEMENT\txt{, } LIST\\
-MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
-                      SINGLE \txt{ and also } ELEMENT' |\\
-\(~~~~~~~~~~~~~~~\) | PAIR \txt{ or else } ELEMENT  |
-                      SINGLE \txt{ or else } ELEMENT'\\
-ELEMENT \(~~~~\)$\ra$ PAIR | IMPLICATION | SINGLE\\
-ELEMENT' \(~~~\)$\ra$ PAIR | IMPLICATION\\
-PAIR \(~~~~~~~\)$\ra$ SINGLE \txt{ and }  SINGLE | SINGLE \txt{ or } SINGLE\\
-SINGLE \(~~~~~\)$\ra$ STAT | UNIT | NEGATION\\
-STAT \(~~~~~~~\)$\ra$ \txt{the statement ``}COMPLEX\txt{''}\\
-NEGATION \(~~~\)$\ra$ \txt{the negation of ``}PROP*\txt{''}\\
-NEG \(~~~~~~~~\)$\ra$ \txt{not-}UNIT\\
-UNIT \(~~~~~~~\)$\ra$ NEG | {\bf atom}\\
-\end{quote}
-Question: Should \s{implication} remain as possible \s{element}? Does the 
-Oxford comma remove the ambiguity?
-
-\ss{April 10th}
-Discovered several errors while implementing NL grammar:
-\begin{itemize}
-    \item \f{NEG} is superflous: \f{UNIT} = not-\f{UNIT} | {\bf atom}
-    \item The grammar accepts both:
-        \begin{quote}\f{SINGLE} and \f{IMPLICATION}\\
-                     \f{SINGLE} and the statement \f{IMPLICATION}
-        \end{quote}
-        The same goes for or.
-    \item Any list must either always start with a pair of the same type or
-    never start with a pair of the same type. This should be reflected in 
-    the grammar.
-\end{itemize}
-Further question: should \f{PAIR} be replaced Lists with only two elements
-and thus be written "p, and also q or r"/ "p or q, and also r"?
-
-\ss{April 11th}
-Discovered another error: "if \f{PROP'} is provable then so is \f{PROP}"
-should be "if \f{SINGLE} is provable then so is \f{PROP}. This means that
-\f{PROP'} can be restructured to \f{PROP} | \f{SINGLE}.
-
-\sss{Solution to structure of lists?}
-If we extend the type of elements with:
-\begin{quote}
-    \f{EXT } $\ra$ \f{ELEMENT} | \f{EXT}, \f{ELEMENT}
-\end{quote}
-Then \f{LIST} could be reduced to:
-\begin{quote}
-    \f{LIST} $\ra$ \f{EXT}, and also \f{ELEMENT} 
-                 | \f{EXT}, or else  \f{ELEMENT}
-\end{quote}
-(presuming we also replace \f{MULTI} with two-element lists. A similar
-structure for triples could easily be constructed, but requires \f{EXT} to
-be split up further).
-
-This would preserve the structure of the nested \f{AND}s, and I think it
-would be a lot easier to work with when parsing NL to symbolic.
-
 \label{LastApp}
 \label{LastPage}
 \end{document}

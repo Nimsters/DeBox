@@ -24,13 +24,13 @@
 \begin{enumerate}
   \item Status
     \begin{enumerate}[\HollowBox]
-      \item Add subsection on discharging to structural outline
+      \item[\Checkedbox] Add subsection on discharging to structural outline
       \item Finish validation of proofs
         \begin{enumerate}[\HollowBox]
           \item Handle rule validation, including checking premises
           \item Handle step validation
           \item[\Checkedbox] Handle id validation
-          \item Handle proof validation
+          \item[\Checkedbox] Handle final proof validation
             \begin{enumerate}[\HollowBox]
               \item[\Checkedbox] Check all assumptions are discharged
               \item[\Checkedbox] Check that the conclusion in the last step
@@ -54,6 +54,9 @@
       \item[Question:] What form should the regression testing take?
     \end{description}
   \item Action items
+    \begin{enumerate}[\HollowBox]
+      \item Add function to create a valid filename from title string.
+    \end{enumerate}
   \item Misc
 \end{enumerate}
 
@@ -137,8 +140,8 @@
       \item[Question:] Fritz, you seemed to want to change how I deliver the
       agenda?
       Should I edit the calendar event instead, or keep it on gitHub?
-      \item[Answer:] Material is to be sent wednesday night or thursdag 
-      morning.
+      \item[Answer:] No changes in delivery method, but material is to be 
+      sent wednesday night or thursdag during the day.
       \item[NB!] Boxes in fitch-style proofs discharge assumptions when
       closing a box, and thus independently of the conclusion drawn from it,
       whereas existing nomenclature uses ``discharge'' when applying a rule
