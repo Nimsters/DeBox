@@ -25,8 +25,6 @@ and impToString(f as IMP _)         = bracket(formulaToString(f))
 
 fun printl s = print(s^"\n");
 
-(* fun sqBracket s = "["^s^"]"; *)
-
 fun referenceToString (Line s)      = s
   | referenceToString (Box (s1,s2)) = s1^"-"^s2;
 
@@ -41,20 +39,30 @@ fun refsToString []             = ""
   | refsToString (r1::refs)     = (referenceToString r1)^", "^
                                   (refsToString refs)
 
+(*
 fun premisesToString ([f])    = "and "^formulaToString f
   | premisesToString (f::fs)  = (formulaToString f)^", "^premisesToString fs
+*)
+
+(* fn: formula list -> string *)
+fun premisesToString []             = ""
+  | premisesToString [f1]           =  formulaToString f1
+  | premisesToString [f1, f2]       = (formulaToString f1)^" and "^
+                                      (formulaToString f2)
+  | premisesToString [f1, f2, f3]   = (formulaToString f1)^", "^
+                                      (formulaToString f2)^", and "^
+                                      (formulaToString f3)
+  | premisesToString (f1::refs)     = (formulaToString f1)^", "^
+                                      (premisesToString refs)
 
 fun sequentToString (Sequent ([], f))       =
         "We wish to prove "^(formulaToString f)^"."
-  | sequentToString (Sequent ([f1], f))  =
-        "From the premise "^(formulaToString f1)^", we wish to prove "^
-        (formulaToString f)^"."
-  | sequentToString (Sequent ([f1,f2], f))  =
-        "From the premises "^(formulaToString f1)^" and "^
-        (formulaToString f2)^", we wish to prove "^(formulaToString f)^"."
-  | sequentToString (Sequent (fs, f))       =
-        "From the premises "^(premisesToString fs)^", we wish to prove "^
-        (formulaToString f)^".";
+  | sequentToString (Sequent (forms, f))  =
+        let val number = if (length forms = 1) then " " else "s "
+        in
+        "From the premise"^number^(premisesToString forms)^
+        ", we wish to prove "^(formulaToString f)^"."
+        end;
 
 fun ruleToString r =
     case r of Ain => "the and-introduction rule"
@@ -75,7 +83,7 @@ fun ruleToString r =
             | Lem => "the law of the excluded middle"
 
 (* fn: proofstep * char list -> string *)
-(* Patternmatchin only gurantees acceptance of valid proofs, since it is 
+(* Patternmatching only gurantees acceptance of valid proofs, since it is 
  * only to be used with validated BoxProofs *)
 fun proofstepsToString ([], _) = ""
   | proofstepsToString (Step(NONE, Dis, [ass], "")::steps, ind as t::ts)    =
@@ -104,7 +112,8 @@ fun proofstepsToString ([], _) = ""
             "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
             (refsToString refs)^wording^(formulaToString con)^" "^self^"."
             ^(proofstepsToString (steps, tabs))
-        end;
+        end
+  | proofstepsToString _ = raise Match; (* Declare specific exception? *)
 
 fun proofToString (Proof (title, sequent, proofsteplist))  =
    "\n"^title^":\n"^(sequentToString sequent)^
