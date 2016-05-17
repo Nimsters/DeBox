@@ -224,7 +224,7 @@ MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
                       IMP \txt{ and also } ELEMENT\\
 \end{quote}
 
-{\bf Questions:}\\
+{\bf Questions:}
 \begin{itemize}
     \item Should \f{IMP} be handled as \f{IMPLICATION} or as \s{STAT}? I.e.
     what makes more sense, that implications are always in a \f{MULTI} 
@@ -237,6 +237,27 @@ MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
     Should \f{SINGLE} be exchanged for \f{UNIT}?
 \end{itemize}
 
+\ss{May ...}
+
+\ss{May 13th}
+
+\ss{May 15th}
+{\bf Questions:}
+  \begin{itemize}
+    \item Concerning self-references:
+      \begin{itemize}
+        \item Should the grammar require that the string be marked as 
+        separate from the rest of the sentence?
+        \item Should there be other ways of marking than [...]
+        \item Should there be checks and error reporting on marking?
+      \end{itemize}
+  \end{itemize}
+
+{\bf Decisions:}
+  \begin{itemize}
+    \item Reference strings (including self-references) are represented by 
+    the full string, including marking (square brackets only, so far).
+  \end{itemize}
 
 \label{LastBody}
 \end{document}

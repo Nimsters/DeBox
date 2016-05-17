@@ -5,7 +5,8 @@ datatype formula    = Atom of char |
                       IMP  of formula*formula |
                       BOT;
 
-datatype rule       = Ass | Prm | Cpy | (* assumption, premise, copy *)
+datatype rule       = Ass | Dis |       (* assumption and discharge *)
+                      Prm | Cpy |       (* premise and copy *)
                       Ain | Ae1 | Ae2 | (* AND introduction/elimination *)
                       Oi1 | Oi2 | Oel | (* OR introduction/elimination *)
                       Iin | Iel |       (* IMP introduction/elimination *)
@@ -16,9 +17,9 @@ datatype rule       = Ass | Prm | Cpy | (* assumption, premise, copy *)
                       Pbc |             (* Proof by Contradiction *)
                       Lem               (* Law of the excluded middle *);
 
-datatype reference  = Line of string | Box of string*string | Conclusion;
+datatype reference  = Line of string | Box of string*string;
 
-datatype proofstep  = Step of formula*rule*reference list * reference;
+datatype proofstep  = Step of formula option*rule*reference list * string;
 
 datatype sequent    = Sequent of formula list * formula;
 

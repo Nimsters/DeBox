@@ -9,9 +9,9 @@ BA project on natural language natural deduction
         - [x] Implementation of string conversion
     - [x] Formulation of restrictive context-free grammar for natural deduction proofs in NL
     - [ ] Formulation of error-inclusive extention of above mentioned grammar
-    - [ ] Implementation of string conversion
+    - [x] Implementation of string conversion
         - [x] Basic string conversion
-        - [ ] Indentation and layout
+        - [x] Indentation and layout
     - [ ] Implementation of Lexer
     - [ ] Implementation of parser
 - [ ] Formulation of formal syntax and corresponding abstract syntax for natural deduction proofs in propositional logic
@@ -19,12 +19,12 @@ BA project on natural language natural deduction
     - [ ] Implementation of conversion to BoxProver syntax
     - [ ] Implementation of validation
         - [ ] Validity checks for steps
-            - [ ] Rule reference requirement matches given number of references
+            - [ ] Given references match basic pattern
             - [ ] References exist
             - [ ] Rule pattern requirement matches the referenced formula(e)
             - [ ] References are acessible (i.e. not in a closed box)
             - [x] The reference id given to the step is unique
-        - [ ] Validity checks for proof
+        - [x] Validity checks for proof
             - [x] All assumption discharged
             - [x] The conclusion of the last line is identical to the goal
         - [ ] Error feedback for all failed checks

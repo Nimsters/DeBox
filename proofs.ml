@@ -25,22 +25,27 @@ and impToString(f as IMP _)         = bracket(formulaToString(f))
 
 fun printl s = print(s^"\n");
 
-fun sqBracket s = "["^s^"]";
+(* fun sqBracket s = "["^s^"]"; *)
 
-fun referenceToString (Line s)      = sqBracket s
-  | referenceToString (Box (s1,s2)) = (sqBracket s1)^"-"^(sqBracket s2)
-  | referenceToString Conclusion    = "**error!**";
+fun referenceToString (Line s)      = s
+  | referenceToString (Box (s1,s2)) = s1^"-"^s2;
 
-fun selfToString (Line s)       = " "^(sqBracket s)
-  | selfToString (Box (s1, s2)) = " "^(sqBracket s2)^
-                                  ", from the assumption "^(sqBracket s1)
-  | selfToString Conclusion     = "";
+(* fn: reference list -> string *)
+fun refsToString []             = ""
+  | refsToString [r1]           =  referenceToString r1
+  | refsToString [r1, r2]       = (referenceToString r1)^" and "^
+                                  (referenceToString r2)
+  | refsToString [r1, r2, r3]   = (referenceToString r1)^", "^
+                                  (referenceToString r2)^", and "^
+                                  (referenceToString r3)
+  | refsToString (r1::refs)     = (referenceToString r1)^", "^
+                                  (refsToString refs)
 
 fun premisesToString ([f])    = "and "^formulaToString f
   | premisesToString (f::fs)  = (formulaToString f)^", "^premisesToString fs
 
 fun sequentToString (Sequent ([], f))       =
-        "Without premises, we wish to prove "^(formulaToString f)^"."
+        "We wish to prove "^(formulaToString f)^"."
   | sequentToString (Sequent ([f1], f))  =
         "From the premise "^(formulaToString f1)^", we wish to prove "^
         (formulaToString f)^"."
@@ -69,36 +74,42 @@ fun ruleToString r =
             | Pbc => "proof by contradiction"
             | Lem => "the law of the excluded middle"
 
-fun proofstepToString (Step(con, Ass, refs, self))    =
-    "We now assume "^(formulaToString con)^(selfToString self)
-  | proofstepToString (Step(con, Prm, refs, self))    =
-    "We have "^(formulaToString con)^" as a premise"^
-    (selfToString self)
-  | proofstepToString (Step(con, Cpy, refs, self))    =
-    let val original = case refs of []      => ""
-                                  | r::rs   => referenceToString r
-    in
-        "By copying "^original^", we get "^(formulaToString con)^" here too "
-        ^(selfToString self)
-    end
-  | proofstepToString (Step(con, r, refs, self)) =
-    let val rStr = case refs of []        => ""
-                              | [r0]      => " to "^(referenceToString r0)
-                              | [r1, r2]  => " to "^(referenceToString r1)^
-                                            " and "^(referenceToString r2)
-        val wording = 
-            case self of Line _     => ", we get "
-                       | Box  _     => ", we get the part-conclusion "
-                       | Conclusion => ", we may conclude "
-    in
-        "By applying "^(ruleToString r)^rStr^wording^
-        (formulaToString con)^(selfToString self)
-    end
+(* fn: proofstep * char list -> string *)
+(* Patternmatchin only gurantees acceptance of valid proofs, since it is 
+ * only to be used with validated BoxProofs *)
+fun proofstepsToString ([], _) = ""
+  | proofstepsToString (Step(NONE, Dis, [ass], "")::steps, ind as t::ts)    =
+        "\n"^(implode ind)^"Discharge assumption "^(refsToString [ass])^"."
+        ^(proofstepsToString (steps, ts))
+  | proofstepsToString (Step(SOME con, Ass, [], self)::steps, tabs)         =
+        "\n"^(implode (#"\t"::tabs))^"Assume "^(formulaToString con)^" "^
+        self^"."
+        ^(proofstepsToString (steps, #"\t"::tabs))
+  | proofstepsToString (Step(SOME con, Prm, [], self)::steps, tabs)         =
+        "\n"^(implode tabs)^"We have "^(formulaToString con)^
+        " as a premise "^self^"."
+        ^(proofstepsToString (steps, tabs))
+  | proofstepsToString (Step(SOME (c as OR _), Lem, [], self)::steps, tabs) =
+        "\n"^(implode tabs)^"In accordance with "^(ruleToString Lem)^
+        ", we introduce "^(formulaToString c)^" "^self^"."
+        ^(proofstepsToString (steps, tabs))
+  | proofstepsToString (Step(SOME con, Cpy, [Line org], self)::steps, tabs) =
+        "\n"^(implode tabs)^"By copying "^org^", we get "^
+        (formulaToString con)^" here too "^self^"."
+        ^(proofstepsToString (steps, tabs))
+  | proofstepsToString (Step(SOME con, rule, refs, self)::steps, tabs)      =
+        let val wording = if (self = "") then " we conclude "
+                                         else " we get "
+        in
+            "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
+            (refsToString refs)^wording^(formulaToString con)^" "^self^"."
+            ^(proofstepsToString (steps, tabs))
+        end;
 
-fun proofToString (Proof (title, seq, pslist))  =
-   "\n"^title^":\n"^(sequentToString seq)^" "^
-   (foldl (fn (s, b) => b^s^". ") "" (map proofstepToString pslist))^"\n"; 
-
+fun proofToString (Proof (title, sequent, proofsteplist))  =
+   "\n"^title^":\n"^(sequentToString sequent)^
+   (proofstepsToString (proofsteplist, []));
+(*
 (* Validation of the uniqueness of a given reference id *)
 fun idValidation (self, allRefs, out) =
     let val id      = case self of Line s => s | Box (ass, s) => s
@@ -327,3 +338,4 @@ fun proofValidation (proof as Proof (title, seq, steplist))  =
     in
         TextIO.closeOut(out)
     end;
+*)
