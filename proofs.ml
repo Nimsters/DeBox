@@ -39,11 +39,6 @@ fun refsToString []             = ""
   | refsToString (r1::refs)     = (referenceToString r1)^", "^
                                   (refsToString refs)
 
-(*
-fun premisesToString ([f])    = "and "^formulaToString f
-  | premisesToString (f::fs)  = (formulaToString f)^", "^premisesToString fs
-*)
-
 (* fn: formula list -> string *)
 fun premisesToString []             = ""
   | premisesToString [f1]           =  formulaToString f1
@@ -87,10 +82,10 @@ fun ruleToString r =
  * only to be used with validated BoxProofs *)
 fun proofstepsToString ([], _) = ""
   | proofstepsToString (Step(NONE, Dis, [ass], "")::steps, ind as t::ts)    =
-        "\n"^(implode ind)^"Discharge assumption "^(refsToString [ass])^"."
+        "\n"^(implode ts)^"Discharge assumption "^(refsToString [ass])^"."
         ^(proofstepsToString (steps, ts))
   | proofstepsToString (Step(SOME con, Ass, [], self)::steps, tabs)         =
-        "\n"^(implode (#"\t"::tabs))^"Assume "^(formulaToString con)^" "^
+        "\n"^(implode (tabs))^"Assume "^(formulaToString con)^" "^
         self^"."
         ^(proofstepsToString (steps, #"\t"::tabs))
   | proofstepsToString (Step(SOME con, Prm, [], self)::steps, tabs)         =
@@ -106,225 +101,377 @@ fun proofstepsToString ([], _) = ""
         (formulaToString con)^" here too "^self^"."
         ^(proofstepsToString (steps, tabs))
   | proofstepsToString (Step(SOME con, rule, refs, self)::steps, tabs)      =
-        let val wording = if (self = "") then " we conclude "
-                                         else " we get "
+        let val (wording, post) = if (self = "") 
+                                 then (" we conclude ", ".")
+                                 else (" we get ", " "^self^".")
         in
             "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
-            (refsToString refs)^wording^(formulaToString con)^" "^self^"."
+            (refsToString refs)^wording^(formulaToString con)^post
             ^(proofstepsToString (steps, tabs))
         end
   | proofstepsToString _ = raise Match; (* Declare specific exception? *)
 
+(* fn: proof -> string *)
 fun proofToString (Proof (title, sequent, proofsteplist))  =
    "\n"^title^":\n"^(sequentToString sequent)^
    (proofstepsToString (proofsteplist, []));
-(*
+
+(* fn bool*outstream*string -> bool *)
+(* Returns given booliean, with the side-effect of outputting the given 
+ * string to the given outstream when the boolean is false *)
+fun feedback (true, _, _)           = true
+  | feedback (false, out, message)  = TextIO.output(out, message) <> ()
+
 (* Validation of the uniqueness of a given reference id *)
 fun idValidation (self, allRefs, out) =
-    let val id      = case self of Line s => s | Box (ass, s) => s
-        val comment = "["^id^"]: This reference id has already been used."
-        val valid   = ((List.find (fn (x, _) => (x = id)) allRefs) = NONE)
-                      orelse TextIO.output(out, comment) <> ()
-    in valid end;
+    let val comment = self^": This reference id has already been used."
+        val valid   = 
+        (List.find (fn (Line x, _) => (x = self) | (Box _, _) => false) 
+        allRefs) = NONE
+    in feedback (valid, out, comment) end;
 
 (* Returns the proper line prefix based on validity of the proofstep *)
-fun getPrefix(true, self)  = 
-    let val id          = case self of Line s => s | Box (a, s) => s
-    in  "["^id^"]: " 
-    end
-  | getPrefix(false, _)    = " ";
+fun getPrefix(true, self) = self^": "
+  | getPrefix(false, _)   = " ";
 
-(* Returns the correct number of references for a rule *)
-fun ruleRefs (r as rule) =
-    case r of Lem => 0
-            | Oel => 3
-            | Mod => 2
-            | Ain => 2
-            | Iel => 2
-            | Nel => 2
-            | _   => 1
+(* fn: 'a * 'a list -> bool *)
+fun member (element, set) = List.exists (fn e => (element = e)) set
 
-(* Finds forms in reference table *)
-fun findRefs (references, table) = 
-            map (fn id => List.mapPartial (fn (r, form) => 
-            if (r = id) then SOME form else NONE) table) references;
-
-(* Returns the proper wording for mismatched pattersn *)
-fun mismatch(rule, argument) =
-    (false, "You are using "^ruleToString(rule)^", but "^argument);
-
-(* Validation of reference pattern *)
-fun patternValidation (pattern, out, prefix) = 
-    let val (valid, comment)    =  case pattern of
-        (prop, Cpy, [[form]])                                   => 
-            (prop = form, "The line you are copying "^
-            "does not refer to the formula you have stated.")
-      | (AND(phi, psi), Ain, [[f1], [f2]])                      => 
-            (phi = f1 andalso psi = f2,
-            "The two references do not match the conjuncts in this line.")
-      | (_, Ain, _)                                             => 
-            mismatch(Ain, "do not introduce a conjunction.")
-      | (prop, Ae1, [[AND(f1, f2)]])                            =>
-            (prop = f1,
-            "This line does not match the first conjunct of the reference.")
-      | (prop, Ae1, [[_]])                                      => 
-            mismatch(Ae1, "do not refer to a conjunction.")
-      | (prop, Ae2, [[AND(f1,f2)]])                             =>
-            (prop = f2,
-            "This line does not match the second conjunct of the reference.")
-      | (_, Ae2, [[_]])                                         =>
-            mismatch(Ae2, "do not refer to a conjunction.")
-      | (OR(phi, psi), Oi1, [[form]])                           =>
-            (phi = form,
-            "The reference does not match the first disjunct in this line.")
-      | (_, Oi1, [[form]])                                      =>
-            mismatch(Oi1, "do not introduce a disjunction.")
-      | (OR(phi, psi), Oi2, [[form]])                           =>
-            (psi = form,
-            "The reference does not match the second disjunct in this line.")
-      | (_, Oi2, [[form]])                                      =>
-            mismatch(Oi2, "do not introduce a disjunction.")
-      | (prop, Oel, [[OR(f1,f2)],[IMP(a1,x1)],[IMP(a2,x2)]])    =>
-            let val v1 = (f1 = a1)
-                val v2 = (f2 = a2)
-                val v3 = (x1 = x2)
-                val v4 = (x1 = prop)
-                val (comment, prefix) = if v1 then ("","") 
-                    else ("The first disjunct does not match the first "^
-                     "assumption."," ")
-                val (comment, prefix) = if v2 then (comment, prefix) 
-                    else (comment^prefix^"The second disjunct does not "^
-                     "match the second assumption.", " ")
-                val (comment, prefix) = if v3 then (comment, prefix)
-                    else ("The two assumptions do not lead to the same "^
-                          "part-conclusion.", " ")
-                val comment = if v3 andalso not v4 
-                    then comment^"This line does not match the part-"^
-                         "conclusion reached from the two assumptions."
-                    else comment
-            in
-                (v1 andalso v2 andalso v3 andalso v4, comment)
-            end
-      | (_, Oel, [[_], [IMP _],[IMP _]])                        => 
-            mismatch(Oel, "the first reference is not to a disjunction.")
-      | (_, Oel, [[OR _], [_], [_]])                            =>
-            mismatch(Oel, "the second and third references are not (both) "^
-                          "to boxes.")
-      | (IMP (phi,psi), Iin,[[IMP (a, c)]])                     =>
-            let val v1                  = (phi = a)
-                val v2                  = (psi = c)
-                val box                 = " of the referenced box"
-                val (comment, pre, box) = if v1 
-                    then ("","This line does not ", box) 
-                    else ("This line does not match the assumption"^box,
-                          ", nor does it ", ".")
-                val comment             = if v2 then comment^"."
-                    else pre^"match the part-conclusion"^box
-            in
-                (v1 andalso v2, comment)
-            end
-      | (IMP _, Iin, [[_]])                                     =>
-            mismatch(Iin, "do not refer to a box.")
-      | (_, Iin, [[_]])                                         =>
-            mismatch(Iin, "do not introduce an implication.")
-(*      | (prop, Iel, [[f],[IMP(f1,f2)]])                         =>
-      | (_, Iel, [[_],[_]])                                     =>
-      | (prop, Nin, [[IMP(form, BOT)]])                         =>
-      | (_, Nin, [[_]])                                         =>
-      | (BOT, Nel, [[f1], [NEG(f2)]])                           =>
-      | (BOT, Nel, [[_], [_]])                                  =>
-      | (_,   Nel, [[_], [_]])                                  =>
-      | (NEG(NEG(phi)), Din, [[form]])                          =>
-      | (_, Din, [[_]])                                         =>
-      | (prop, Del, [[NEG(NEG(f))]])                            =>
-      | (_, Del, [[_]])                                         =>
-      | (prop, Bel, [[BOT]])                                    =>
-      | (_, Bel, [[_]])                                         =>
-      | (NEG(phi), Mod, [[IMP(f1, f2)], [NEG(f3)]])             =>
-      | (NEG(phi), Mod, [[IMP _], [_]])                         =>
-      | (NEG(phi), Mod, [[_], [NEG _]])                         =>
-      | (_, Mod, [[_],[_]])                                     =>
-      | (prop, Pbc, [[IMP(NEG(f1), BOT)]])                      =>
-      | (_, Pbc, [[IMP(NEG(f1), _)]])                           =>
-      | (_, Pbc, [[IMP(_, _)]])                                 =>
-      | (_, Pbc, [[_]])                                         =>
-      | (OR(phi, NEG(psi)), Lem, [])                            =>*)
-      | (_, _, _) => (true, "To be implemented.")
+(* Validation of the basic pattern *)
+fun rulePattern (rule, refs, prefix, out) =
+    let val post = " when using "^(ruleToString rule)^"."
+        val zero = (member (rule, [Lem, Ass, Prm])) andalso 
+                   (feedback (refs = [], out, "You must not provide any "^
+                    "references"^post)
+                   )
+        val one  = (member (rule, [Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
+                   andalso 
+                   (feedback (case refs of [Line _] => true | _ => false,
+                    out, "You must provide exactly one reference to a "^
+                    "single line"^post)
+                   )
+        val two  = (member (rule, [Mod, Ain, Iel, Nel])) andalso
+                   (feedback (case refs of [Line _, Line _] => true 
+                                         | _                => false, out,
+                    "You must provide exactly two references to a single "^
+                    "line"^post)
+                   )
+        val box  = (member (rule, [Iin, Nin, Pbc])) andalso
+                   (feedback (case refs of [Box _] => true | _ => false, out,
+                    "You must provide exactly one reference to a range of "^
+                    "lines from an assumption to its discharging"^post)
+                   )
+        val oin  = (rule = Oel) andalso 
+                   (feedback (case refs of [Line _, Box _, Box _] => true
+                                         | _                      => false,
+                    out, "You must provide exactly one reference to a "^
+                    "single line and two references to ranges from "^
+                    "assumptions to their discharging"^post)
+                   )
     in
-        valid orelse TextIO.output(out, prefix^comment) <> ()
+        (zero orelse one orelse two orelse box orelse oin)
     end;
 
-(* Validate rule and reference use *)
-fun ruleValidation(valid, context, prop, rule, refs, out, self) =
-    (*let val prefix  = getPrefix(valid, self)
-        val (premises, allRefs, openRefs, asums) = context
-        (* Checks the given number of references against requirement *)
-        (* Replace with check of basic patterns *)
-        val given   = length refs
-        val correct = ruleRefs(rule)
-        val valid   = (given = correct) orelse
-        TextIO.output(out, prefix^"Using "^ruleToString(rule)^" requires "^
-        (*Int.toString(correct)*)"right number"^" references, you gave "^
-        (*Int.toString(given)*)"wrong number"^".") <> ()
-        val prefix  = getPrefix(valid, self)
-        (* Checks that the given references follow the proper pattern *)
-        val forms   = findRefs(refs, allRefs)
-        (* Insert check with openRefs here? *)
-        val pattern = (prop, rule, forms)
-        (* Temporary solution to asums as strings *)
-        val id = case self of Line s => s | _ => "error"
-        val (patternValid, asums) = case rule of 
-            Prm => (List.exists (fn prm => (prm = prop)) premises
-                   orelse TextIO.output(out, prefix^"This formula is not "^
-                   "given as a premise.") <> (), asums)
-          | Ass => (forms = [], id::asums)
-          | _   => (patternValidation(pattern, out, prefix), asums)
+(* Finds forms in reference table *)
+fun findForm (reference:reference, table) = 
+    List.mapPartial (fn (r, form:formula) => 
+                    if (r = reference) then SOME form 
+                                       else NONE) table;
+
+(* fn: reference list * (reference*formula) list * (reference*formula) list
+ *     * string * outstream -> bool * formula list *)
+(* Validates references and returns forms using the two reference tables *)
+fun matchRefs ([], _,_,_,_)                             = (true, [])
+  | matchRefs (r::rs, allRefs, openRefs, prefix, out)   =
+    let val formO          = findForm (r, openRefs)
+        val formA          = findForm (r, allRefs) 
+        val start          = prefix^"The reference "^(referenceToString r)
+        val (valid, form)  = case (formO, formA) of
+                 ([f], _)  => (true, SOME f)
+               | ([], [])  => (feedback (false, out, start^
+                               " does not exist."), NONE)
+               | ([], [f]) => (feedback (false, out, start^" occurs under "^
+                               "an assumption that has been discharged, "^
+                               "thus the reference is not avialable at "^
+                               "this point."), SOME f)
+               | ([], _)   => (false, NONE)
+               | (fl, _)   => (feedback (false, out, start^"is not unique; "^
+                               "in the following, the last occurance has "^
+                               "been used."),SOME (List.last fl))
+        val prefix         = if valid then prefix else " "
+        val (rest, flist)  = matchRefs(rs, allRefs, openRefs, prefix, out)
     in
-        (valid andalso patternValid, (premises, allRefs, openRefs, asums))
-    end;*) (true, context)
+        (valid andalso rest, (case form of NONE => flist 
+                                         | SOME f => f::flist))
+    end;
+
+(* Returns the proper wording for mismatched pattersn *)
+fun mismatch(rule, prefix, out, argument) =
+    feedback (false, out, prefix^
+              "You are using "^ruleToString(rule)^", but "^argument);
 
 (* Remove closed references from the list of open references *)
-fun closeRefs(ass, []) = [] (* Should raise exception *)
-  | closeRefs(ass, r::refs) = if (r = Line ass) then refs 
-                                               else closeRefs(ass, refs);
+fun closeBox(ass, []) = raise Match (* Should never occur due to earlier
+                                          checks *)
+  | closeBox(ass, (r, f)::refs) = if (r = ass) 
+                                  then refs 
+                                  else closeBox(ass, refs);
 
+(* fn: (formula list*(reference*formula) list *(reference*formula) list
+ *      reference list)*(string*formula)*bool*string*outstream ->
+ *  -> (bool*(formula list*(reference*formula) list *(reference*formula) list
+ *      reference list)) *)
 (* Validate closure of box *)
-fun boxValidation (valid, context as (p, a, openRefs, []), ass, out, self) =
-    let val prefix  = getPrefix(valid, self)
-        val valid   = (TextIO.output(out, prefix^"You are trying to "^
-            "discharge an assumption, but no assumptions are currently "^
-            "in effect.") <> ())
+fun boxValidation (context as (_, _, _, []), _, valid, self, out) =
+        (feedback (false, out, (getPrefix(valid, self))^"You are trying "^
+         "to discharge an assumption, but no assumptions are currently in "^
+         "effect."), context)
+  | boxValidation ((p, all, opn as (last, lForm)::rs, a::asums),
+                   (aRef, aForm), valid, self, out) =
+    let val ass   = Line aRef
+        val valid = (feedback (ass <> last, out, 
+                     (getPrefix(valid, self))^"Discharging an assumption "^
+                     "immediately after making it is redundant.")) andalso
+                     valid
+        val valid = (feedback (a = ass, out, (getPrefix(valid, self))^
+                      "The assumption you are trying to discharge, "^
+                      "is not the one most recently made.")) andalso valid
+        val (l, valid)  = case last of Line s  => (s, valid)
+                                 | Box (_,  s) => (s, feedback (false, out, 
+                                 (getPrefix(valid, self)^
+                                 "You cannot discharge an assumption "^
+                                 "immediately after another discharge.")))
+        val line        = (Box (aRef, l), IMP(aForm, lForm))
+        val opn         = closeBox(ass, opn)
     in
-        (valid, context)
+        (valid, (p, line::all, line::opn, asums))
     end
-  | boxValidation (valid, (p, all, openRefs, a::asums), ass, out, self) =
-    let val prefix      = getPrefix(valid, self)
-        val discharged  = (a = ass) orelse TextIO.output(out,
-            prefix^"The assumption you are trying to discharge, is not "^
-            "the one most recently made.") <> ()
-        val openRefs    =  if discharged then closeRefs(ass, openRefs)
-                                         else openRefs
+  | boxValidation ((_,_,[],_),_,_,_,_)     = raise Match 
+    (* This should never occur if the asumption list is not empty *)
+
+(* Validation of reference pattern *)
+fun patternValidation (
+    (SOME f, Ass, []), [],(prms, all, opn, asums), valid, self, out) =
+    let val line = Line self
     in
-        (valid andalso discharged, (p, all, openRefs, asums))
+        (true, (prms, (line, f)::all, (line, f)::opn, line::asums))
+    end
+  | patternValidation (
+    (NONE, Dis, [f]), [Line aRef], context, valid, self, out) =
+          boxValidation(context, (aRef, f), valid, self, out)
+  | patternValidation (
+    (SOME formula, rule, fList),_, context, valid, self, out) = 
+    let val prefix                  = getPrefix(valid, self)
+        val line                    = (Line self, formula)
+        val bot                     = formulaToString BOT
+        val (prms, all, opn, asums) = context
+        val valid = case (rule, fList) of
+            (Prm, [])       => feedback (member (formula, prms), out, prefix^
+            "This formula is not listed as a premise in the sequent.")
+          | (Cpy, [f])          => feedback (formula = f, out, prefix^
+                                   "The line you are copying does not "^
+                                   "refer to the formula you have stated.")
+          | (Ain, [f1, f2])     => (case formula of
+              AND(phi, psi)     => 
+                let val first   = feedback (phi = f1, out, prefix^"The "^
+                        "first reference does not match the first conjunct.")
+                    val prefix  = getPrefix(valid andalso first, self)
+                    val second  = feedback (psi = f2, out, prefix^"The "^
+                        "second reference does not match the second "^
+                        "conjunct.")
+                in
+                    first andalso second
+                end
+            | _                 => mismatch (rule, prefix, out, 
+                                   "you do not introduce a conjunction.")
+            )
+          | (Ae1, [f])          => (case f of
+              AND(phi, psi)     => feedback (formula = phi, out, prefix^
+                                   "This line does not match the first "^
+                                   "conjunct of the reference.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not refer to a conjunction.")
+            )
+          | (Ae2, [f])          => (case f of
+              AND(phi, psi)     => feedback (formula = psi, out, prefix^
+                                   "This line does not match the second "^
+                                   "conjunct of the reference.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not refer to a conjunction.")
+            )
+          | (Oi1, [f])          => (case formula of
+              OR(phi, psi)      => feedback (f = phi, out, prefix^
+                                   "The referent does not match the first "^
+                                   "disjunct in this line.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "You do not introduce a disjunction.")
+            )
+          | (Oi2, [f])          => (case formula of
+              OR(phi, psi)      => feedback (f = psi, out, prefix^
+                                   "The referent does not match the second "^
+                                   "disjunct in this line.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "You do not introduce a disjunction.")
+            )
+          | (Iin, [f])          => (case formula of
+              IMP _             => feedback (f = formula, out, prefix^
+                                   "The referenced range does not match "^
+                                   "this line.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not introduce an implication.")
+            ) 
+          | (Iel, [f1, f2])     => (case f2 of 
+              IMP(phi, psi)       => 
+                let val pre     = prefix^"Th"
+                    val asum    = feedback (f1 = phi, out, pre^
+                                   "e first referent does not match "^
+                                   "the assumption of the second referent")
+                    val pre     = if asum then pre else "; th"
+                    val imp     = feedback (psi = formula, out, pre^
+                                  "is line does not match the conclusion "^
+                                  "of the second referent")
+                in
+                    feedback (asum andalso imp, out, ".")
+                end
+            | _                 => mismatch (rule, prefix, out,"the second "^
+                                   "referent is not an implication.")
+            ) 
+          | (Nel, [f1, f2])     => if formula = BOT
+            then feedback (f2 = (NEG f1), out, prefix^"The second "^
+                 "referent is not the negation of the first referent.")
+            else mismatch (rule, prefix, out,"you do not introduce "^bot^".")
+          | (Din, [f])          => (case formula of
+              NEG(NEG phi)      => feedback (f = phi, out, prefix^
+                                   "This line is not is not the double-"^
+                                   "negation of the referent.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not introduce a double-negation.")
+            )
+          | (Del, [f])          => (case f of
+              NEG(NEG phi)      => feedback (formula = phi, out, prefix^
+                                   "The referent is not is not the double-"^
+                                   "negation of this line.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not refer to a double-negation.")
+            )
+          | (Bel, [f])          => (f = BOT) orelse 
+                                   mismatch (rule, prefix, out,
+                                   "you do not refer to "^bot^".")
+          | (Mod, [f1, f2])     => (case f1 of
+              IMP(phi, psi)     => 
+                let val pre     = prefix^"Th"
+                    val right   = feedback (f2 = (NEG phi), out, pre^
+                                   "e second referent is not the negation "^
+                                   "of the right-hand side of the "^
+                                   "implication")
+                    val pre     = if right then pre else "; th"
+                    val left    = feedback (psi = formula, out, pre^
+                                  "is line is not the negation of the "^
+                                  "left-hand side of the implication")
+                in
+                    feedback (right andalso left, out, ".")
+                end
+            | _                 => mismatch(rule, prefix, out, "the first "^
+                                   "referent is not an implication.")
+            )
+          | (Lem, [])           => (case formula of
+              OR(phi, psi)      => feedback (psi = (NEG phi), out, prefix^
+                                   "The second disjunct of this line is "^
+                                   "not the negation of the first.")
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not introduce a conjunction.")
+          )
+          (* IMPs below are ensured by earlier checks *)
+          | (Oel, [f, IMP(a1, x1), IMP(a2, x2)]) => (case f of
+              OR(f1, f2)        => 
+                let val pre     = prefix^"Th"
+                    val mid     = "; th"
+                    val first   = feedback (f1 = a1, out, pre^
+                                  "e first disjunct of the first "^
+                                  "referent does not match the assumption "^
+                                  "of the second referent")
+                    val pre     = if first then pre else mid
+                    val second  = feedback (f2 = a2, out, pre^
+                                  "e second disjunct of the first referent "^
+                                  "does not match the assumption of the "^
+                                  "third referent")
+                    val pre     = if first andalso second then pre else mid
+                    val matches = feedback (x1 = x2, out, pre^
+                                  "e second and third referent do not "^
+                                  "reach the same conclusion")
+                    val final   = matches andalso (feedback (formula = x1,
+                                  out, pre^"is line does not match the "^
+                                  "conclusion reached by the second and "^
+                                  "third referent"))
+                in
+                    feedback (first andalso second andalso final, out, ".")
+                end
+            | _                 => mismatch (rule, prefix, out, "the "^
+                                   "first referent is not a disjunction.")
+            )
+          | (Nin, [IMP(f1,f2)]) => (case formula of
+              NEG phi           => 
+                let val pre     = prefix^"Th"
+                    val asum    = feedback (f1 = phi, out, pre^
+                                   "e assumption of the referent does not "^
+                                   "match the negated formula of this line")
+                    val pre     = if asum then pre else "; th"
+                    val imp     = feedback (f2 = BOT, out, pre^
+                                  "e conclusion of the referent is not "^bot)
+                in
+                    feedback (asum andalso imp, out, ".")
+                end
+            | _                 => mismatch (rule, prefix, out,
+                                   "you do not introduce a negation.")
+            ) 
+          | (Pbc, [IMP(f1,f2)]) => if f2 = BOT
+            then feedback (f1 = (NEG formula), out, prefix^
+                 "The assumption of the referent is not the negation of "^
+                 "this line.")
+            else mismatch (rule, prefix, out, "the referenced range does "^
+                 "not conlude "^bot)
+          | _                   => raise Match (* should never happen *)
+
+    in
+      (valid, (prms, line::all, line::opn, asums))
+    end
+  | patternValidation ((NONE,_,_), _, _, _, _, _) = 
+        raise Match (* should never happen *)
+
+(* Validate rule and reference use *)
+fun ruleValidation(valid, context, Step (prop, rule, refs, self), out) =
+    let val (premises, allRefs, openRefs, asums) = context
+        val prefix              = getPrefix(valid, self)
+        val validPattern        = rulePattern(rule, refs, prefix, out)
+        val prefix              = getPrefix(valid andalso validPattern, self)
+        val (available, forms)  = matchRefs(refs, allRefs, openRefs, prefix,
+                                            out)
+        val prefix              = getPrefix(available, self)
+        val pattern             = (prop, rule, forms)
+        val (validUse, context) = 
+            if validPattern andalso ((length forms) = (length refs))
+            then patternValidation(pattern, refs, context, valid, self, out)
+            else (false, context)
+    in
+        (valid andalso validUse andalso available, context)
     end;
 
 (* Validation of a single step in the current context *)
-fun stepValidation(valid, context as (_,_,_, asums), out, []) =
-    (* Add feedback for empty steplist *)
-    (false, NONE, asums)
-  | stepValidation(valid, context as (_, allRefs, _, _), out, step::steps)  =
-    let val Step (prop, rule, refs, self)    = step
-        val  stepValid                  = idValidation(self, allRefs, out)
-        val (stepValid, context)        = ruleValidation(
-             stepValid, context, prop, rule, refs, out, self)
-        val (valid, context)            = case self of 
-                Box(ass, _) => boxValidation(valid, context, ass, out, self)
-              | Line s      => (valid, context)
-        val valid = (valid andalso stepValid)
-        val (_,_,_,asums)               = context (* move to proof? *)
+fun stepValidation(valid, context, out, []) =
+    let val error = "You cannot have a proof without any arguments."
     in
-        case steps of [] => (valid, SOME prop, asums)
-                    |  _ => stepValidation(valid, context, out, steps)
+        (feedback(false, out, error), NONE, context)
+    end
+  | stepValidation(valid, context as (_, allRefs, _, _), out, step::steps)  =
+    let val Step (prop, rule, refs, self)  = step
+        val  stepValid                     = idValidation(self, allRefs, out)
+        val (stepValid, context)           = ruleValidation(
+             stepValid, context, step, out)
+        val valid = (valid andalso stepValid)
+    in
+        if steps = [] 
+        then (valid, prop, context)
+        else stepValidation(valid, context, out, steps)
     end;
 
 fun toBoxProof(Proof (title, seq, steplist)) = 
@@ -335,16 +482,18 @@ fun proofValidation (proof as Proof (title, seq, steplist))  =
     let val filename            = "validation_"^title^".txt" (* Add checks *)
         val out                 = TextIO.openOut(filename)
         val Sequent (premises, goal) = seq
-        val (valid, last, asms) = 
+        val (valid, last, (_,_,_, asums)) = 
             stepValidation(true, (premises, [], [], []), out, steplist)
-        val allDischarged       = (asms = []) orelse TextIO.output(out, 
-            "Proof: Not all assumptions are discharged.") <> ()
-        val prefix  = if allDischarged then "Proof: " else " "
-        val valid   = case last of SOME c => (c = goal) andalso allDischarged
-                                 | NONE   => TextIO.output(out,
-                    prefix^"The conclusion does not match the goal.") <> ()
-        val _ = if valid then TextIO.output(out, toBoxProof(proof)) else ()
+        val allDischarged       = 
+            feedback (asums=[], out,
+                      "Proof: Not all assumptions are discharged.")
+        val prefix  = getPrefix(allDischarged, "Proof")
+        val valid   = (case last of SOME c => feedback (c = goal, out,
+                       prefix^"The conclusion does not match the goal.")
+                                  | NONE   => feedback (false, out,
+                       prefix^"The last line draws no conclusion.")) 
+                      andalso valid andalso allDischarged
+        val _ = feedback (not valid, out, toBoxProof(proof))
     in
         TextIO.closeOut(out)
     end;
-*)

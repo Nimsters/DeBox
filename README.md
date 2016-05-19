@@ -17,19 +17,21 @@ BA project on natural language natural deduction
 - [ ] Formulation of formal syntax and corresponding abstract syntax for natural deduction proofs in propositional logic
     - [x] Datatype definitions 
     - [ ] Implementation of conversion to BoxProver syntax
-    - [ ] Implementation of validation
-        - [ ] Validity checks for steps
-            - [ ] Given references match basic pattern
-            - [ ] References exist
-            - [ ] Rule pattern requirement matches the referenced formula(e)
-            - [ ] References are acessible (i.e. not in a closed box)
+    - [x] Implementation of validation
+        - [x] Validity checks for steps
+            - [x] Given references match basic pattern
+            - [x] References exist
+            - [x] Rule pattern requirement matches the referenced formula(e)
+            - [x] References are acessible (i.e. not in a closed box)
             - [x] The reference id given to the step is unique
         - [x] Validity checks for proof
             - [x] All assumption discharged
             - [x] The conclusion of the last line is identical to the goal
-        - [ ] Error feedback for all failed checks
+        - [x] Error feedback for all failed checks
     - [ ] Implementation of output
         - [ ] Create valid filename from title (checks!)
+        - [x] Output feedback if proof is invalid
+        - [x] Output BoxProver proof if proof is valid
 
 ####Report to-do list:
 - [ ] Resumé
