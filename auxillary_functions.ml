@@ -84,25 +84,24 @@ fun proofstepsToString ([], _) = ""
         "\n"^(implode ts)^"Discharge assumption "^(refsToString [ass])^"."
         ^(proofstepsToString (steps, ts))
   | proofstepsToString (Step(SOME con, Ass, [], self)::steps, tabs)         =
-        "\n"^(implode (tabs))^"Assume "^(formulaToString con)^" "^
-        self^"."
+        "\n"^(implode (tabs))^"Assume "^(formulaToString con)^" ["^self^"]."
         ^(proofstepsToString (steps, #"\t"::tabs))
   | proofstepsToString (Step(SOME con, Prm, [], self)::steps, tabs)         =
         "\n"^(implode tabs)^"We have "^(formulaToString con)^
-        " as a premise "^self^"."
+        " as a premise ["^self^"]."
         ^(proofstepsToString (steps, tabs))
   | proofstepsToString (Step(SOME (c as OR _), Lem, [], self)::steps, tabs) =
         "\n"^(implode tabs)^"In accordance with "^(ruleToString Lem)^
-        ", we introduce "^(formulaToString c)^" "^self^"."
+        ", we introduce "^(formulaToString c)^" ["^self^"]."
         ^(proofstepsToString (steps, tabs))
   | proofstepsToString (Step(SOME con, Cpy, [Line org], self)::steps, tabs) =
         "\n"^(implode tabs)^"By copying "^org^", we get "^
-        (formulaToString con)^" here too "^self^"."
+        (formulaToString con)^" here too ["^self^"]."
         ^(proofstepsToString (steps, tabs))
   | proofstepsToString (Step(SOME con, rule, refs, self)::steps, tabs)      =
         let val (wording, post) = if (self = "") 
                                  then (" we conclude ", ".")
-                                 else (" we get ", " "^self^".")
+                                 else (" we get ", " ["^self^"].")
         in
             "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
             (refsToString refs)^wording^(formulaToString con)^post

@@ -1,8 +1,8 @@
-val proofN = Proof(
-"Numbers",
+val proofI = Proof(
+"Invalid",
 Sequent([AND(IMP(Atom #"u",Atom #"t"),IMP(Atom #"u",Atom #"s"))],
          IMP(Atom #"u", AND(Atom #"t",Atom #"s"))), 
-[   Step(SOME (AND(IMP(Atom #"u",Atom #"t"),IMP(Atom #"u",Atom #"s"))),
+[   Step(SOME (AND(IMP(Atom #"u",Atom #"t"),Atom #"u")),
          Prm, [], "1"),
     Step(SOME (IMP (Atom #"u",Atom #"t")), Ae1,[Line "1"], "2"),
     Step(SOME (IMP (Atom #"u",Atom #"s")), Ae2,[Line "1"], "3"),

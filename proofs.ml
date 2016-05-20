@@ -1,120 +1,5 @@
 use "datatypes.ml";
-
-fun bracket(s) = "("^s^")";
-
-fun formulaToString(Atom c)         = Char.toString c
-  | formulaToString(BOT)            = "\226\138\165"
-  | formulaToString(NEG f)          = "\194\172"^negToString(f)
-  | formulaToString(AND (f1,f2))    = andToString(f1)^"\226\136\167"^
-                                      negToString(f2)
-  | formulaToString(OR (f1, f2))    = impToString(f1)^"\226\136\168"^
-                                      andToString(f2)
-  | formulaToString(IMP (f1, f2))   = impToString(f1)^"\226\134\146"^
-                                      formulaToString(f2)
-
-and negToString(a as Atom _)        = formulaToString(a)
-  | negToString(n as NEG _)         = formulaToString(n)
-  | negToString(f as _)             = bracket(formulaToString(f))
-
-and andToString(f as OR _)          = bracket(formulaToString(f))
-  | andToString(f as IMP _)         = bracket(formulaToString(f))
-  | andToString(f as _)             = formulaToString(f)
-
-and impToString(f as IMP _)         = bracket(formulaToString(f))
-  | impToString(f as _)             = formulaToString(f);
-
-fun printl s = print(s^"\n");
-
-fun referenceToString (Line s)      = s
-  | referenceToString (Box (s1,s2)) = s1^"-"^s2;
-
-(* fn: reference list -> string *)
-fun refsToString []             = ""
-  | refsToString [r1]           =  referenceToString r1
-  | refsToString [r1, r2]       = (referenceToString r1)^" and "^
-                                  (referenceToString r2)
-  | refsToString [r1, r2, r3]   = (referenceToString r1)^", "^
-                                  (referenceToString r2)^", and "^
-                                  (referenceToString r3)
-  | refsToString (r1::refs)     = (referenceToString r1)^", "^
-                                  (refsToString refs)
-
-(* fn: formula list -> string *)
-fun premisesToString []             = ""
-  | premisesToString [f1]           =  formulaToString f1
-  | premisesToString [f1, f2]       = (formulaToString f1)^" and "^
-                                      (formulaToString f2)
-  | premisesToString [f1, f2, f3]   = (formulaToString f1)^", "^
-                                      (formulaToString f2)^", and "^
-                                      (formulaToString f3)
-  | premisesToString (f1::refs)     = (formulaToString f1)^", "^
-                                      (premisesToString refs)
-
-fun sequentToString (Sequent ([], f))       =
-        "We wish to prove "^(formulaToString f)^"."
-  | sequentToString (Sequent (forms, f))  =
-        let val number = if (length forms = 1) then " " else "s "
-        in
-        "From the premise"^number^(premisesToString forms)^
-        ", we wish to prove "^(formulaToString f)^"."
-        end;
-
-fun ruleToString r =
-    case r of Ain => "the and-introduction rule"
-            | Ae1 => "the first and-elimination rule"
-            | Ae2 => "the second and-elimination rule"
-            | Oi1 => "the first or-introduction rule"
-            | Oi2 => "the second or-introduction rule"
-            | Oel => "the or-elimination rule"
-            | Iin => "the implication-introduction rule"
-            | Ie1 => "the implication-elimination rule"
-            | Nin => "the negation-introduction rule"
-            | Ne1 => "the negation-elimination rule"
-            | Din => "introduction of double-negation"
-            | De1 => "elimination of double-negation"
-            | Be1 => "elimination of absurdity"
-            | Mod => "Modus Tollens"
-            | Pbc => "proof by contradiction"
-            | Lem => "the law of the excluded middle"
-
-(* fn: proofstep * char list -> string *)
-(* Patternmatching only gurantees acceptance of valid proofs, since it is 
- * only to be used with validated BoxProofs *)
-fun proofstepsToString ([], _) = ""
-  | proofstepsToString (Step(NONE, Dis, [ass], "")::steps, ind as t::ts)    =
-        "\n"^(implode ts)^"Discharge assumption "^(refsToString [ass])^"."
-        ^(proofstepsToString (steps, ts))
-  | proofstepsToString (Step(SOME con, Ass, [], self)::steps, tabs)         =
-        "\n"^(implode (tabs))^"Assume "^(formulaToString con)^" "^
-        self^"."
-        ^(proofstepsToString (steps, #"\t"::tabs))
-  | proofstepsToString (Step(SOME con, Prm, [], self)::steps, tabs)         =
-        "\n"^(implode tabs)^"We have "^(formulaToString con)^
-        " as a premise "^self^"."
-        ^(proofstepsToString (steps, tabs))
-  | proofstepsToString (Step(SOME (c as OR _), Lem, [], self)::steps, tabs) =
-        "\n"^(implode tabs)^"In accordance with "^(ruleToString Lem)^
-        ", we introduce "^(formulaToString c)^" "^self^"."
-        ^(proofstepsToString (steps, tabs))
-  | proofstepsToString (Step(SOME con, Cpy, [Line org], self)::steps, tabs) =
-        "\n"^(implode tabs)^"By copying "^org^", we get "^
-        (formulaToString con)^" here too "^self^"."
-        ^(proofstepsToString (steps, tabs))
-  | proofstepsToString (Step(SOME con, rule, refs, self)::steps, tabs)      =
-        let val (wording, post) = if (self = "") 
-                                 then (" we conclude ", ".")
-                                 else (" we get ", " "^self^".")
-        in
-            "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
-            (refsToString refs)^wording^(formulaToString con)^post
-            ^(proofstepsToString (steps, tabs))
-        end
-  | proofstepsToString _ = raise Match; (* Declare specific exception? *)
-
-(* fn: proof -> string *)
-fun proofToString (Proof (title, sequent, proofsteplist))  =
-   "\n"^title^":\n"^(sequentToString sequent)^
-   (proofstepsToString (proofsteplist, []));
+use "auxillary_functions.ml";
 
 (* fn bool*outstream*string -> bool *)
 (* Returns given booliean, with the side-effect of outputting the given 
@@ -131,11 +16,9 @@ fun idValidation (self, allRefs, out) =
     in feedback (valid, out, comment) end;
 
 (* Returns the proper line prefix based on validity of the proofstep *)
-fun getPrefix(true, self) = self^": "
-  | getPrefix(false, _)   = " ";
-
-(* fn: 'a * 'a list -> bool *)
-fun member (element, set) = List.exists (fn e => (element = e)) set
+fun getPrefix(true, "")     = "\nConclusion: "
+  | getPrefix(true, self)   = "\n"^self^": "
+  | getPrefix(false, _)     = " ";
 
 (* Validation of the basic pattern *)
 fun rulePattern (rule, refs, prefix, out) =
@@ -144,7 +27,7 @@ fun rulePattern (rule, refs, prefix, out) =
                    (feedback (refs = [], out, "You must not provide any "^
                     "references"^post)
                    )
-        val one  = (member (rule, [Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
+        val one  = (member (rule, [Dis, Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
                    andalso 
                    (feedback (case refs of [Line _] => true | _ => false,
                     out, "You must provide exactly one reference to a "^
@@ -258,7 +141,7 @@ fun patternValidation (
     end
   | patternValidation (
     (NONE, Dis, [f]), [Line aRef], context, valid, self, out) =
-          boxValidation(context, (aRef, f), valid, self, out)
+          boxValidation(context, (aRef, f), valid, "Discharge", out)
   | patternValidation (
     (SOME formula, rule, fList),_, context, valid, self, out) = 
     let val prefix                  = getPrefix(valid, self)
@@ -441,6 +324,7 @@ fun patternValidation (
 (* Validate rule and reference use *)
 fun ruleValidation(valid, context, Step (prop, rule, refs, self), out) =
     let val (premises, allRefs, openRefs, asums) = context
+        val self                = if rule = Dis then "Discharge" else self
         val prefix              = getPrefix(valid, self)
         val validPattern        = rulePattern(rule, refs, prefix, out)
         val prefix              = getPrefix(valid andalso validPattern, self)
@@ -464,19 +348,17 @@ fun stepValidation(valid, context, out, []) =
     end
   | stepValidation(valid, context as (_, allRefs, _, _), out, step::steps)  =
     let val Step (prop, rule, refs, self)  = step
-        val  stepValid                     = idValidation(self, allRefs, out)
+        val  lastStep                      = (steps = [])
+        val  stepValid                     = (self = "") orelse
+                                             idValidation(self, allRefs, out)
         val (stepValid, context)           = ruleValidation(
              stepValid, context, step, out)
         val valid = (valid andalso stepValid)
     in
-        if steps = [] 
-        then (valid, prop, context)
-        else stepValidation(valid, context, out, steps)
+        if lastStep then (valid, prop, context)
+                    else stepValidation(valid, context, out, steps)
     end;
 
-fun toBoxProof(Proof (title, seq, steplist)) = 
-    "Here goes the BoxProover proof - to be implemented";
-            
 (* Validation of an entire proof *) 
 fun proofValidation (proof as Proof (title, seq, steplist))  =
     let val filename            = "validation_"^title^".txt" (* Add checks *)
@@ -486,14 +368,14 @@ fun proofValidation (proof as Proof (title, seq, steplist))  =
             stepValidation(true, (premises, [], [], []), out, steplist)
         val allDischarged       = 
             feedback (asums=[], out,
-                      "Proof: Not all assumptions are discharged.")
+                      "\nProof: Not all assumptions are discharged.")
         val prefix  = getPrefix(allDischarged, "Proof")
         val valid   = (case last of SOME c => feedback (c = goal, out,
                        prefix^"The conclusion does not match the goal.")
                                   | NONE   => feedback (false, out,
                        prefix^"The last line draws no conclusion.")) 
                       andalso valid andalso allDischarged
-        val _ = feedback (not valid, out, toBoxProof(proof))
+        val _       = feedback (not valid, out, toBoxProof(proof))
     in
-        TextIO.closeOut(out)
+        (TextIO.closeOut(out) = ()) andalso valid
     end;
