@@ -16,7 +16,7 @@ BA project on natural language natural deduction
     - [ ] Implementation of parser
 - [ ] Formulation of formal syntax and corresponding abstract syntax for natural deduction proofs in propositional logic
     - [x] Datatype definitions 
-    - [ ] Implementation of conversion to BoxProver syntax
+    - [x] Implementation of conversion to BoxProver syntax
     - [x] Implementation of validation
         - [x] Validity checks for steps
             - [x] Given references match basic pattern
@@ -29,7 +29,7 @@ BA project on natural language natural deduction
             - [x] The conclusion of the last line is identical to the goal
         - [x] Error feedback for all failed checks
     - [ ] Implementation of output
-        - [ ] Create valid filename from title (checks!)
+        - [ ] Ensure valid filename from title (parsing?)
         - [x] Output feedback if proof is invalid
         - [x] Output BoxProver proof if proof is valid
 
