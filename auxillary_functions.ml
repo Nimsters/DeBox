@@ -3,7 +3,7 @@ fun printl s = print(s^"\n");
 fun bracket(s) = "("^s^")";
 
 (* fn: formula -> string *)
-fun formulaToString(Atom c)         = Char.toString c
+fun formulaToString(Atom s)         = s
   | formulaToString(BOT)            = "\226\138\165"
   | formulaToString(NEG f)          = "\194\172"^negToString(f)
   | formulaToString(AND (f1,f2))    = andToString(f1)^"\226\136\167"^
@@ -49,9 +49,9 @@ fun premisesToString []             = ""
   | premisesToString (f1::refs)     = (formulaToString f1)^", "^
                                       (premisesToString refs)
 
-fun sequentToString (Sequent ([], f))       =
+fun sequentToString ([], f)     =
         "We wish to prove "^(formulaToString f)^"."
-  | sequentToString (Sequent (forms, f))  =
+  | sequentToString (forms, f)  =
         let val number = if (length forms = 1) then " " else "s "
         in
         "From the premise"^number^(premisesToString forms)^
@@ -80,42 +80,40 @@ fun ruleToString r =
 (* Patternmatching only gurantees acceptance of valid proofs, since it is 
  * only to be used with validated BoxProofs *)
 fun proofstepsToString ([], _) = ""
-  | proofstepsToString (Step(NONE, Dis, [ass], "")::steps, ind as t::ts)    =
+  | proofstepsToString ((NONE, Dis, [ass], "")::steps, ind as t::ts)    =
         "\n"^(implode ts)^"Discharge assumption "^(refsToString [ass])^"."
         ^(proofstepsToString (steps, ts))
-  | proofstepsToString (Step(SOME con, Ass, [], self)::steps, tabs)         =
+  | proofstepsToString ((SOME con, Ass, [], self)::steps, tabs)         =
         "\n"^(implode (tabs))^"Assume "^(formulaToString con)^" ["^self^"]."
         ^(proofstepsToString (steps, #"\t"::tabs))
-  | proofstepsToString (Step(SOME con, Prm, [], self)::steps, tabs)         =
-        "\n"^(implode tabs)^"We have "^(formulaToString con)^
-        " as a premise ["^self^"]."
+  | proofstepsToString ((SOME con, Prm, [], self)::steps, tabs)         =
+        "\n"^(implode tabs)^"We have the premise "^(formulaToString con)^
+        " ["^self^"]."
         ^(proofstepsToString (steps, tabs))
-  | proofstepsToString (Step(SOME (c as OR _), Lem, [], self)::steps, tabs) =
+  | proofstepsToString ((SOME (c as OR _), Lem, [], self)::steps, tabs) =
         "\n"^(implode tabs)^"In accordance with "^(ruleToString Lem)^
         ", we introduce "^(formulaToString c)^" ["^self^"]."
         ^(proofstepsToString (steps, tabs))
-  | proofstepsToString (Step(SOME con, Cpy, [Line org], self)::steps, tabs) =
+  | proofstepsToString ((SOME con, Cpy, [Line org], self)::steps, tabs) =
         "\n"^(implode tabs)^"By copying "^org^", we get "^
         (formulaToString con)^" here too ["^self^"]."
         ^(proofstepsToString (steps, tabs))
-  | proofstepsToString (Step(SOME con, rule, refs, self)::steps, tabs)      =
-        let val (wording, post) = if (self = "") 
-                                 then (" we conclude ", ".")
-                                 else (" we get ", " ["^self^"].")
+  | proofstepsToString ((SOME con, rule, refs, self)::steps, tabs)      =
+        let val post = if (self = "") then "." else " ["^self^"]."
         in
             "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
-            (refsToString refs)^wording^(formulaToString con)^post
+            (refsToString refs)^", we get "^(formulaToString con)^post
             ^(proofstepsToString (steps, tabs))
         end
   | proofstepsToString _ = raise Match; (* Declare specific exception? *)
 
 (* fn: proof -> string *)
-fun proofToString (Proof (title, sequent, proofsteplist))  =
+fun proofToString (title, sequent, proofsteplist)  =
    "\n"^title^":\n"^(sequentToString sequent)^
    (proofstepsToString (proofsteplist, []));
 
 (* fn: formula -> string *)
-fun formulaToBoxProof(Atom c)         = Char.toString c
+fun formulaToBoxProof(Atom s)         = s
   | formulaToBoxProof(BOT)            = "bot"
   | formulaToBoxProof(NEG f)          = " ~ "^negToBoxProof(f)
   | formulaToBoxProof(AND (f1,f2))    = andToBoxProof(f1)^" /\\ "^
@@ -152,7 +150,7 @@ fun premisesToBoxProof []             = ""
   | premisesToBoxProof (f1::refs)     = 
         (formulaToBoxProof f1)^" , "^(premisesToBoxProof refs)
 
-fun sequentToBoxProof (Sequent (forms, f))  =
+fun sequentToBoxProof (forms, f)  =
         (premisesToBoxProof forms)^" |- "^(formulaToBoxProof f);
 
 fun ruleToBoxProof r =
@@ -178,13 +176,13 @@ fun ruleToBoxProof r =
 (* Patternmatching only gurantees acceptance of valid proofs, since it is 
  * only to be used with validated proofs *)
 fun proofstepsToBoxProof ([], _) = ""
-  | proofstepsToBoxProof ((Step(SOME con, rule, refs, self))::steps, ind) =
+  | proofstepsToBoxProof ((SOME con, rule, refs, self)::steps, ind) =
         let val prefix          = implode ind
             val (ind, start)    = if rule = Ass 
                                   then (#"\t"::ind, prefix^"( ") 
                                   else (ind, prefix)
             val (rest, indent, post)    = 
-                case steps of (Step (NONE, Dis, [Line a],_))::tail =>
+                case steps of (NONE, Dis, [Line a],_)::tail =>
                   let val ts    = case ind of t::ts => ts | ts => ts
                   in
                    (tail, ts, "\n"^(implode ts)^") ; [#"^a^"-"^self^"]")
@@ -201,11 +199,11 @@ fun proofstepsToBoxProof ([], _) = ""
             "\n"^start^(formulaToBoxProof con)^argument^post
             ^(proofstepsToBoxProof (rest, indent))
         end
-  | proofstepsToBoxProof (Step(_, Dis, _,_)::steps, _) = raise Option 
+  | proofstepsToBoxProof ((_, Dis, _,_)::steps, _) = raise Match
   ;
 
-fun wrap cs (c1, c2) = 
-    foldr (fn (a,b) => a^b) "" (map (fn c => implode[c1, c, c2]) cs);
+fun wrap cs (s1, s2) = 
+    foldr (fn (a,b) => a^b) "" (map (fn c => s1^c^s2) cs);
 
 (* fn: 'a * 'a list -> bool *)
 fun member (element, set) = List.exists (fn e => (element = e)) set
@@ -227,10 +225,10 @@ fun findAtoms [] l      = l
 fun checkTitle title = ""^title
 
 (* fn: proof -> string *)
-fun toBoxProof(Proof (title, seq as Sequent (forms, form), steplist)) = 
+fun toBoxProof (title, seq as (forms, form), steplist) = 
     let val atoms   = findAtoms (form::forms) []
-        val curls   = wrap atoms (#"{", #"}")
-        val squares = wrap atoms (#"[", #"]")
+        val curls   = wrap atoms ("{", "}")
+        val squares = wrap atoms ("[", "]")
         val proof   = " proof"^(bracket (sequentToBoxProof seq))^" = "
     in
         "%abbrev\n"^title^":\n"^curls^proof^squares^"\n"^

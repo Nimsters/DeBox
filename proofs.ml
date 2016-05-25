@@ -16,8 +16,8 @@ fun idValidation (self, allRefs, out) =
     in feedback (valid, out, comment) end;
 
 (* Returns the proper line prefix based on validity of the proofstep *)
-fun getPrefix(true, "")     = "\nConclusion: "
-  | getPrefix(true, self)   = "\n"^self^": "
+fun getPrefix(true, "")     = "\n[Conclusion]: "
+  | getPrefix(true, self)   = "\n["^self^"]: "
   | getPrefix(false, _)     = " ";
 
 (* Validation of the basic pattern *)
@@ -95,7 +95,7 @@ fun mismatch(rule, prefix, out, argument) =
 
 (* Remove closed references from the list of open references *)
 fun closeBox(ass, []) = raise Match (* Should never occur due to earlier
-                                          checks *)
+                                       checks *)
   | closeBox(ass, (r, f)::refs) = if (r = ass) 
                                   then refs 
                                   else closeBox(ass, refs);
@@ -322,7 +322,7 @@ fun patternValidation (
         raise Match (* should never happen *)
 
 (* Validate rule and reference use *)
-fun ruleValidation(valid, context, Step (prop, rule, refs, self), out) =
+fun ruleValidation(valid, context, (prop, rule, refs, self), out) =
     let val (premises, allRefs, openRefs, asums) = context
         val self                = if rule = Dis then "Discharge" else self
         val prefix              = getPrefix(valid, self)
@@ -347,7 +347,7 @@ fun stepValidation(valid, context, out, []) =
         (feedback(false, out, error), NONE, context)
     end
   | stepValidation(valid, context as (_, allRefs, _, _), out, step::steps)  =
-    let val Step (prop, rule, refs, self)  = step
+    let val (prop, rule, refs, self)  = step
         val  lastStep                      = (steps = [])
         val  stepValid                     = (self = "") orelse
                                              idValidation(self, allRefs, out)
@@ -360,10 +360,10 @@ fun stepValidation(valid, context, out, []) =
     end;
 
 (* Validation of an entire proof *) 
-fun proofValidation (proof as Proof (title, seq, steplist))  =
+fun proofValidation (proof as (title, seq, steplist))  =
     let val filename            = "validation_"^title^".txt" (* Add checks *)
         val out                 = TextIO.openOut(filename)
-        val Sequent (premises, goal) = seq
+        val (premises, goal) = seq
         val (valid, last, (_,_,_, asums)) = 
             stepValidation(true, (premises, [], [], []), out, steplist)
         val allDischarged       = 

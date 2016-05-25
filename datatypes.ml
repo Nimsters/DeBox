@@ -1,4 +1,4 @@
-datatype formula    = Atom of char |
+datatype formula    = Atom of string |
                       NEG  of formula |
                       AND  of formula*formula |
                       OR   of formula*formula |
@@ -19,8 +19,8 @@ datatype rule       = Ass | Dis |       (* assumption and discharge *)
 
 datatype reference  = Line of string | Box of string*string;
 
-datatype proofstep  = Step of formula option*rule*reference list * string;
+type proofstep  = formula option*rule*reference list * string;
 
-datatype sequent    = Sequent of formula list * formula;
+type sequent    = formula list * formula;
 
-datatype proof      = Proof of string * sequent * proofstep list;
+type proof      = string * sequent * proofstep list;
