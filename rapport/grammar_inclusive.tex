@@ -1,0 +1,47 @@
+\documentclass[BA.tex]{subfiles}
+\begin{document}
+\newcommand{\id}{{\bf id}}
+{\ttfamily
+\noindent
+PROOF $~~~~~$\tra \id: SEQUENT STEPS\\
+SEQUENT $~~~$\tra \txt{We wish to prove} FORMULA | 
+                  \txt{From} PREMISES\txt{, we wish to prove} FORMULA\\
+PREMISES $~~$\tra \txt{the premise } FORMULA
+                | \txt{the premises} FORMULA \txt{and} FORMULA
+                | \txt{the premises} PRMLIST\\
+PRMLIST $~~~$\tra FORMULA\txt{, } FORMULA\txt{, and } FORMULA 
+                | FORMULA\txt{, } PRMLIST\\
+STEPS $~~~~~$\tra STEP | STEP STEPS\\
+STEP $~~~~~~$\tra ARGUMENT CONCLUSION | STATEMENT CONCLUSION\\
+CONCLUSION   \tra [\id]. | FORMULA [\id]. | FORMULA.\\
+STATEMENT $~$\tra PRM | ASS | DIS\\
+PRM $~~~~~~~$\tra\txt{We have the premise}\\
+ASS $~~~~~~~$\tra\txt{Assume}\\
+DIS $~~~~~~~$\tra\txt{Discharge assumption}\\
+ARGUMENT $~~$\tra\txt{By} ARG\txt{, we get}\\
+ARG $~~~~~~~$\tra RULE | RULE REFPATTERN | RULE \txt{to} REFPATTERN \\
+REFPATTERN   \tra REF | REFLIST\\
+REFLIST $~~~$\tra REF\txt{, }REF\txt{, and} REF | REF\txt{ and }REF |
+                  REF\txt{, }REFLIST\\
+REF $~~~~~~~$\tra [\id] | [\id]\txt{-}[\id]\\
+RULE $~~~~~~$\tra CPY | AIN | AE1 | AE2 | OI1 | OI2 | OEL | IIN | IEL |\\
+$~~~~~~~~~~~~~~$  NIN | NEL | DIN | DEL | BEL | MOD | PBC | LEM\\
+CPY $~~~~~~~$\tra\txt{copying}\\
+AIN $~~~~~~~$\tra\txt{applying the and-introduction rule}\\
+AE1 $~~~~~~~$\tra\txt{applying the first and-elimination rule}\\
+AE2 $~~~~~~~$\tra\txt{applying the second and-elimination rule}\\
+OI1 $~~~~~~~$\tra\txt{applying the first or-introduction rule}\\
+OI2 $~~~~~~~$\tra\txt{applying the second or-introduction rule}\\
+OEL $~~~~~~~$\tra\txt{applying the or-elimination rule}\\
+IIN $~~~~~~~$\tra\txt{applying the implication-introduction rule}\\
+IEL $~~~~~~~$\tra\txt{applying the implication-elimination rule}\\
+NIN $~~~~~~~$\tra\txt{applying the negation-introduction rule}\\
+NEL $~~~~~~~$\tra\txt{applying the negation-elimination rule}\\
+DIN $~~~~~~~$\tra\txt{applying introduction of double-negation}\\
+DEL $~~~~~~~$\tra\txt{applying elimination of double-negation}\\
+BEL $~~~~~~~$\tra\txt{applying elimination of absurdity}\\
+MOD $~~~~~~~$\tra\txt{applying Modus Tollens}\\
+PBC $~~~~~~~$\tra\txt{applying proof by contradiction}\\
+LEM $~~~~~~~$\tra\txt{applying the law of the excluded middle}\\
+}
+\end{document}

@@ -260,6 +260,17 @@ MULTI \(~~~~~~\)$\ra$ PAIR \:\txt{ and also } ELEMENT |
   \end{itemize}
 
 \ss{May 19th}
+{\bf Progress}
+  \begin{itemize}
+    \item Validation works! Hooray!
+    \item BoxProver convertion works! Hooray!
+    \item Started unit-testing (not remotely exhaustive but slightly
+    systematic)
+    \item Had a great example of how short code may cause trouble: pattern-
+    matching did not include \f{Dis} in any of its sets, which caused an
+    unexpected exception that took ages to narrow down with unit-testing. 
+    It would have been found immediately with exhaustive patternmatching.
+  \end{itemize}
 {\bf Questions:}
   \begin{itemize}
     \item If a discharge does not refer to the latest made assumption, 

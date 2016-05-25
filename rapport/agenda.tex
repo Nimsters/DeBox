@@ -20,6 +20,69 @@
 %  \item Misc
 %\end{enumerate}
 
+\ss{May 20}
+\begin{enumerate}
+  \item Status
+    \begin{enumerate}[\HollowBox]
+      \item Add function to create a valid filename from title 
+      string.
+      \item Implement lexer
+      \item Implement parser
+      \item[\Checkedbox] Finish validation of proofs
+        \begin{enumerate}[\HollowBox]
+          \item[\Checkedbox] Handle rule validation, including checking 
+          premises
+          \item[\Checkedbox] Handle step validation
+        \end{enumerate}
+      \item[\Checkedbox] Handle error feedback
+        \begin{enumerate}[\HollowBox]
+          \item[\Checkedbox] Pattern of references inconsistent with rule 
+          requirements
+            \begin{enumerate}[\HollowBox]
+              \item[\Checkedbox] Basic pattern
+              \item[\Checkedbox] Rule-specific
+            \end{enumerate}
+          \item[\Checkedbox] A reference is to a proofstep in a closed box
+        \end{enumerate}
+      \item[\Checkedbox] Printing with indentation
+    \end{enumerate}
+  \item Discussion points
+    \begin{itemize}
+      \item Parsing
+        \begin{description}
+          \item[Question:] Should the parser require \f{title} to be a
+          valid file-name? (and what are the restrictions in \s{BoxProover}?
+          \item[Question:] Should there be other ways of marking references
+          than `['<\f{string}>`]'? 
+          \item[Question:] Should there be checks and error-reports on
+          marking?
+        \end{description}
+      \item Discharging
+        \begin{description}
+          \item[Question:] If the discharged assumption does not match the
+          most recent, what should the strategy be?
+            \begin{itemize}
+              \item Close all (current strategy).
+              \item Close the most recent.
+              \item Close nothing.
+            \end{itemize}
+        \end{description}
+    \end{itemize}
+  \item Action items
+    \begin{enumerate}[\HollowBox]
+      \item Update grammar
+      \item Extend to include (more) errors
+      \item Implement lexer
+      \item Implement parser
+      \item Ensure valid filename from title
+      string.
+    \end{enumerate}
+  \item Misc
+\end{enumerate}
+
+\newpage
+\section{Minutes}
+
 \ss{May 6th}
 \begin{enumerate}
   \item Status
@@ -52,16 +115,18 @@
   \item Discussion points
     \begin{description}
       \item[Question:] What form should the regression testing take?
+      \item[Answer:] Primarily test-suites that should terminate when all
+      tests pass. 
+      Also some qualitative evaluation of the linguistic rendering.
     \end{description}
   \item Action items
     \begin{enumerate}[\HollowBox]
       \item Add function to create a valid filename from title string.
+      \item Implement lexer
+      \item Implement parser
     \end{enumerate}
   \item Misc
 \end{enumerate}
-
-\newpage
-\section{Minutes}
 
 \ss{April 29th}
 \begin{enumerate}
