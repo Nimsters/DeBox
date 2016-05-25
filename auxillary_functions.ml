@@ -192,8 +192,8 @@ fun proofstepsToBoxProof ([], _) = ""
                   | []    => ([], [], "\n.")
                   | tail  => (tail, ind, "; [@"^self^"]")
             val argument  = case rule of
-                    Ass        => " premise"
-                  | Prm        => " assumption"
+                    Ass        => " assumption"
+                  | Prm        => " premise"
                   | Dis        => raise Option (* Cannot happen *)
                   | _          => 
                     " by "^(ruleToBoxProof rule)^(refsToBoxProof refs)
