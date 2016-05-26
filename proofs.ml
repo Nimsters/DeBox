@@ -73,7 +73,8 @@ fun matchRefs ([], _,_,_,_)                             = (true, [])
                  ([f], _)  => (true, SOME f)
                | ([], [])  => (feedback (false, out, start^
                                " does not exist."), NONE)
-               | ([], [f]) => (feedback (false, out, start^" occurs under "^
+               | ([], [f]) => (feedback (false, out, start^" is or occurs "^
+                               "under "^
                                "an assumption that has been discharged, "^
                                "thus the reference is not avialable at "^
                                "this point."), SOME f)
@@ -94,11 +95,19 @@ fun mismatch(rule, prefix, out, argument) =
               "You are using "^ruleToString(rule)^", but "^argument);
 
 (* Remove closed references from the list of open references *)
-fun closeBox(ass, []) = raise Match (* Should never occur due to earlier
-                                       checks *)
-  | closeBox(ass, (r, f)::refs) = if (r = ass) 
-                                  then refs 
-                                  else closeBox(ass, refs);
+fun closeBoxOpen(ass, [])             = raise Match 
+    (* Should never occur due to earlier checks *)
+  | closeBoxOpen(ass, (r, f)::refs)   = if (r = ass) 
+                                        then refs 
+                                        else closeBoxOpen(ass, refs);
+
+(* fn: reference * reference list -> reference list *)
+(* Remove the given assumption and all the assumptions made after it *)
+fun closeBoxAssums(ass, [])       = raise Match
+    (* Should never occur due to earlier checks *)
+  | closeBoxAssums(ass, a::asums) = if (a = ass) 
+                                    then asums 
+                                    else closeBoxAssums(ass, asums);
 
 (* fn: (formula list*(reference*formula) list *(reference*formula) list
  *      reference list)*(string*formula)*bool*string*outstream ->
@@ -109,23 +118,31 @@ fun boxValidation (context as (_, _, _, []), _, valid, self, out) =
         (feedback (false, out, (getPrefix(valid, self))^"You are trying "^
          "to discharge an assumption, but no assumptions are currently in "^
          "effect."), context)
-  | boxValidation ((p, all, opn as (last, lForm)::rs, a::asums),
-                   (aRef, aForm), valid, self, out) =
-    let val ass   = Line aRef
-        val valid = (feedback (ass <> last, out, 
-                     (getPrefix(valid, self))^"Discharging an assumption "^
-                     "immediately after making it is redundant.")) andalso
-                     valid
-        val valid = (feedback (a = ass, out, (getPrefix(valid, self))^
-                      "The assumption you are trying to discharge, "^
-                      "is not the one most recently made.")) andalso valid
+  | boxValidation ((p, all, opn as (last, lForm)::rs, asums as a::rest),
+                   (ass, aForm), valid, self, out) =
+    let val Line aRef   = ass  
+        val valid       = (feedback (ass <> last, out, (getPrefix(valid, 
+                           self))^"Discharging an assumption immediately "^
+                           "after making it is redundant.")) andalso valid
+        val isListed    = feedback (member (ass, asums), out,
+                          (getPrefix(valid, self))^"Either the referent is "^
+                          "not an assumption or it has already been "^
+                          "discharged.")
+        val valid       = isListed andalso
+                          (feedback (a = ass, out, (getPrefix(valid, self))^
+                           "The assumption you are trying to discharge, "^
+                           "is not the one most recently made.")) andalso 
+                           valid
         val (l, valid)  = case last of Line s  => (s, valid)
                                  | Box (_,  s) => (s, feedback (false, out, 
                                  (getPrefix(valid, self)^
                                  "You cannot discharge an assumption "^
                                  "immediately after another discharge.")))
         val line        = (Box (aRef, l), IMP(aForm, lForm))
-        val opn         = closeBox(ass, opn)
+        val (opn,asums) = if isListed
+                          then (closeBoxOpen(ass, opn),
+                                closeBoxAssums(ass, asums))
+                          else (opn, asums)
     in
         (valid, (p, line::all, line::opn, asums))
     end
@@ -150,7 +167,7 @@ fun patternValidation (
         (true, (prms, (line, f)::all, (line, f)::opn, line::asums))
     end
   | patternValidation (
-    (NONE, Dis, [f]), [Line aRef], context, valid, self, out) =
+    (NONE, Dis, [f]), [aRef], context, valid, self, out) =
           boxValidation(context, (aRef, f), valid, "Discharge", out)
   | patternValidation (
     (SOME formula, rule, fList),_, context, valid, self, out) = 
