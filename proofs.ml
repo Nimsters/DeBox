@@ -134,7 +134,17 @@ fun boxValidation (context as (_, _, _, []), _, valid, self, out) =
 
 (* Validation of reference pattern *)
 fun patternValidation (
-    (SOME f, Ass, []), [],(prms, all, opn, asums), valid, self, out) =
+    (SOME f, Prm, []), [],(first::rest, all, opn, asums), valid, self, out) =
+    let val line    = (Line self, f)
+        val prefix  = getPrefix(valid, self)
+        val valid   = feedback(f = first, out, prefix^
+        "The premise you refer to is not the next in line.")
+        val (p, ps) = List.partition (fn form => (form = f)) (first::rest)
+    in
+        (valid, (ps, line::all, line::opn, asums))
+    end    
+  | patternValidation (
+    (SOME f, Ass, []), [],(prms,  all, opn, asums), valid, self, out) =
     let val line = Line self
     in
         (true, (prms, (line, f)::all, (line, f)::opn, line::asums))
@@ -149,9 +159,7 @@ fun patternValidation (
         val bot                     = formulaToString BOT
         val (prms, all, opn, asums) = context
         val valid = case (rule, fList) of
-            (Prm, [])       => feedback (member (formula, prms), out, prefix^
-            "This formula is not listed as a premise in the sequent.")
-          | (Cpy, [f])          => feedback (formula = f, out, prefix^
+            (Cpy, [f])          => feedback (formula = f, out, prefix^
                                    "The line you are copying does not "^
                                    "refer to the formula you have stated.")
           | (Ain, [f1, f2])     => (case formula of
@@ -346,14 +354,18 @@ fun stepValidation(valid, context, out, []) =
     in
         (feedback(false, out, error), NONE, context)
     end
-  | stepValidation(valid, context as (_, allRefs, _, _), out, step::steps)  =
-    let val (prop, rule, refs, self)  = step
-        val  lastStep                      = (steps = [])
-        val  stepValid                     = (self = "") orelse
-                                             idValidation(self, allRefs, out)
-        val (stepValid, context)           = ruleValidation(
+  | stepValidation(valid, context as (prms, all, _, _), out, step::steps)  =
+    let val (prop, rule, refs, self)     = step
+        val  lastStep           = (steps = [])
+        val  id                 = case rule of Dis => "Discharge" | _ => self
+        val  order              = (rule = Prm) orelse
+            (feedback (prms = [], out, (getPrefix(true, id))^
+             "You must list all premises before starting your deductions."))
+        val  stepValid                = (self = "") orelse
+                                             idValidation(self, all, out)
+        val (stepValid, context)      = ruleValidation(order andalso
              stepValid, context, step, out)
-        val valid = (valid andalso stepValid)
+        val valid = (valid andalso order andalso stepValid)
     in
         if lastStep then (valid, prop, context)
                     else stepValidation(valid, context, out, steps)
