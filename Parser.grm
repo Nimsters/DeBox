@@ -1,0 +1,106 @@
+%token <string> ID ATOM
+%token <unit> WWTP FROM WTP PREM PRMS GET WG WC TO PLUS COMMA DOT COLON DASH
+%token <unit> LPAR RPAR LBRA RBRA EOF
+%token <unit> BOT NEG AND OR IMP
+%token <unit> PRM ASS DIS CPY AIN AE1 AE2 OI1 OI2 OEL IIN IEL
+%token <unit> NIN NEL DIN DEL BEL MOD PBC LEM
+
+%right IMP
+%left OR
+%left AND
+%nonassoc NEG
+
+%start Proof
+%type <Proof.proof> Proof
+%type <Proof.sequent> Sequent
+%type <Proof.formula list> Premises PrmList
+%type <Proof.proofstep list> StepList
+%type <Proof.proofstep> Step
+%type <Proof.formula * string> Conclusion
+%type <Proof.reference list> References RefList
+%type <Proof.reference> Ref
+%type <Proof.rule> Rule
+%type <Proof.formula> Formula 
+
+%%
+
+Proof:
+        ID COLON Sequent StepList           {($1, $3, $4)}
+;
+
+Sequent:
+        WWTP Formula DOT                    {([], $2)}
+      | FROM Premises WTP Formula           {($2, $4)}
+;
+
+Premises:
+        PREM Formula                        {[$2]}
+      | PRMS PrmList                        {$2}
+;
+
+PrmList:
+        Formula PLUS Formula                {$1 :: [$3]}
+      | Formula COMMA PrmList               {$1 :: $3}
+;
+
+StepList:
+        EOF                                 {[]}
+      | Step StepList                       {$1 :: $2}
+;
+
+Step:
+        Rule References DOT                 {(NONE, $1, $2, "")}
+      | Rule References Conclusion          {(SOME (#1 $3), $1, $2, #2 $3)}
+      | Rule TO References Conclusion       {(SOME (#1 $4), $1, $3, #2 $4)}
+      | Rule Conclusion                     {(SOME (#1 $2), $1, [], #2 $2)}
+;
+
+Conclusion:
+        WG Formula LBRA ID RBRA DOT         {($2, $4)}
+      | WC Formula DOT                      {($2, "")}
+;
+
+References:
+        Ref                                 {[$1]}
+      | RefList                             {$1}
+;
+
+RefList:
+        Ref PLUS Ref                        {$1 :: [$3]}
+      | Ref COMMA RefList                   {$1 :: $3}
+;
+
+Ref:
+        LBRA ID RBRA                        {Proof.Line $2}
+        LBRA ID RBRA DASH LBRA ID RBRA      {Proof.Box ($2, $6)}
+
+Rule:
+        CPY                                 {Proof.Cpy}
+        AIN                                 {Proof.Ain}
+        AE1                                 {Proof.Ae1}
+        AE2                                 {Proof.Ae2}
+        OI1                                 {Proof.Oi1}
+        OI1                                 {Proof.Oi2}
+        OEL                                 {Proof.Oel}
+        IIN                                 {Proof.Iin}
+        IEL                                 {Proof.Iel}
+        NIN                                 {Proof.Nin}
+        NEL                                 {Proof.Nel}
+        DIN                                 {Proof.Din}
+        DEL                                 {Proof.Del}
+        BEL                                 {Proof.Bel}
+        MOD                                 {Proof.Mod}
+        PBC                                 {Proof.Pbc}
+        LEM                                 {Proof.Lem}
+;
+
+Formula:
+        BOT                                 {Proof.BOT}
+      | ATOM                                {Proof.Atom $1}
+      | Formula IMP Formula                 {Proof.IMP ($1, $3)}
+      | Formula OR  Formula                 {Proof.OR  ($1, $3)}
+      | Formula AND Formula                 {Proof.AND ($1, $3)}
+      | NEG Formula                         {Proof.NEG $2}
+      | LPAR Formula RPAR                   {$2}
+;
+      
