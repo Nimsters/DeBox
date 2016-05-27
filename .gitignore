@@ -5,8 +5,11 @@ __pycache__/
 *.fdb_latexmk
 *.fls
 *.log
-*.out
+*.out*
 *.toc
 *.blg
 *.bbl
 *.txt
+*.ui
+*.uo
+Parsing/*
