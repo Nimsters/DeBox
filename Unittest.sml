@@ -1,11 +1,11 @@
-use "datatypes.ml";
-use "auxillary_functions.ml";
+structure Unittest = struct
+open Auxiliaries;
 
 (* fn bool*outstream*string -> bool *)
 (* Returns given booliean, with the side-effect of outputting the given 
  * string to the given outstream when the boolean is false *)
 fun feedback (true, _, _)           = true
-  | feedback (false, out, message)  = TextIO.output(out, message) <> ()
+  | feedback (false, out, message)  = (TextIO.output(out, message); false)
 
 (* Validation of the uniqueness of a given reference id *)
 fun idValidation (self, allRefs, out) =
@@ -408,3 +408,4 @@ fun proofValidation (proof as (title, seq, steplist))  =
     in
         (TextIO.closeOut(out) = ()) andalso valid
     end;
+end

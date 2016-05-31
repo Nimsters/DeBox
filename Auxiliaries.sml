@@ -1,3 +1,6 @@
+structure Auxiliaries = struct
+open Proof;
+
 fun printl s = print(s^"\n");
 
 fun bracket(s) = "("^s^")";
@@ -234,3 +237,4 @@ fun toBoxProof (title, seq as (forms, form), steplist) =
         "%abbrev\n"^title^":\n"^curls^proof^squares^"\n"^
         (proofstepsToBoxProof (steplist, []))(**)
     end;
+end

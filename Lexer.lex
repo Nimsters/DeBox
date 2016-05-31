@@ -60,7 +60,8 @@ rule Token = parse
       | "By applying Modus Tollens"                     {Parser.MOD ()}
       | "By applying proof by contradiction"            {Parser.PBC ()}
       | "By applying the law of the excluded middle"    {Parser.LEM ()}
-      | ([`a`-`z`] | [`A`-`Z`]) ([`a`-`z`] | [`A`-`Z`] | [`-` `_`])*
+      | ([`a`-`z`] | [`A`-`Z`])
+        ([`a`-`z`] | [`A`-`Z`] | [`-` `_`] | [`0`-`9`])*
                                          {Parser.ID (getLexeme lexbuf)}
       | "\226\138\165"                                  {Parser.BOT ()}
       | "_|_"                                           {Parser.BOT ()}
