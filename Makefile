@@ -4,7 +4,7 @@ OBJS := $(SRCS:.sml=.ui) $(SRCS:.sml=.uo)
 
 all : Main Test
 
-Main : $(OBJS)
+Main : $(OBJS) Parser.grm
 	mosmlc -o Main Main.sml
 
 Test : Unittest.ui Auxiliaries.ui Proof.ui
@@ -29,8 +29,6 @@ Lexer.sml : Lexer.lex Proof.sml
 
 Parser.sml Parser.sig : Parser.grm Proof.sml
 	mosmlyac -v Parser.grm
-
-Lexer.uo : Parser.sig
 
 Validation.uo : Validation.sml 
 	mosmlc -c $^
