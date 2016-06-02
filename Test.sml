@@ -51,8 +51,8 @@ val tests       = add ("Aux Feedback - True",
                         feedback(true, log, "This should not show in log\n"),
                         true, tests)
 val tests       = add ("Aux Feedback - false", 
-                        feedback(false, log, "Feedback test false\n"),
-                        false, tests)
+                        feedback(false, log, 
+                        "Feedback test for false input\n"), false, tests)
 val tests       = add ("Aux Get prefix - True/Empty", 
                         getPrefix(true, ""), "\n[Conclusion]: ", tests)
 val tests       = add ("Aux Get prefix - True/Self", 
@@ -65,12 +65,18 @@ val tests       = add ("Basic Pattern - Lem, valid",
 val tests       = add ("Basic Pattern - Lem, invalid",
                         rulePattern(Lem, [Line "Ref"],"Lem, invalid: ",log), 
                         false, tests)
+val tests       = add ("Basic Pattern - Prm, valid",
+                        rulePattern(Prm, [], "Prm, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Prm, invalid",
+                        rulePattern(Prm, [Line "Ref"],"Prm, invalid: ",log), 
+                        false, tests)
 val tests       = add ("Basic Pattern - Ass, valid",
                         rulePattern(Ass, [], "Ass, valid: ", log), 
                         true, tests)
 val tests       = add ("Basic Pattern - Ass, invalid",
-                        rulePattern(Ass, [Line "Ref"],"\nAss, invalid: ",
-                        log), false, tests)
+                        rulePattern(Ass, [Line "Ref"],"Ass, invalid: ",log), 
+                        false, tests)
 val tests       = add ("PatVal Dis", 
                        patternValidation( (NONE, Dis, [p]), 
                         [Line "assumption"],pV_context, true, "", log),

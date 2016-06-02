@@ -21,13 +21,24 @@ fun getPrefix(true, "")     = "\n[Conclusion]: "
   | getPrefix(false, _)     = " ";
 
 (* Validation of the basic pattern *)
-fun rulePattern (rule, refs, prefix, out) =
+fun rulePattern (Prm,  refs, prefix, out) =
+    feedback(refs = [], out, prefix^"You cannot provide references when "^
+                                    "stating a premise.")
+  | rulePattern (Ass,  refs, prefix, out) =
+    feedback(refs = [], out, prefix^"You cannot provide references when "^
+                                    "stating an assumption.")
+  | rulePattern (Cpy,  refs, prefix, out) =
+    feedback(case refs of [Line _] => true | _ => false, out, prefix^
+        "When copying, you must refer to one single line.")
+  | rulePattern (Dis,  refs, prefix, out) =
+    feedback(case refs of [Line _] => true | _ => false, out, prefix^
+        "When discharging an assumption, you must refer to one single line.")
+  | rulePattern (rule, refs, prefix, out) =
     let val post = " when using "^(ruleToString rule)^"."
-        val zero = (member (rule, [Lem, Ass, Prm])) andalso 
-                   (feedback (refs = [], out, prefix^
+        val zero = (rule = Lem) andalso (feedback (refs = [], out, prefix^
                    "You must not provide any references"^post)
                    )
-        val one  = (member (rule, [Dis, Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
+        val one  = (member (rule, [Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
                    andalso 
                    (feedback (case refs of [Line _] => true | _ => false,
                     out, prefix^"You must provide exactly one reference "^
