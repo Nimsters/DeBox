@@ -3,8 +3,8 @@ struct
 
 exception ValidationError of string;
 
-open Proof
+open Unittest
 
-fun valid proof = true;
+fun valid proof = proofValidation proof;
 
 end

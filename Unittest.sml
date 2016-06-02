@@ -390,7 +390,7 @@ fun stepValidation(valid, context, out, []) =
 
 (* Validation of an entire proof *) 
 fun proofValidation (proof as (title, seq, steplist))  =
-    let val filename            = "validation_"^title^".txt" (* Add checks *)
+    let val filename            = "validation_"^title^".txt"
         val out                 = TextIO.openOut(filename)
         val (premises, goal) = seq
         val (valid, last, (_,_,_, asums)) = 
@@ -406,6 +406,6 @@ fun proofValidation (proof as (title, seq, steplist))  =
                       andalso valid andalso allDischarged
         val _       = feedback (not valid, out, toBoxProof(proof))
     in
-        (TextIO.closeOut(out) = ()) andalso valid
+        (TextIO.closeOut(out); (valid, filename))
     end;
 end

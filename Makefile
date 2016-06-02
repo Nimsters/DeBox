@@ -18,6 +18,14 @@ Unittest.sml : Auxiliaries.ui
 Unittest.uo Unittest.ui : Unittest.sml
 	mosmlc -c $^
 
+Validation.sml : Unittest.ui
+
+Validation.uo : Validation.sml 
+	mosmlc -c $^
+
+Validation.ui : Validation.sig
+	mosmlc -c $^
+
 Proof.uo Proof.ui : Proof.sml
 	mosmlc -c $^
 
@@ -29,12 +37,6 @@ Lexer.sml : Lexer.lex Proof.sml Parser.grm
 
 Parser.sml Parser.sig : Parser.grm Proof.sml
 	mosmlyac -v Parser.grm
-
-Validation.uo : Validation.sml 
-	mosmlc -c $^
-
-Validation.ui : Validation.sig
-	mosmlc -c $^
 
 Parser.ui Parser.uo : Parser.sig Parser.sml Proof.ui
 	mosmlc -c Parser.sig Parser.sml
