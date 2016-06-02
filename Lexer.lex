@@ -19,6 +19,13 @@
  fun lexerError lexbuf s =
         raise LexicalError (s, getPos lexbuf)
  
+ fun keyword s =
+     case s of
+        "to"        => Parser.TO ()
+      | "From"      => Parser.FROM ()
+      | "and"       => Parser.PLUS ()
+      | "Assume"    => Parser.ASS ()
+      | _           => Parser.ID s
 }
 
 rule Token = parse
@@ -27,13 +34,11 @@ rule Token = parse
                                  lineStartPos := getLexemeStart lexbuf::
                                 !lineStartPos;
                                  Token lexbuf}
-      | "From"                  {Parser.FROM ()}
       | "We wish to prove"      {Parser.WWTP ()}
       | ", we wish to prove"    {Parser.WTP  ()}
       | "the premise"           {Parser.PREM ()}
       | "the premises"          {Parser.PRMS ()}
       | ", and"                 {Parser.PLUS ()}
-      | "and"                   {Parser.PLUS ()}
       | ", we get"              {Parser.WG  ()}
       | ", we conclude"         {Parser.WC  ()}
       | "we get"                
@@ -41,7 +46,6 @@ rule Token = parse
       | "we conclude"
       {lexerError lexbuf "You need a comma before the main clause"}
       | "We have the premise"                           {Parser.PRM ()}
-      | "Assume"                                        {Parser.ASS ()}
       | "Discharge assumption"                          {Parser.DIS ()}
       | "By copying"                                    {Parser.CPY ()}
       | "By applying the and-introduction rule"         {Parser.AIN ()}
@@ -62,7 +66,7 @@ rule Token = parse
       | "By applying the law of the excluded middle"    {Parser.LEM ()}
       | ([`a`-`z`] | [`A`-`Z`])
         ([`a`-`z`] | [`A`-`Z`] | [`-` `_`] | [`0`-`9`])*
-                                         {Parser.ID (getLexeme lexbuf)}
+                                           {keyword (getLexeme lexbuf)}
       | "\226\138\165"                                  {Parser.BOT ()}
       | "_|_"                                           {Parser.BOT ()}
       | "\194\172"                                      {Parser.NEG ()}
