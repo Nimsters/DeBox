@@ -11,16 +11,21 @@
 %nonassoc NEG
 
 %start Proof
+%start Step
+%start Argument
+%start Conclusion
 %type <Proof.proof> Proof
 %type <Proof.sequent> Sequent
 %type <Proof.formula list> Premises PrmList
 %type <Proof.proofstep list> StepList
 %type <Proof.proofstep> Step
-%type <Proof.formula * string> Conclusion
-%type <Proof.reference list> References RefList
-%type <Proof.reference> Ref
-%type <Proof.rule> Rule
+%type <Proof.formula  option* string> Conclusion
+%type <Proof.reference list> References Discharge
+%type <Proof.reference> Box
+%type <Proof.rule> Rule Arg
 %type <Proof.formula> Formula 
+%type <Proof.rule * Proof.reference list> Argument
+%type <string> Ref
 
 %%
 
@@ -49,49 +54,71 @@ StepList:
 ;
 
 Step:
-        Rule Conclusion                     {(SOME (#1 $2), $1, [], #2 $2)}
-      | Rule TO References Conclusion       {(SOME (#1 $4), $1, $3, #2 $4)}
-      | Rule References Conclusion          {(SOME (#1 $3), $1, $2, #2 $3)}
-      | Rule References DOT                 {(NONE, $1, $2, "")}
+        Discharge                           {(NONE, Proof.Dis, $1, "")}
+      | Argument Conclusion                 {(#1 $2, #1 $1, #2 $1, #2 $2)}
+;
+
+Discharge:
+        DIS Ref DOT                         {[Proof.Line $2]}
+      | DIS Box DOT                         {[$2]}
+      | DIS References DOT                  {$2} 
 ;
 
 Conclusion:
-        WG Formula LBRA ID RBRA DOT         {($2, $4)}
-      | WC Formula DOT                      {($2, "")}
+        WG Formula Ref DOT                  {(SOME $2, $3)}
+      | WC Formula DOT                      {(SOME $2, "")}
+      | Formula Ref DOT                     {(SOME $1, $2)}
+;
+
+Argument:
+        Arg Ref                             {($1, [Proof.Line $2])}
+      | Arg References                      {($1, $2)}
+      | Arg Box                             {($1, [$2])}
+      | Arg                                 {($1, [])}
+;
+
+Arg:
+        Rule TO                             {$1}
+      | Rule                                {$1}
 ;
 
 References:
-        Ref                                 {[$1]}
-      | RefList                             {$1}
+        Ref PLUS Ref                    {(Proof.Line $1) :: [Proof.Line $3]}
+      | Ref PLUS Box                        {(Proof.Line $1) :: [$3]}
+      | Box PLUS Ref                        {$1 :: [Proof.Line $3]}
+      | Box PLUS Box                        {$1 :: [$3]}
+      | Box COMMA References                {$1 :: $3}
+      | Ref COMMA References                {(Proof.Line $1) :: $3}
 ;
 
-RefList:
-        Ref PLUS Ref                        {$1 :: [$3]}
-      | Ref COMMA RefList                   {$1 :: $3}
-;
+Box:
+        Ref DASH Ref                        {Proof.Box ($1, $3)}
+;    
 
 Ref:
-        LBRA ID RBRA                        {Proof.Line $2}
-        LBRA ID RBRA DASH LBRA ID RBRA      {Proof.Box ($2, $6)}
+        LBRA ID RBRA                        {$2}
+;
 
 Rule:
-        CPY                                 {Proof.Cpy}
-        AIN                                 {Proof.Ain}
-        AE1                                 {Proof.Ae1}
-        AE2                                 {Proof.Ae2}
-        OI1                                 {Proof.Oi1}
-        OI1                                 {Proof.Oi2}
-        OEL                                 {Proof.Oel}
-        IIN                                 {Proof.Iin}
-        IEL                                 {Proof.Iel}
-        NIN                                 {Proof.Nin}
-        NEL                                 {Proof.Nel}
-        DIN                                 {Proof.Din}
-        DEL                                 {Proof.Del}
-        BEL                                 {Proof.Bel}
-        MOD                                 {Proof.Mod}
-        PBC                                 {Proof.Pbc}
-        LEM                                 {Proof.Lem}
+        ASS                                 {Proof.Ass}
+      | PRM                                 {Proof.Prm}
+      | CPY                                 {Proof.Cpy}
+      | AIN                                 {Proof.Ain}
+      | AE1                                 {Proof.Ae1}
+      | AE2                                 {Proof.Ae2}
+      | OI1                                 {Proof.Oi1}
+      | OI2                                 {Proof.Oi2}
+      | OEL                                 {Proof.Oel}
+      | IIN                                 {Proof.Iin}
+      | IEL                                 {Proof.Iel}
+      | NIN                                 {Proof.Nin}
+      | NEL                                 {Proof.Nel}
+      | DIN                                 {Proof.Din}
+      | DEL                                 {Proof.Del}
+      | BEL                                 {Proof.Bel}
+      | MOD                                 {Proof.Mod}
+      | PBC                                 {Proof.Pbc}
+      | LEM                                 {Proof.Lem}
 ;
 
 Formula:

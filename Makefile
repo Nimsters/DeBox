@@ -24,7 +24,7 @@ Proof.uo Proof.ui : Proof.sml
 Lexer.uo Lexer.ui : Lexer.sml
 	mosmlc -c $^
 
-Lexer.sml : Lexer.lex Proof.sml 
+Lexer.sml : Lexer.lex Proof.sml Parser.grm
 	mosmllex Lexer.lex
 
 Parser.sml Parser.sig : Parser.grm Proof.sml

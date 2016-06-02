@@ -68,9 +68,9 @@ rule Token = parse
       | "\194\172"                                      {Parser.NEG ()}
       | "~"                                             {Parser.NEG ()}
       | "\226\136\167"                                  {Parser.AND ()}
-      | `/``\`                                          {Parser.AND ()}
+      | "/\\"                                           {Parser.AND ()}
       | "\226\136\168"                                  {Parser.OR  ()}
-      | `/``\`                                          {Parser.OR  ()}
+      | "\\/"                                           {Parser.OR  ()}
       | "\226\134\146"                                  {Parser.IMP ()}
       | "->"                                            {Parser.IMP ()}
       | "=>"                                            {Parser.IMP ()}
@@ -79,7 +79,7 @@ rule Token = parse
       | `(`                                             {Parser.LPAR ()}
       | `)`                                             {Parser.RPAR ()}
       | `[`                                             {Parser.LBRA ()}
-      | `]`                                             {Parser.LBRA ()}
+      | `]`                                             {Parser.RBRA ()}
       | `-`                                             {Parser.DASH ()}
       | `:`                                             {Parser.COLON ()}
       | `,`                                             {Parser.COMMA ()}
