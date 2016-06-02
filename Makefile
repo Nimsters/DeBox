@@ -18,7 +18,7 @@ Unittest.sml : Auxiliaries.ui
 Unittest.uo Unittest.ui : Unittest.sml
 	mosmlc -c $^
 
-Validation.sml : Unittest.ui
+Validation.sml : Unittest.ui Validation.ui
 
 Validation.uo : Validation.sml 
 	mosmlc -c $^

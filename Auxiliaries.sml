@@ -79,6 +79,7 @@ fun ruleToString r =
             | Pbc => "proof by contradiction"
             | Lem => "the law of the excluded middle"
 
+
 (* fn: proofstep * char list -> string *)
 (* Patternmatching only gurantees acceptance of valid proofs, since it is 
  * only to be used with validated BoxProofs *)

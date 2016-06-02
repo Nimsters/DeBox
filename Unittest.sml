@@ -5,7 +5,7 @@ open Auxiliaries;
 (* Returns given booliean, with the side-effect of outputting the given 
  * string to the given outstream when the boolean is false *)
 fun feedback (true, _, _)           = true
-  | feedback (false, out, message)  = (TextIO.output(out, message); false)
+  | feedback (false, out, message)  = (TextIO.output(out, message) <> ())
 
 (* Validation of the uniqueness of a given reference id *)
 fun idValidation (self, allRefs, out) =
@@ -24,31 +24,32 @@ fun getPrefix(true, "")     = "\n[Conclusion]: "
 fun rulePattern (rule, refs, prefix, out) =
     let val post = " when using "^(ruleToString rule)^"."
         val zero = (member (rule, [Lem, Ass, Prm])) andalso 
-                   (feedback (refs = [], out, "You must not provide any "^
-                    "references"^post)
+                   (feedback (refs = [], out, prefix^
+                   "You must not provide any references"^post)
                    )
         val one  = (member (rule, [Dis, Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
                    andalso 
                    (feedback (case refs of [Line _] => true | _ => false,
-                    out, "You must provide exactly one reference to a "^
-                    "single line"^post)
+                    out, prefix^"You must provide exactly one reference "^
+                    "to a single line"^post)
                    )
         val two  = (member (rule, [Mod, Ain, Iel, Nel])) andalso
                    (feedback (case refs of [Line _, Line _] => true 
                                          | _                => false, out,
-                    "You must provide exactly two references to a single "^
-                    "line"^post)
+                    prefix^"You must provide exactly two references to a "^
+                    "single line"^post)
                    )
         val box  = (member (rule, [Iin, Nin, Pbc])) andalso
                    (feedback (case refs of [Box _] => true | _ => false, out,
-                    "You must provide exactly one reference to a range of "^
-                    "lines from an assumption to its discharging"^post)
+                    prefix^"You must provide exactly one reference to a "^
+                    "range of lines from an assumption to its discharging"^
+                    post)
                    )
         val oin  = (rule = Oel) andalso 
                    (feedback (case refs of [Line _, Box _, Box _] => true
                                          | _                      => false,
-                    out, "You must provide exactly one reference to a "^
-                    "single line and two references to ranges from "^
+                    out, prefix^"You must provide exactly one reference "^
+                    "to a single line and two references to ranges from "^
                     "assumptions to their discharging"^post)
                    )
     in

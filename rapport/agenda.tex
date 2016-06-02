@@ -20,271 +20,300 @@
 %  \item Misc
 %\end{enumerate}
 
-\ss{May 20}
+\ss{June 3rd}
 \begin{enumerate}
   \item Status
     \begin{enumerate}[\HollowBox]
-      \item Add function to create a valid filename from title 
-      string.
-      \item Implement lexer
-      \item Implement parser
-      \item[\Checkedbox] Finish validation of proofs
-        \begin{enumerate}[\HollowBox]
-          \item[\Checkedbox] Handle rule validation, including checking 
-          premises
-          \item[\Checkedbox] Handle step validation
-        \end{enumerate}
-      \item[\Checkedbox] Handle error feedback
-        \begin{enumerate}[\HollowBox]
-          \item[\Checkedbox] Pattern of references inconsistent with rule 
-          requirements
-            \begin{enumerate}[\HollowBox]
-              \item[\Checkedbox] Basic pattern
-              \item[\Checkedbox] Rule-specific
-            \end{enumerate}
-          \item[\Checkedbox] A reference is to a proofstep in a closed box
-        \end{enumerate}
-      \item[\Checkedbox] Printing with indentation
-    \end{enumerate}
-  \item Discussion points
-    \begin{itemize}
-      \item Parsing
-        \begin{description}
-          \item[Question:] Should the parser require \f{title} to be a
-          valid file-name? (and what are the restrictions in \s{BoxProover}?
-          \item[Question:] Should there be other ways of marking references
-          than `['<\f{string}>`]'? 
-          \item[Question:] Should there be checks and error-reports on
-          marking?
-        \end{description}
-      \item Discharging
-        \begin{description}
-          \item[Question:] If the discharged assumption does not match the
-          most recent, what should the strategy be?
-            \begin{itemize}
-              \item Close all (current strategy).
-              \item Close the most recent.
-              \item Close nothing.
-            \end{itemize}
-        \end{description}
-    \end{itemize}
-  \item Action items
-    \begin{enumerate}[\HollowBox]
-      \item Update grammar
-      \item Extend to include (more) errors
-      \item Implement lexer
-      \item Implement parser
-      \item Ensure valid filename from title
+      \item[\Checkedbox] Update grammar
+      \item[\Checkedbox] Extend to include (more) errors
+      \item[\Checkedbox] Implement lexer
+      \item[\Checkedbox] Implement parser
+      \item[\Checkedbox] Ensure valid filename from title
       string.
     \end{enumerate}
-  \item Misc
-\end{enumerate}
-
-\newpage
-\section{Minutes}
-
-\ss{May 6th}
-\begin{enumerate}
-  \item Status
-    \begin{enumerate}[\HollowBox]
-      \item[\Checkedbox] Add subsection on discharging to structural outline
-      \item Finish validation of proofs
-        \begin{enumerate}[\HollowBox]
-          \item Handle rule validation, including checking premises
-          \item Handle step validation
-          \item[\Checkedbox] Handle id validation
-          \item[\Checkedbox] Handle final proof validation
-            \begin{enumerate}[\HollowBox]
-              \item[\Checkedbox] Check all assumptions are discharged
-              \item[\Checkedbox] Check that the conclusion in the last step
-              is the goal
-            \end{enumerate}
-        \end{enumerate}
-      \item Handle error feedback
-        \begin{enumerate}[\HollowBox]
-          \item Number of references inconsistent with rule requirements
-          \item Pattern of references inconsistent with rule requirements
-          \item A reference is to a proofstep in a closed box
-          \item[\Checkedbox] The id given to a proofstep has already been 
-          used
-          \item[\Checkedbox] Not all assumptions are discharged
-          \item[\Checkedbox] The conlclusion of the last step is not the goal
-        \end{enumerate}
-      \item Try printing with indentation
-    \end{enumerate}
   \item Discussion points
     \begin{description}
-      \item[Question:] What form should the regression testing take?
-      \item[Answer:] Primarily test-suites that should terminate when all
-      tests pass. 
-      Also some qualitative evaluation of the linguistic rendering.
+      \item[Problem:] When the unittest is run, the log shows that
+      \f{ruleToString} returns a string for the wrong rule, and I cannot
+      figure out why. \f{ruleToString} is found in \f{Auxiliaries.sml}
+      \item[Question:] Does any of you have time to look over a draft of the
+      report? And if so, when do I need to have that finished, in order for
+      you to have time to read it and give some feedback, preferably with
+      a couple of days to go before the deadline?
+      \item[Question:] Which specific sections are expected in the report?
     \end{description}
   \item Action items
     \begin{enumerate}[\HollowBox]
-      \item Add function to create a valid filename from title string.
-      \item Implement lexer
-      \item Implement parser
+      \item Finish report
     \end{enumerate}
   \item Misc
 \end{enumerate}
 
-\ss{April 29th}
-\begin{enumerate}
-  \item Status
-    \begin{enumerate}[\HollowBox]
-      \item[\Checkedbox] Write natural language grammar for proofs
-        \begin{enumerate}[\HollowBox]
-          \item[\Checkedbox] Account for rules
-          \item[\Checkedbox] Account for references
-          \item[\Checkedbox] Account for preamble
-        \end{enumerate}
-    \end{enumerate}
-  \item Discussion points
-    \begin{description}
-      \item[Question:] The implementation of proofs allows for errors, but
-      presumably the formal grammar for proofs should not?
-      \item[Answer:] The grammar on which the parser is built, should match
-      the implementation and allow for errrors; this grammar should be seen
-      as the an extention of a more restrictive one, that only allows for
-      correctly structured proofs.
-      \item[NB!] Some parts of validation are not context-free, e.g. that
-      a specific rule can only be used on references which refer to formulas
-      in specific relation to each other; thus a context-free grammar cannot
-      be restrictive enough to only accept valid proofs.
-      \item[Question:] What ouput should the validation function produce?\\
-      My thought was feedback on each step (either in the terminal or an 
-      output file), and if the proof is valid and closed, a file with the
-      proof in \s{BoxProver} syntax, ready to be copy/pasted. What are your
-      thought?
-      \item[Answer:] Output should be file of either feedback or a valid
-      proof in \s{BoxProver} syntax.
-      \item[Question:] Is it considered an error if a proof goes on after
-      the sought conclusion has been reached outside any boxes?
-      \item[Answer:] Yes, this should be added to error handling.
-      \item[SML question:] Since we want to give feedback on errors, should
-      errors like using the wrong rule be implemented by raising and 
-      handling exceptions, or simply incorporated in the regular code, so
-      to speak?
-      \item[Answer:] Giving feedback is correct use of the program, so
-      exceptions should not be used for these types of errors.
-      \item[SML question:] Is it possible to prompt the user for input by
-      giving them an editable default string? I have not been able to figure
-      out a way to do this, but it would be nice if the system could be 
-      interactive without the user having to retype the whole proof (or
-      alternatively ``just'' everything since the first error, every time
-      they want to check their progress.
-      \item[Answer:] There's a library for that.
-      \item[Regression testing format] Forgotten, moved to next session.
-    \end{description}
-  \item Action items
-    \begin{enumerate}[\HollowBox]
-      \item Add subsection on discharging to structural outline
-      \item Finish validation of proofs
-        \begin{enumerate}[\HollowBox]
-          \item Handle rule validation, including checking premises
-          \item Handle step validation
-          \item Handle id validation
-          \item Handle proof validation
-            \begin{enumerate}[\HollowBox]
-              \item Check all assumptions are discharged
-              \item Check that the conclusion in the last step is the goal
-            \end{enumerate}
-        \end{enumerate}
-      \item Handle error feedback
-        \begin{enumerate}[\HollowBox]
-          \item Number of references inconsistent with rule requirements
-          \item Pattern of references inconsistent with rule requirements
-          \item A reference is to a proofstep in a closed box
-          \item The id given to a proofstep has already been used
-          \item The conlclusion of the last step is not the goal
-        \end{enumerate}
-      \item Try printing with indentation
-    \end{enumerate}
-  \item Misc.
-    \begin{description}
-      \item[Question:] Fritz, you seemed to want to change how I deliver the
-      agenda?
-      Should I edit the calendar event instead, or keep it on gitHub?
-      \item[Answer:] No changes in delivery method, but material is to be 
-      sent wednesday night or thursdag during the day.
-      \item[NB!] Boxes in fitch-style proofs discharge assumptions when
-      closing a box, and thus independently of the conclusion drawn from it,
-      whereas existing nomenclature uses ``discharge'' when applying a rule
-      to a box and thus drawing conclusions based on findings under the
-      assumption in question.
-    \end{description}
-\end{enumerate}
-
-\ss{April 15th}
-\begin{enumerate}
-  \item Status
-    \begin{itemize}
-      \item Grammar for propositions is implemented as mutually recursive 
-      datatypes in SML
-
-      \item Conversion to \f{string} is implemented for propositions
-      
-      \item Conversion to symbol syntax (\emph{not} \s{BoxProver}) is
-      implemented for formulas
-
-      \item Conversion of formulas to propositions is implemented
-    \end{itemize}
-
-  \item Discussion points
-    \begin{description}
-      {\color{DarkGrey}
-      \item[Question:] Should quotation marks alternate between `p' and 
-      ``p''?
-
-      \item[Question:] Should disjunctions be negated with 'neither/nor'
-      constructions?
-
-      \item[Question:] Are non-bracketed implications fine as elements in
-      lists, or should they be bracketed?
-
-      \item[Question:] Are non-bracketed implications fine as final elements
-      in \s{and also} constuctions? See result of tests for reference.
-
-      \item[Question:] When an \s{and} list starts with an \s{and}-pair, 
-      should this be split into two elements (which is what happens now), 
-      or should the pair be kept as the first element?
-
-      \item[Question:] Do bracketed statements and negations work in
-      \s{pair}-constructions, or should \f{SINGLE} be exchanged for 
-      \f{UNIT}?
-
-      \item[Question:] Are we satisfied with how the propositions read in
-      general? See result of tests for reference.}
-
-    \end{description}
-
-  \item Action items
-    \begin{enumerate}[\HollowBox]
-      \item[\CrossedBox] Update natural language proposition grammar 
-      to account for the fact that
-      implications only take \f{UNIT} and \f{NEGATION}, not \f{STAT}
-      \item[\CrossedBox] Update natural language proposition grammar to 
-      account for decisions
-      \item \textcolor{Red}{Extend} \textcolor{Green}{Write} natural
-      language grammar to proofs
-        \begin{enumerate}[\HollowBox]
-          \item Account for rules
-          \item Account for references
-          \item Account for preamble
-        \end{enumerate}
-    \end{enumerate}
-
-  \item Misc
-    \begin{description}
-      \item[Decision:] At least for now, render formulae in symbol notation
-      and focus on doing the proof steps in natural language.
-
-      \item[Decision:] Create an "inclusive" rather than restrictive syntax 
-      for proofs: it is important for the program to accept incorrect 
-      proofs in order to correct the syntax. In other words: if students are
-      to learn, they need to make mistakes.
-    \end{description}
-\end{enumerate}
-
+%\newpage
+%\section{Minutes}
+%
+%\ss{May 20}
+%\begin{enumerate}
+%  \item Status
+%    \begin{enumerate}[\HollowBox]
+%      \item Add function to create a valid filename from title 
+%      string.
+%      \item Implement lexer
+%      \item Implement parser
+%      \item[\Checkedbox] Finish validation of proofs
+%        \begin{enumerate}[\HollowBox]
+%          \item[\Checkedbox] Handle rule validation, including checking 
+%          premises
+%          \item[\Checkedbox] Handle step validation
+%        \end{enumerate}
+%      \item[\Checkedbox] Handle error feedback
+%        \begin{enumerate}[\HollowBox]
+%          \item[\Checkedbox] Pattern of references inconsistent with rule 
+%          requirements
+%            \begin{enumerate}[\HollowBox]
+%              \item[\Checkedbox] Basic pattern
+%              \item[\Checkedbox] Rule-specific
+%            \end{enumerate}
+%          \item[\Checkedbox] A reference is to a proofstep in a closed box
+%        \end{enumerate}
+%      \item[\Checkedbox] Printing with indentation
+%    \end{enumerate}
+%  \item Discussion points
+%    \begin{itemize}
+%      \item Parsing
+%        \begin{description}
+%          \item[Question:] Should the parser require \f{title} to be a
+%          valid file-name? (and what are the restrictions in \s{BoxProover}?
+%          \item[Question:] Should there be other ways of marking references
+%          than `['<\f{string}>`]'? 
+%          \item[Question:] Should there be checks and error-reports on
+%          marking?
+%        \end{description}
+%      \item Discharging
+%        \begin{description}
+%          \item[Question:] If the discharged assumption does not match the
+%          most recent, what should the strategy be?
+%            \begin{itemize}
+%              \item Close all (current strategy).
+%              \item Close the most recent.
+%              \item Close nothing.
+%            \end{itemize}
+%        \end{description}
+%    \end{itemize}
+%  \item Action items
+%    \begin{enumerate}[\HollowBox]
+%      \item Update grammar
+%      \item Extend to include (more) errors
+%      \item Implement lexer
+%      \item Implement parser
+%      \item Ensure valid filename from title
+%      string.
+%    \end{enumerate}
+%  \item Misc
+%\end{enumerate}
+%
+%\ss{May 6th}
+%\begin{enumerate}
+%  \item Status
+%    \begin{enumerate}[\HollowBox]
+%      \item[\Checkedbox] Add subsection on discharging to structural outline
+%      \item Finish validation of proofs
+%        \begin{enumerate}[\HollowBox]
+%          \item Handle rule validation, including checking premises
+%          \item Handle step validation
+%          \item[\Checkedbox] Handle id validation
+%          \item[\Checkedbox] Handle final proof validation
+%            \begin{enumerate}[\HollowBox]
+%              \item[\Checkedbox] Check all assumptions are discharged
+%              \item[\Checkedbox] Check that the conclusion in the last step
+%              is the goal
+%            \end{enumerate}
+%        \end{enumerate}
+%      \item Handle error feedback
+%        \begin{enumerate}[\HollowBox]
+%          \item Number of references inconsistent with rule requirements
+%          \item Pattern of references inconsistent with rule requirements
+%          \item A reference is to a proofstep in a closed box
+%          \item[\Checkedbox] The id given to a proofstep has already been 
+%          used
+%          \item[\Checkedbox] Not all assumptions are discharged
+%          \item[\Checkedbox] The conlclusion of the last step is not the goal
+%        \end{enumerate}
+%      \item Try printing with indentation
+%    \end{enumerate}
+%  \item Discussion points
+%    \begin{description}
+%      \item[Question:] What form should the regression testing take?
+%      \item[Answer:] Primarily test-suites that should terminate when all
+%      tests pass. 
+%      Also some qualitative evaluation of the linguistic rendering.
+%    \end{description}
+%  \item Action items
+%    \begin{enumerate}[\HollowBox]
+%      \item Add function to create a valid filename from title string.
+%      \item Implement lexer
+%      \item Implement parser
+%    \end{enumerate}
+%  \item Misc
+%\end{enumerate}
+%
+%\ss{April 29th}
+%\begin{enumerate}
+%  \item Status
+%    \begin{enumerate}[\HollowBox]
+%      \item[\Checkedbox] Write natural language grammar for proofs
+%        \begin{enumerate}[\HollowBox]
+%          \item[\Checkedbox] Account for rules
+%          \item[\Checkedbox] Account for references
+%          \item[\Checkedbox] Account for preamble
+%        \end{enumerate}
+%    \end{enumerate}
+%  \item Discussion points
+%    \begin{description}
+%      \item[Question:] The implementation of proofs allows for errors, but
+%      presumably the formal grammar for proofs should not?
+%      \item[Answer:] The grammar on which the parser is built, should match
+%      the implementation and allow for errrors; this grammar should be seen
+%      as the an extention of a more restrictive one, that only allows for
+%      correctly structured proofs.
+%      \item[NB!] Some parts of validation are not context-free, e.g. that
+%      a specific rule can only be used on references which refer to formulas
+%      in specific relation to each other; thus a context-free grammar cannot
+%      be restrictive enough to only accept valid proofs.
+%      \item[Question:] What ouput should the validation function produce?\\
+%      My thought was feedback on each step (either in the terminal or an 
+%      output file), and if the proof is valid and closed, a file with the
+%      proof in \s{BoxProver} syntax, ready to be copy/pasted. What are your
+%      thought?
+%      \item[Answer:] Output should be file of either feedback or a valid
+%      proof in \s{BoxProver} syntax.
+%      \item[Question:] Is it considered an error if a proof goes on after
+%      the sought conclusion has been reached outside any boxes?
+%      \item[Answer:] Yes, this should be added to error handling.
+%      \item[SML question:] Since we want to give feedback on errors, should
+%      errors like using the wrong rule be implemented by raising and 
+%      handling exceptions, or simply incorporated in the regular code, so
+%      to speak?
+%      \item[Answer:] Giving feedback is correct use of the program, so
+%      exceptions should not be used for these types of errors.
+%      \item[SML question:] Is it possible to prompt the user for input by
+%      giving them an editable default string? I have not been able to figure
+%      out a way to do this, but it would be nice if the system could be 
+%      interactive without the user having to retype the whole proof (or
+%      alternatively ``just'' everything since the first error, every time
+%      they want to check their progress.
+%      \item[Answer:] There's a library for that.
+%      \item[Regression testing format] Forgotten, moved to next session.
+%    \end{description}
+%  \item Action items
+%    \begin{enumerate}[\HollowBox]
+%      \item Add subsection on discharging to structural outline
+%      \item Finish validation of proofs
+%        \begin{enumerate}[\HollowBox]
+%          \item Handle rule validation, including checking premises
+%          \item Handle step validation
+%          \item Handle id validation
+%          \item Handle proof validation
+%            \begin{enumerate}[\HollowBox]
+%              \item Check all assumptions are discharged
+%              \item Check that the conclusion in the last step is the goal
+%            \end{enumerate}
+%        \end{enumerate}
+%      \item Handle error feedback
+%        \begin{enumerate}[\HollowBox]
+%          \item Number of references inconsistent with rule requirements
+%          \item Pattern of references inconsistent with rule requirements
+%          \item A reference is to a proofstep in a closed box
+%          \item The id given to a proofstep has already been used
+%          \item The conlclusion of the last step is not the goal
+%        \end{enumerate}
+%      \item Try printing with indentation
+%    \end{enumerate}
+%  \item Misc.
+%    \begin{description}
+%      \item[Question:] Fritz, you seemed to want to change how I deliver the
+%      agenda?
+%      Should I edit the calendar event instead, or keep it on gitHub?
+%      \item[Answer:] No changes in delivery method, but material is to be 
+%      sent wednesday night or thursdag during the day.
+%      \item[NB!] Boxes in fitch-style proofs discharge assumptions when
+%      closing a box, and thus independently of the conclusion drawn from it,
+%      whereas existing nomenclature uses ``discharge'' when applying a rule
+%      to a box and thus drawing conclusions based on findings under the
+%      assumption in question.
+%    \end{description}
+%\end{enumerate}
+%
+%\ss{April 15th}
+%\begin{enumerate}
+%  \item Status
+%    \begin{itemize}
+%      \item Grammar for propositions is implemented as mutually recursive 
+%      datatypes in SML
+%
+%      \item Conversion to \f{string} is implemented for propositions
+%      
+%      \item Conversion to symbol syntax (\emph{not} \s{BoxProver}) is
+%      implemented for formulas
+%
+%      \item Conversion of formulas to propositions is implemented
+%    \end{itemize}
+%
+%  \item Discussion points
+%    \begin{description}
+%      {\color{DarkGrey}
+%      \item[Question:] Should quotation marks alternate between `p' and 
+%      ``p''?
+%
+%      \item[Question:] Should disjunctions be negated with 'neither/nor'
+%      constructions?
+%
+%      \item[Question:] Are non-bracketed implications fine as elements in
+%      lists, or should they be bracketed?
+%
+%      \item[Question:] Are non-bracketed implications fine as final elements
+%      in \s{and also} constuctions? See result of tests for reference.
+%
+%      \item[Question:] When an \s{and} list starts with an \s{and}-pair, 
+%      should this be split into two elements (which is what happens now), 
+%      or should the pair be kept as the first element?
+%
+%      \item[Question:] Do bracketed statements and negations work in
+%      \s{pair}-constructions, or should \f{SINGLE} be exchanged for 
+%      \f{UNIT}?
+%
+%      \item[Question:] Are we satisfied with how the propositions read in
+%      general? See result of tests for reference.}
+%
+%    \end{description}
+%
+%  \item Action items
+%    \begin{enumerate}[\HollowBox]
+%      \item[\CrossedBox] Update natural language proposition grammar 
+%      to account for the fact that
+%      implications only take \f{UNIT} and \f{NEGATION}, not \f{STAT}
+%      \item[\CrossedBox] Update natural language proposition grammar to 
+%      account for decisions
+%      \item \textcolor{Red}{Extend} \textcolor{Green}{Write} natural
+%      language grammar to proofs
+%        \begin{enumerate}[\HollowBox]
+%          \item Account for rules
+%          \item Account for references
+%          \item Account for preamble
+%        \end{enumerate}
+%    \end{enumerate}
+%
+%  \item Misc
+%    \begin{description}
+%      \item[Decision:] At least for now, render formulae in symbol notation
+%      and focus on doing the proof steps in natural language.
+%
+%      \item[Decision:] Create an "inclusive" rather than restrictive syntax 
+%      for proofs: it is important for the program to accept incorrect 
+%      proofs in order to correct the syntax. In other words: if students are
+%      to learn, they need to make mistakes.
+%    \end{description}
+%\end{enumerate}
+%
 \label{LastBody}
 \end{document}
