@@ -59,24 +59,127 @@ val tests       = add ("Aux Get prefix - True/Self",
                         getPrefix(true, "Test"), "\n[Test]: ", tests)
 val tests       = add ("Aux Get prefix - False", 
                         getPrefix(false, "False"), " ", tests)
-val tests       = add ("Basic Pattern - Lem, valid",
-                        rulePattern(Lem, [], "Lem, valid: ", log), 
-                        true, tests)
-val tests       = add ("Basic Pattern - Lem, invalid",
-                        rulePattern(Lem, [Line "Ref"],"Lem, invalid: ",log), 
-                        false, tests)
 val tests       = add ("Basic Pattern - Prm, valid",
                         rulePattern(Prm, [], "Prm, valid: ", log), 
                         true, tests)
 val tests       = add ("Basic Pattern - Prm, invalid",
-                        rulePattern(Prm, [Line "Ref"],"Prm, invalid: ",log), 
-                        false, tests)
+                        rulePattern(Prm, [Line "Ref"],
+                        "Prm, invalid: ",log), false, tests)
 val tests       = add ("Basic Pattern - Ass, valid",
                         rulePattern(Ass, [], "Ass, valid: ", log), 
                         true, tests)
 val tests       = add ("Basic Pattern - Ass, invalid",
-                        rulePattern(Ass, [Line "Ref"],"Ass, invalid: ",log), 
-                        false, tests)
+                        rulePattern(Ass, [Line "Ref"],
+                        "\nAss, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Cpy, valid",
+                        rulePattern(Cpy, [Line "Ref"], "Cpy, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Cpy, invalid",
+                        rulePattern(Cpy, [],
+                        "\nCpy, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Dis, valid",
+                        rulePattern(Dis, [Line "Ref"], "Dis, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Dis, invalid",
+                        rulePattern(Dis, [],
+                        "\nDis, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Lem, valid",
+                        rulePattern(Lem, [], "Lem, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Lem, invalid",
+                        rulePattern(Lem, [Line "Ref"],
+                        "\nLem, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Ae1, valid",
+                        rulePattern(Ae1, [Line "Ref"], "Ae1, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Ae1, invalid",
+                        rulePattern(Ae1, [],
+                        "\nAe1, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Ae2, valid",
+                        rulePattern(Ae2, [Line "Ref"], "Ae2, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Ae2, invalid",
+                        rulePattern(Ae2, [],
+                        "\nAe2, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Oi1, valid",
+                        rulePattern(Oi1, [Line "Ref"], "Oi1, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Oi1, invalid",
+                        rulePattern(Oi1, [],
+                        "\nOi1, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Oi2, valid",
+                        rulePattern(Oi2, [Line "Ref"], "Oi2, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Oi2, invalid",
+                        rulePattern(Oi2, [],
+                        "\nOi2, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Din, valid",
+                        rulePattern(Din, [Line "Ref"], "Din, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Din, invalid",
+                        rulePattern(Din, [],
+                        "\nDin, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Del, valid",
+                        rulePattern(Del, [Line "Ref"], "Del, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Del, invalid",
+                        rulePattern(Del, [],
+                        "\nDel, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Bel, valid",
+                        rulePattern(Bel, [Line "Ref"], "Bel, valid: ", log), 
+                        true, tests)
+val tests       = add ("Basic Pattern - Bel, invalid",
+                        rulePattern(Bel, [],
+                        "\nBel, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Mod, valid",
+                        rulePattern(Mod, [Line "Ref", Line "Ref2"], 
+                        "Mod, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Mod, invalid",
+                        rulePattern(Mod, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nMod, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Ain, valid",
+                        rulePattern(Ain, [Line "Ref", Line "Ref2"], 
+                        "Ain, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Ain, invalid",
+                        rulePattern(Ain, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nAin, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Iel, valid",
+                        rulePattern(Iel, [Line "Ref", Line "Ref2"], 
+                        "Iel, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Iel, invalid",
+                        rulePattern(Iel, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nIel, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Nel, valid",
+                        rulePattern(Nel, [Line "Ref", Line "Ref2"], 
+                        "Nel, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Nel, invalid",
+                        rulePattern(Nel, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nNel, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Iin, valid",
+                        rulePattern(Iin, [Box ("Ref","Ref2")], 
+                        "Iin, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Iin, invalid",
+                        rulePattern(Iin, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nIin, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Nin, valid",
+                        rulePattern(Nin, [Box ("Ref","Ref2")], 
+                        "Nin, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Nin, invalid",
+                        rulePattern(Nin, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nNin, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Pbc, valid",
+                        rulePattern(Pbc, [Box ("Ref","Ref2")], 
+                        "Pbc, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Pbc, invalid",
+                        rulePattern(Pbc, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nPbc, invalid: ",log), false, tests)
+val tests       = add ("Basic Pattern - Oel, valid", rulePattern(Oel, [
+                        Line "Ref", Box ("Ref","Ref2"), Box ("Ass", "Con")], 
+                        "Oel, valid: ", log), true, tests)
+val tests       = add ("Basic Pattern - Oel, invalid",
+                        rulePattern(Oel, [Line "Ref", Box ("Ref","Ref2")],
+                        "\nOel, invalid: ",log), false, tests)
+
 val tests       = add ("PatVal Dis", 
                        patternValidation( (NONE, Dis, [p]), 
                         [Line "assumption"],pV_context, true, "", log),

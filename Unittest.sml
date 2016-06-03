@@ -9,7 +9,7 @@ fun feedback (true, _, _)           = true
 
 (* Validation of the uniqueness of a given reference id *)
 fun idValidation (self, allRefs, out) =
-    let val comment = self^": This reference id has already been used."
+    let val comment = "["^self^"]: This reference id has already been used."
         val valid   = 
         (List.find (fn (Line x, _) => (x = self) | (Box _, _) => false) 
         allRefs) = NONE
@@ -36,7 +36,7 @@ fun rulePattern (Prm,  refs, prefix, out) =
   | rulePattern (rule, refs, prefix, out) =
     let val post = " when using "^(ruleToString rule)^"."
         val zero = (rule = Lem) andalso (feedback (refs = [], out, prefix^
-                   "You must not provide any references"^post)
+                   "You cannot provide references"^post)
                    )
         val one  = (member (rule, [Ae1, Ae2, Oi1, Oi2, Din, Del, Bel])) 
                    andalso 
@@ -56,7 +56,7 @@ fun rulePattern (Prm,  refs, prefix, out) =
                     "range of lines from an assumption to its discharging"^
                     post)
                    )
-        val oin  = (rule = Oel) andalso 
+        val oel  = (rule = Oel) andalso 
                    (feedback (case refs of [Line _, Box _, Box _] => true
                                          | _                      => false,
                     out, prefix^"You must provide exactly one reference "^
@@ -64,7 +64,7 @@ fun rulePattern (Prm,  refs, prefix, out) =
                     "assumptions to their discharging"^post)
                    )
     in
-        (zero orelse one orelse two orelse box orelse oin)
+        (zero orelse one orelse two orelse box orelse oel)
     end;
 
 (* Finds forms in reference table *)
@@ -91,7 +91,8 @@ fun matchRefs ([], _,_,_,_)                             = (true, [])
                                "thus the reference is not avialable at "^
                                "this point."), SOME f)
                | ([], _)   => (false, NONE)
-               | (fl, _)   => (feedback (false, out, start^"is not unique; "^
+               | (fl, _)   => (feedback (false, out, start^
+                               " is not unique; "^
                                "in the following, the last occurance has "^
                                "been used."),SOME (List.last fl))
         val prefix         = if valid then prefix else " "

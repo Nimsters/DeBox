@@ -17,6 +17,7 @@ fun formulaToString(Atom s)         = s
                                       formulaToString(f2)
 
 and negToString(a as Atom _)        = formulaToString(a)
+  | negToString(b as BOT)           = formulaToString(b)
   | negToString(n as NEG _)         = formulaToString(n)
   | negToString(f as _)             = bracket(formulaToString(f))
 
@@ -128,6 +129,7 @@ fun formulaToBoxProof(Atom s)         = s
                                       formulaToBoxProof(f2)
 
 and negToBoxProof(a as Atom _)        = formulaToBoxProof(a)
+  | negToBoxProof(b as BOT)           = formulaToBoxProof(b)
   | negToBoxProof(n as NEG _)         = formulaToBoxProof(n)
   | negToBoxProof(f as _)             = bracket(formulaToBoxProof(f))
 
