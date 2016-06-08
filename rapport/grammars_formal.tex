@@ -1,0 +1,211 @@
+\documentclass[BA.tex]{subfiles}
+\begin{document}
+
+\sss{Formal syntax}
+\chk{As mentioned in the introduction}, one of the goals of this project
+ was to define a formal syntax for proofs that was consistent with the
+ \bp\ syntax\cite{boxhelp}. The simplest way to achieve consistency
+ was to base \our\ formal syntax directly on the syntax of \bp.
+ The resulting syntax for foumulas is given in \fig{fform}, where we see
+ that implications (\verb+=>+) are right-associative, while conjunctions 
+ (\verb+/\+) and disjunctions (\verb+\/+) are left-associative. It further
+ shows the precedence levels, with negation (\verb+~+) binding the tightest
+ and implication binding the lightest. The symbols for logical operators are
+ represented by easily typed\footnote{By virtue of being available on 
+ standard western computer keyboards.} characters, and match the
+ operator specifications of \bp.
+
+\begin{figure}[t]
+\subfile{grammar_formal_formulae}
+\caption{A formal syntax for formulae, based on \bp\ syntax.}
+\label{fform}
+\end{figure}
+
+%\noindent
+ An extention for this syntax is found in \fig{fproof}, which shows a formal
+ syntax for proofs based directly on the \bp\ syntax.
+ The essential components of a proof are the sequent to be
+ proven and the steps of deduction by which it is done. 
+ As seen in \fig{fproof}, the sequent in \our\ formal syntax
+ follows standard mathematical notation, with the exception that the
+ turnstyle, like the \chk{other} logical operators, is represented by
+ easily typed characters (\verb+|-+) rather than the standard symbol 
+ (\(\vd\)).
+ 
+ The deduction steps themselves are written using 
+ Fitch-style notation\cite{boxhelp},
+ and are a list of lines and boxes. Such a list always ends with a 
+ conclusion consisting of a formula
+ and a deductive argument; each line consist of a conclusion followed 
+ by a line-reference; each box is a list of steps that starts with an 
+ assumption and, as always, ends with a conclusion, all of wich is in
+ parenthesis followed by a box reference; an argument is either stating
+ the formula a premise or stating by which rule and -- if any -- required 
+ references the formula is deduced; the rules are grouped according to the
+ pattern of their required references. 
+ 
+ The rest of the syntax further 
+ specifies the details of the \bp\ syntax, e.g. spacing requirements, and
+ the concrete formulation of the start of the proof, which includes starting
+ each proof with the string \f{\%abbrev} and a titlei, and listing all atoms
+ in both curly and square
+ brackets before and after stating the sequent, respectively.
+
+
+\begin{figure}[H]
+\subfile{grammar_formal_proofs}
+\caption{A formal syntax for proofs, based on \bp\ syntax.}
+\label{fproof}
+\end{figure}
+
+\sss{Design decisions: Operator associativity and proof composition}
+
+The syntax shown in \fig{fform} complies with the associativity 
+conventions stated in \emph{Logic in Computer Science}\cite[p.~5]{hr}, which
+only specifies that implications are right-associative, but there is
+general disagreement among textbooks on the associativity of conjunctions
+and disjunctions. Some textbooks specify 
+\emph{left}-associativity\cite[p.~46]{disc}, while others specify that 
+conjunctions and disjunctions are \emph{right}-associative like 
+implications\cite[p.~11]{math}\cite[p.~5]{calc}. The difference between
+left- and right-associative conjunctions and disjunctions is the
+interpretation of forulae like \(p \land q \land r\): when conjunctions are
+\emph{left}-associative it is interpreted as \((p \land q) \land r\), but
+when \emph{right}-associative, the interpretation is \(p \land (q \land r)\).
+Since \(\land\) and \(\lor\) are associative operators, the two 
+interpretations are logically equivalent. 
+As a result, neither the validity nor the truth value of
+\(p \land q \land r\) differs depending on the side to which they
+associate, whereas \(p \ra (q \ra r)\) is \emph{not} logically equivalent
+to \((p \ra q) \ra r\). Perhaps that is why textbooks agree on implications
+being right-associative while the disagreement concerning conjunctions and
+disjunctions seems to go unresolved.
+
+Textbooks also disagree on wether conjunctions and disjunctions
+are at the same precedence level\cite{hr} or conjunction bind tighter than
+disjunctions\cite{math}\cite{calc}\cite{disc}. They do, however, all
+agree that associativity and precedence conventions increase readability
+by reducing the need for parenthesis while ensuring unambiguous
+interpretation of 
+formulae\cite[p.~5]{hr}\cite[p.~46]{disc}\cite[p.~10]{math}\cite[p.~5]{calc}.
+Both associativity and precedence levels in the formal syntax was chosen 
+to match those of \bp\ for consistency and because the \bp\ syntax separates
+conjunctions and disjunctions with regard to precedence, thus ensuring the
+least possible need for parenthesis in formulae.
+
+ Basing the formal syntax for formulae on the \bp\ syntax meant few
+ deviations from textbook standards, but the \bp\ syntax for proofs lies 
+ somewhat further removed from standard notation due to its implementation.
+ The additional requirements feature most strongly in the beginning of 
+ proofs, as described above, while the base structure closely follows 
+ standard Fitch-style notation. This last point was one of two main
+ reasons behind the decision to fully adopt the \bp\ syntax as our formal
+ syntax for proofs; the other was the expectation that students will do
+ the majority of ther formal notation proofs in \bp\ anyway, since it has
+ a pretty-printer which renders proofs very nicely in the style found in
+ \emph{Logic in Computer Science}\chk{\cite{hr}}. Adding yet another formal
+ syntax to the two already on the syllabus -- textbook and \bp\ notation --
+ seemed unnecessary, and might risk confusing students rather than further
+ their understanding. Instead, \we\ fully adopted the \bp\ syntax, seeing
+ the base structure as \chk{a fine} foundation for the abstract syntax.
+
+\sss{Abstract syntax}
+
+The abstract syntax is implemented as types and datatypes in \s{Standard ML},
+ and the full code can be found in \app{syntax}. 
+
+At top-level, the abstract syntax follows the base structure of the
+ \bp\ surface syntax, with a proof being represented by a title, a 
+ sequent and a list of proof steps. This is implemented as the type
+ \f{proof}, shown in \lst{../Proof.sml2828}, with a \f{string} 
+ \chk{representing} the title.
+ 
+\codepart{../Proof.sml}{Implementation of the abstract syntax for\
+proofs \chk{at top level}}{28}{28}
+ 
+ The abstract syntax for proof steps, however, does not match the surface
+ syntax directly. Instead, there are only single-line steps, implemented
+ as the type \f{proofstep} composed of a 
+ \f{formula option}, a \f{rule}, a (possibly empty) \f{reference list}, 
+ and a \f{string}. Thus, assumptions and discharges of assumptions are
+ considered independent steps rather than composit parts of a box-step, as
+ are all steps that occur between two such steps.
+ The implementation is shown in 
+ \lst{../Proof.sml2424} and ensures that all proofs are represented
+ without any boxes \chk{or their nesting to arbitrary depth}.
+
+\codepart{../Proof.sml}{Implementation of the abstract syntax for proof\
+steps}{24}{24}
+
+ This flattened structure, however, requires that the stating
+ of premises, assumptions, and discharges are represented by rules of their
+ own, rather than separate step constructors. Thus, the rule set is 
+ implemented as the datatype \f{rule} with a nullary constructor for each
+ of the inference rules known from propositional logic as well as for
+ stating premises (\f{Prm}), assumptions (\f{Ass}), and discharges of 
+ assumptions (\f{Dis}). 
+ The definition of the \f{rule} datatype is shown in \lst{../Proof.sml1020}.
+
+\codepart{../Proof.sml}{Implementation of the abstract syntax for rules}{10}
+{20}
+
+While boxes are not represented in the abstract syntax, the distinction
+ between line- and box-\emph{references} is kept.
+ These two \chk{kinds} of references are implemented as constructors of the 
+ \f{reference} datatype; the \f{Line} 
+ constructor takes a \f{string} as its argument wheras the \f{Box}
+ constructor takes a \f{(string * string)} tuple, as shown in 
+ \lst{../Proof.sml2222}.
+
+\codepart{../Proof.sml}{Implementation of the abstract syntax for\
+references}{22}{22}
+
+Like the top-level \f{proof} type, the implementation of the abstract syntax
+ for sequents and formulae follows the \bp\ surface syntax closely.
+ Formulae are implemented as the recursive datatype \f{formula}, shown in
+ \lst{../Proof.sml38}, while sequents are implemented as the \f{sequent} 
+ type consisting of a (possibly empty) \f{formula list} and a \f{formula},
+ shown in \lst{../Proof.sml2626}.
+
+\codepart{../Proof.sml}{Implementation of the\
+abstract syntax for formulae}{3}{8}
+
+ As \lst{../Proof.sml38} shows, the \f{formula} datatype has a
+ constructor for each \chk{logical}
+ operator as well as for atoms and absurdity
+ (\f{BOT}); the \f{BOT} constructor takes no arguments, the \f{Atom}
+ constructor takes a \f{string}, the \f{NEG} constructor takes a \f{formula}
+ as its argument,
+ and the rest of the constructors all take a \f{(formula * formula)} tuple.
+
+\codepart{../Proof.sml}{Implementation of the\
+abstract syntax for formulae}{26}{26}
+
+\sss{Design decisions: Feedback as a teaching tool}
+The purpose of the tool \we\ have develped is to teach students to write 
+ valid proofs \chk{in} propositional logic. 
+ \chk{Giving concise and relevant feedback
+ on errors is a big part of teaching any subject, and no less so when it
+ comes to Logic in Computer Science.} Since \chk{\bp 's main function is to
+ \emph{verify} proofs}, its syntax is designed to represent \emph{correct}
+ proofs. As a result, the syntax is very strict, and making mistakes results
+ in Twelf-generated error messages, which ``may sometimes look 
+ cryptic''\cite[`Dealing with errors']{boxhelp}. Instead of halting on all
+ errors during validation, \our\ tool handles many of them while completing 
+ the validation process and giving continuous feedback. In order to 
+ provide this feedback, the abstract syntax needs to represent erroneous 
+ proofs as well as valid ones; hence the decision to implement 
+ \f{proofstep} as one specified type, which fits all combinations of rules
+ and reference patterns. With this design, the abstract syntax accepts both
+ correctly composed proof steps and steps with too many or too few 
+ references, references of the wrong kind, no inferred formula, and an
+ inferred formula when there should have been none. The last case relates
+ to assumption discharges, which are considered steps in their own right,
+ and no longer dependent on a box structure; since boxes may be written
+ incorrectly by students -- e.g. not closed, or two closed at the same time
+ -- proper feedback depends on assumptions and discharges appearing as
+ steps even when a properly constructed box does not. The chosen
+ solution was, as mentioned above, to flatten the structure and replace
+ boxes by their component steps.
+
+\end{document}

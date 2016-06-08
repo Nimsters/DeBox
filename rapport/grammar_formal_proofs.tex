@@ -1,0 +1,29 @@
+\documentclass[BA.tex]{subfiles}
+\begin{document}
+\newcommand{\id}{{\bf var}}
+\newcommand{\atom}{{\id}}
+{\ttfamily
+\noindent
+PROOF $~~~~~$\tra \%abbrev \id: CURLS proof( SEQUENT ) =
+                  SQUARES STEPS .\\
+CURLS $~~~~~$\tra \{\atom\} | \{\atom\} CURLS\\
+SQUARES $~~~$\tra [\atom] | [\atom] SQUARES\\
+SEQUENT $~~~$\tra \txt{|-} FORMULA | PREMISES , \txt{|-} FORMULA\\
+PREMISES $~~$\tra FORMULA | FORMULA, PREMISES\\
+STEPS $~~~~~$\tra CONCLUSION | STEP STEPS\\
+STEP $~~~~~~$\tra BOX | CONCLUSION; [LREF]\\
+CONCLUSION   \tra FORMULA ARGUMENT\\
+BOX $~~~~~~~$\tra ( FORMULA assumption ; [LREF] STEPS ) ; [BREF]\\
+ARGUMENT $~~$\tra premise | by RULE\spc \\
+RULE $~~~~~~$\tra lem | RULE1 LREF | RULE2 LREF LREF | 
+                  RULEBOX BREF |
+                  dis\_e LREF BREF BREF\\
+RULE1 $~~~~~$\tra copy | con\_e1 | con\_e2 |
+                  dis\_i1 | 
+                  dis\_i2 | nni | nne | bot\_e\\
+RULE2 $~~~~~$\tra mt | con\_i | imp\_e | neg\_e\\
+RULEB $~~~~~$\tra imp\_i | neg\_i | pbc\\
+LREF $~~~~~~$\tra @\id\\
+BREF $~~~~~~$\tra \#\id
+}
+\end{document}
