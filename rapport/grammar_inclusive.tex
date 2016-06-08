@@ -9,20 +9,25 @@ SEQUENT $~~~$\tra \txt{We wish to prove} FORMULA. |
 PREMISES $~~$\tra \txt{the premise } FORMULA
                 | \txt{the premises} PRMLIST\\
 PRMLIST $~~~$\tra FORMULA \txt{and} FORMULA
-                | FORMULA\txt{, } FORMULA\txt{, and} FORMULA 
+                | FORMULA\txt{, and} FORMULA 
                 | FORMULA\txt{, } PRMLIST\\
 STEPS $~~~~~$\tra STEP | STEP STEPS\\
-STEP $~~~~~~$\tra RULE REFERENCES. | RULE CONCLUSION 
-                | RULE \txt{to} REFERENCES CONCLUSION |\\
-$~~~~~~~~~~~~~~$  RULE REFERENCES CONCLUSION\\
-CONCLUSION   \tra \txt{, we get} FORMULA [\id]. 
+STEP $~~~~~~$\tra DISCHARGE | ARGUMENT CONCLUSION\\
+DISCHARGE $~$\tra DIS REF. | DIS BOX . | DIS REFERENCES .\\
+ARGUMENT $~~$\tra ARG | ARG REF | ARG BOX | ARG REFERENCES\\
+ARG $~~~~~~~$\tra RULE \txt{to} | RULE\\
+CONCLUSION   \tra FORMULA REF . | \txt{, we get} FORMULA REF . 
                 | \txt{, we conclude} FORMULA.\\
-REFERENCES   \tra REF | REFLIST\\
-REFLIST $~~~$\tra REF\txt{, }REF\txt{, and} REF | REF\txt{ and }REF |
-                  REF\txt{, }REFLIST\\
-REF $~~~~~~~$\tra [\id] | [\id]\txt{ - }[\id]\\
-RULE $~~~~~~$\tra CPY | AIN | AE1 | AE2 | OI1 | OI2 | OEL | IIN | IEL |\\
-$~~~~~~~~~~~~~~$  NIN | NEL | DIN | DEL | BEL | MOD | PBC | LEM\\
+REFERENCES   \tra REF\txt{, and} REF | REF\txt{ and }REF |
+                  REF\txt{, and} BOX | REF\txt{ and }BOX |
+                  REF\txt{, }REFLIST |\\
+$~~~~~~~~~~~~~~$  BOX\txt{, and} REF | BOX\txt{ and }REF |
+                  BOX\txt{, and} BOX | BOX\txt{ and }BOX |
+                  BOX\txt{, }REFLIST\\
+BOX $~~~~~~~$\tra REF\txt{-}REF\\
+REF $~~~~~~~$\tra [\id]\\
+RULE $~~~~~~$\tra PRM | ASS | CPY | AIN | AE1 | AE2 | OI1 | OI2 | OEL |\\
+$~~~~~~~~~~~~~~$  IIN | IEL | NIN | NEL | DIN | DEL | BEL | MOD | PBC | LEM\\
 PRM $~~~~~~~$\tra\txt{We have the premise}\\
 ASS $~~~~~~~$\tra\txt{Assume}\\
 DIS $~~~~~~~$\tra\txt{Discharge assumption}\\
@@ -42,6 +47,6 @@ DEL $~~~~~~~$\tra\txt{By applying elimination of double-negation}\\
 BEL $~~~~~~~$\tra\txt{By applying elimination of absurdity}\\
 MOD $~~~~~~~$\tra\txt{By applying Modus Tollens}\\
 PBC $~~~~~~~$\tra\txt{By applying proof by contradiction}\\
-LEM $~~~~~~~$\tra\txt{By applying the law of the excluded middle}\\
+LEM $~~~~~~~$\tra\txt{By applying the law of the excluded middle}
 }
 \end{document}

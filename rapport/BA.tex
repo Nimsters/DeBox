@@ -5,6 +5,19 @@
 \newcommand{\tit}{Natural deduction proofs in (pseudo) natural language}
 \title{\tit}
 \fancyhead[c]{\tit}
+\newcommand{\we}{we}
+\newcommand{\We}{We}
+\newcommand{\our}{our}
+\newcommand{\us}{us}
+\newcommand{\bp}{\s{BoxProver}}
+\newcommand{\FIX}[1]{\textcolor{Red}{FIX THIS: #1}}
+%\newcommand{\FIX}[1]{#1}
+\newcommand{\chk}[1]{\textcolor{Blue}{Check this: #1}}
+%\newcommand{\chk}[1]{#1}
+\lstset{language=ML, 
+emph={BasicIO, TextIO, List, Int, Lexing, Lexer, Parser, Validation,
+Nonstdio, Auxiliaries},
+emphstyle={\color{Olive}}}
 
 \begin{document}
 \pagenumbering{Alph}
@@ -16,6 +29,7 @@
 \tableofcontents
 \thispagestyle{empty}
 \pagebreak
+\lstlistoflistings
 %\listoffigures
 %\pagebreak
 \pagenumbering{arabic}
@@ -24,7 +38,7 @@
 
 \ss{Abstract}
 
-\section{Introduction}
+\section{Introduction} %Remove splits into subsections
 \subsection{Problem statement}
     Is it possible to develop a tool for writing natural deduction proofs
     in a subset of the English language that will read as natural language
@@ -69,105 +83,48 @@
     regardless
     of what declarative sentences one may choose $p$ and $q$ to represent.
 
-\subsection{Tasks}
+\subsection{Results}
 
-\begin{itemize}
-\item 
-    Formulation of a concrete {\bf natural language} syntax for formulae and
-    proofs by natural deduction.
-    \begin{description}
-        \item[Criteria:]~ \\ \vspace{-5 mm}
-            \begin{itemize}
-                \item Should read as natural language: Ideally compliant
-                with Attempto Controlled English, otherwise arguably
-                consistent with standard English.
-                \item Should be arguably consistent with commonly used 
-                mathematical terminology.
-            \end{itemize}
-        \item[Tasks:]~ \\ \vspace{-5 mm}
-            \begin{enumerate}[\HollowBox]
-               \item Define NL grammar for propositions
-               \item Define NL grammar for proofs
-               \item Verify or refute consistency with ACE
-               \item Argue consistency with standard English
-               \item Argue consistency with mathematical terminology
-            \end{enumerate}
-    \end{description}
+\subsection{Example}
 
-\item
-    Formulation of a concrete {\bf formal} syntax and corresponding abstract
-    syntax for propositional formulae and proofs.
-    \begin{description}
-        \item[Criteria:]~ \\ \vspace{-5 mm}
-            \begin{itemize}
-                \item Should be consistent with \s{BoxProver}\cite{box}
-                syntax.
-            \end{itemize}
-        \item[Tasks:]~ \\ \vspace{-5 mm}
-            \begin{enumerate}[\HollowBox]
-               \item Define formal syntax for formulae
-               \item Define abstract syntax for formulae
-               \item Define formal syntax for proofs
-               \item Define abstract syntax
-               \item Verify consistency with \s{BoxProver} syntax
-            \end{enumerate}
-    \end{description}
+\section{Tools and programming language} % Necessary? Other title?
 
-\item
-    Design, implementation and test of formal $\longleftrightarrow$ natural
-    language conversions.
-    \begin{description}
-        \item[Criteria:]~ \\ \vspace{-5 mm}
-            \begin{itemize}
-                \item Should convert correctly from {\bf formal} to
-                {\bf natural language}.
-                \item Should convert correctly form {\bf natural language}
-                to {\bf formal}.
-                \item Should, if possible, display round-trip ability as
-                described in the problem statement.
-            \end{itemize}
-    \end{description}
+\newpage
 
-\item
-    Development of a library of formulae and proofs for test and validation,
-    including method and tool support for managing and adding to such a 
-    library.
-    \begin{description}
-        \item[Criteria:]~ \\ \vspace{-5 mm}
-            \begin{itemize}
-                \item Tool support for regression testing.
-                \item Should test a collection of examples from relevant
-                textbooks, specificaly Huth \& Ryan\cite{hr}.
-            \end{itemize}
-    \end{description}
-\end{itemize}
-
-\section{Analysis and Theory}
-\ss{Context Free Grammars}
-% Inlude restrictions here?
-
-\ss{Logical formulae in natural language}
-\sss{Grammar for formulae in words}
-\sss{Article}
-\sss{Grammar for formulae using symbols}
+\section{Grammars}
+\FIX{SOMETHING BRIEF ABOUT CONTEXTFREE GRAMMARS}
+\ss{Propositional logic as a formal language}
+\subfile{grammars_formal}
 
 \ss{Grammar for proofs in natural language}
-\sss{Limitations}
-\sss{Feedback as a teaching tool}
-\sss{Extention of the grammar}
+\subfile{grammars_proofs}
 
-\ss{Grammar for proofs in propositional logic}
-\sss{Abstract syntax for formulae}
-\sss{Abstract syntax for proofs}
+\subfile{grammars_formulae}
 
-\section{The tool}
-\ss{Choice of programming language}
-\ss{Overall design}
-\ss{Implementation of grammars}
+\section{Parsing and unparsing}
+\ss{Lexer}
+\ss{Parser}
+\ss{Unparsing to natural language}
+\ss{Unparsing to \s{BoxProver} syntax}
 \ss{Decisions on specific implementation details}
 \sss{Handling boxes}
 
-\section{Testing and results}
+\section{Validation}
+\ss{The validation module}
+\ss{Decisions on specific implementation details}
+
+\section{Evaluation}
+\ss{Qualitative evaluations}
+\sss{Consistency with standard English}
+\sss{Consistency with common mathematical terminology}
+\sss{Consistency with \s{BoxProver} syntax}
+\ss{Testing of code}
+\sss{Unittesting}
+\sss{Usecases}
+\sss{Roundtripping}
+
+\section{Discussion}
+
 \section{Conclusions}
 
 
@@ -184,9 +141,29 @@
 \titlelabel{\thetitle . \quad}
 \section*{Appendices}\label{FirstApp}
 \addcontentsline{toc}{section}{Appendices}
-%\renewcommand \thesubsection{\Alph{subsection}}
+\renewcommand \thesubsection{\alph{subsection}}
 \section{Code}
-%\code{../formulasNL.ml}{formulasNL}
+\ss{\tt{Proof.sml}}\label{Proof}
+\codeapp{../Proof.sml}
+
+\ss{\tt{Lexer.lex}}\label{Lexer}
+\codeapp{../Lexer.lex}
+
+\ss{\tt{Parser.grm}}\label{Parser}
+\codeapp{../Parser.grm}
+
+\ss{\tt{Main.sml}}\label{Main}
+\codeapp{../Main.sml}
+
+\ss{\tt{Validation.sml}}\label{Validation}
+\codeapp{../Validation.sml}
+
+\ss{\tt{Validation.sig}}\label{Validation}
+\codeapp{../Validation.sig}
+
+\ss{\tt{Auxiliaries.sml}}\label{Auxiliaries}
+\codeapp{../Auxiliaries.sml}
+
 \label{LastApp}
 \label{LastPage}
 \end{document}
