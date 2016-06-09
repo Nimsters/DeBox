@@ -1,8 +1,25 @@
 structure Auxiliaries = struct
 open Proof;
 
+(* fn: 'a * 'a list -> bool *)
+fun member (element, set) = List.exists (fn e => (element = e)) set
+
+(* fn bool*outstream*string -> bool *)
+(* Returns given booliean, with the side-effect of outputting the given 
+ * string to the given outstream when the boolean is false *)
+fun feedback (true, _, _)           = true
+  | feedback (false, out, message)  = (TextIO.output(out, message); false)
+
+(* bool * string -> string *)
+(* Returns the proper line prefix based on current validity *)
+fun getPrefix(true, "")     = "\n[Conclusion]: "
+  | getPrefix(true, self)   = "\n["^self^"]: "
+  | getPrefix(false, _)     = " ";
+
+(* fn: string -> unit *)
 fun printl s = print(s^"\n");
 
+(* fn: string -> string *)
 fun bracket(s) = "("^s^")";
 
 (* fn: formula -> string *)
@@ -62,7 +79,8 @@ fun sequentToString ([], f)     =
         ", we wish to prove "^(formulaToString f)^"."
         end;
 
-fun ruleToString Ain = "the and-introduction rule"
+fun ruleToString Cpy = "the copy rule"
+  | ruleToString Ain = "the and-introduction rule"
   | ruleToString Ae1 = "the first and-elimination rule"
   | ruleToString Ae2 = "the second and-elimination rule"
   | ruleToString Oi1 = "the first or-introduction rule"
@@ -147,8 +165,9 @@ fun referenceToBoxProof (Line s)      = "@"^s
 
 (* fn: reference list -> string *)
 fun refsToBoxProof []             = ""
+  | refsToBoxProof [r1]           = " "^(referenceToBoxProof r1)^" " 
   | refsToBoxProof (r1::refs)     = 
-        (referenceToBoxProof r1)^" "^(refsToBoxProof refs)
+        " "^(referenceToBoxProof r1)^(refsToBoxProof refs)
   ;
 
 (* fn: formula list -> string *)
@@ -160,23 +179,26 @@ fun sequentToBoxProof (forms, f)  =
         (premisesToBoxProof forms)^" |- "^(formulaToBoxProof f);
 
 fun ruleToBoxProof r =
-    case r of Cpy => "copy"
-            | Ain => "con_i "
-            | Ae1 => "con_e1 "
-            | Ae2 => "con_e2 "
-            | Oi1 => "dis_i1 "
-            | Oi2 => "dis_i2 "
-            | Oel => "dis_e "
-            | Iin => "imp_i "
-            | Iel => "imp_e "
-            | Nin => "neg_i "
-            | Nel => "neg_e "
-            | Din => "nni "
-            | Del => "nne "
-            | Bel => "bot_e "
-            | Mod => "mt "
-            | Pbc => "pbc "
-            | Lem => "lem "
+    case r of Prm => "premise"
+            | Ass => "assumption"
+            | Dis => raise Match (* specify exception? *)
+            | Cpy => "copy"
+            | Ain => "con_i"
+            | Ae1 => "con_e1"
+            | Ae2 => "con_e2"
+            | Oi1 => "dis_i1"
+            | Oi2 => "dis_i2"
+            | Oel => "dis_e"
+            | Iin => "imp_i"
+            | Iel => "imp_e"
+            | Nin => "neg_i"
+            | Nel => "neg_e"
+            | Din => "nni"
+            | Del => "nne"
+            | Bel => "bot_e"
+            | Mod => "mt"
+            | Pbc => "pbc"
+            | Lem => "lem"
             ;
 
 (* fn: proofstep * char list -> string *)
@@ -196,12 +218,13 @@ fun proofstepsToBoxProof ([], _) = ""
                   end
                   | []    => ([], [], "\n.")
                   | tail  => (tail, ind, "; [@"^self^"]")
-            val argument  = case rule of
-                    Ass        => " assumption"
-                  | Prm        => " premise"
-                  | Dis        => raise Option (* Cannot happen *)
-                  | _          => 
-                    " by "^(ruleToBoxProof rule)^(refsToBoxProof refs)
+            val argument  =
+                let val preposition = if (member (rule, [Prm, Ass]))
+                                      then " "
+                                      else " by "
+                in
+                    preposition^(ruleToBoxProof rule)^(refsToBoxProof refs)
+                end
         in
             "\n"^start^(formulaToBoxProof con)^argument^post
             ^(proofstepsToBoxProof (rest, indent))
@@ -211,9 +234,6 @@ fun proofstepsToBoxProof ([], _) = ""
 
 fun wrap cs (s1, s2) = 
     foldr (fn (a,b) => a^b) "" (map (fn c => s1^c^s2) cs);
-
-(* fn: 'a * 'a list -> bool *)
-fun member (element, set) = List.exists (fn e => (element = e)) set
 
 fun findAtoms [] l      = l 
   | findAtoms (f::fs) l = 

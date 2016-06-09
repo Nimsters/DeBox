@@ -10,21 +10,21 @@ Main : $(OBJS) Parser.grm
 Test : Unittest.ui Auxiliaries.ui Proof.ui
 	mosmlc -o Unittest Test.sml
 
-Auxiliaries.uo Auxiliaries.ui : Auxiliaries.sml
-	mosmlc -c $^
+Auxiliaries.uo Auxiliaries.ui : Auxiliaries.sml Proof.sml
+	mosmlc -c Auxiliaries.sml
 
 Unittest.sml : Auxiliaries.ui
 
-Unittest.uo Unittest.ui : Unittest.sml
-	mosmlc -c $^
+Unittest.uo Unittest.ui : Unittest.sml Auxiliaries.sml Proof.sml
+	mosmlc -c Unittest.sml
 
-Validation.sml : Unittest.ui Validation.ui
+Validation.sml : Unittest.ui Validation.ui Unittest.sml Auxiliaries.sml Proof.sml
 
-Validation.uo : Validation.sml 
-	mosmlc -c $^
+Validation.uo : Validation.sml Unittest.sml Auxiliaries.sml Proof.sml
+	mosmlc -c Validation.sml
 
-Validation.ui : Validation.sig
-	mosmlc -c $^
+Validation.ui : Validation.sig Unittest.sml Auxiliaries.sml Proof.sml
+	mosmlc -c Validation.sig
 
 Proof.uo Proof.ui : Proof.sml
 	mosmlc -c $^
