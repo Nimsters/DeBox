@@ -8,35 +8,40 @@
 \newcommand{\we}{we}
 \newcommand{\We}{We}
 \newcommand{\our}{our}
+\newcommand{\ours}{ours}
 \newcommand{\us}{us}
+\newcommand{\abs}{contradiction}
 \newcommand{\bp}{\s{BoxProver}}
 \newcommand{\FIX}[1]{\textcolor{Red}{FIX THIS: #1}}
-%\newcommand{\FIX}[1]{#1}
-\newcommand{\chk}[1]{\textcolor{Blue}{Check this: #1}}
-%\newcommand{\chk}[1]{#1}
+\newcommand{\chk}[1]{\textcolor{Blue}{!#1?}}
+%\renewcommand{\FIX}[1]{}
+%\renewcommand{\chk}[1]{#1}
 \lstset{language=ML, 
 emph={BasicIO, TextIO, List, Int, Lexing, Lexer, Parser, Validation,
 Nonstdio, Auxiliaries},
 emphstyle={\color{Olive}}}
 
 \begin{document}
-\pagenumbering{Alph}
+\pagenumbering{Roman}
 \begin{titlepage}
 \maketitle
 \thispagestyle{empty}
 \end{titlepage}
 
+\subsection*{Resumé}
+\fancyfoot[]{}
+
+\subsection*{Abstract}
+
+\pagebreak
+\setcounter{tocdepth}{2}
 \tableofcontents
-\thispagestyle{empty}
 \pagebreak
 \lstlistoflistings
-%\listoffigures
-%\pagebreak
+\listoffigures
+\pagebreak
+\fancyfoot[c]{Page \thepage\ of \pageref{LastBody}}
 \pagenumbering{arabic}
-
-\ss{Resumé}
-
-\ss{Abstract}
 
 \section{Introduction} %Remove splits into subsections
 \subsection{Problem statement}
@@ -87,7 +92,7 @@ emphstyle={\color{Olive}}}
 
 \subsection{Example}
 
-\section{Tools and programming language} % Necessary? Other title?
+\FIX{\section{Tools and programming language}} % Necessary? Other title?
 
 \newpage
 
@@ -96,18 +101,11 @@ emphstyle={\color{Olive}}}
 \ss{Propositional logic as a formal language}
 \subfile{grammars_formal}
 
-\ss{Grammar for proofs in natural language}
+\ss{Grammar for proofs in natural language}\label{nlgram}
 \subfile{grammars_proofs}
 
-\subfile{grammars_formulae}
-
 \section{Parsing and unparsing}
-\ss{Lexer}
-\ss{Parser}
-\ss{Unparsing to natural language}
-\ss{Unparsing to \s{BoxProver} syntax}
-\ss{Decisions on specific implementation details}
-\sss{Handling boxes}
+\subfile{parser}
 
 \section{Validation}
 \ss{The validation module}
@@ -142,7 +140,7 @@ emphstyle={\color{Olive}}}
 \section*{Appendices}\label{FirstApp}
 \addcontentsline{toc}{section}{Appendices}
 \renewcommand \thesubsection{\alph{subsection}}
-\section{Code}
+\section{Code}\label{code}
 \ss{\tt{Proof.sml}}\label{Proof}
 \codeapp{../Proof.sml}
 
@@ -155,10 +153,10 @@ emphstyle={\color{Olive}}}
 \ss{\tt{Main.sml}}\label{Main}
 \codeapp{../Main.sml}
 
-\ss{\tt{Validation.sml}}\label{Validation}
+\ss{\tt{Validation.sml}}\label{Validation.sml}
 \codeapp{../Validation.sml}
 
-\ss{\tt{Validation.sig}}\label{Validation}
+\ss{\tt{Validation.sig}}\label{Validation.sig}
 \codeapp{../Validation.sig}
 
 \ss{\tt{Auxiliaries.sml}}\label{Auxiliaries}

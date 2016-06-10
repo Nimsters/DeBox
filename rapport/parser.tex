@@ -1,0 +1,30 @@
+\documentclass[BA.tex]{subfiles}
+\begin{document}
+
+\ss{Parser}
+The grammar described in ``\nameref{nlgram}'' is implemented as a parser
+ definition, \f{Parser.grm}. The full code can be found in \app{Parser}
+ and was used to \chk{autogenerate} a parser for natural deduction proofs
+ written in natural language. It was generated with the tool \s{MosML}-yacc,
+ using the abstract syntax implemented in \f{\nameref{Proof}}
+ (see \app{Proof}). Like the abstract syntax, the parser definition is
+ written in \chk{\s{Standard ML}}\FIX{Add something here}.
+ As seen in \lst{../Parser.grm125}, tokens are defined to
+ represent all terminals of the grammar for proofs in natural language,
+ and all non-terminals are named; precedence levels and
+ associativity is specified for the logical operators; all tokens and
+ non-terminals are assigned a type using the datatype and type definitions
+ from \f{Proof.sml}, and a start symbol for the grammar is specified
+ \chk{(l. 13)}.
+ \codepart{../Parser.grm}{\FIX{caption}}{1}{25}
+ Following this, the structure of the grammar is defined by specifying all
+ productions in the grammar.
+
+ %\codeapp{../Parser.grm}
+ 
+\ss{Lexer}
+The lexer was generated from the lexer definition found in \app{Lexer}.
+\ss{Unparsing to \bp\ syntax}
+\FIX{\ss{Unparsing to natural language}}
+\FIX{\subfile{parsing_details}}
+\end{document}

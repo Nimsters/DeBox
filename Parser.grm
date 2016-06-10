@@ -11,9 +11,6 @@
 %nonassoc NEG
 
 %start Proof
-%start Step
-%start Argument
-%start Conclusion
 %type <Proof.proof> Proof
 %type <Proof.sequent> Sequent
 %type <Proof.formula list> Premises PrmList

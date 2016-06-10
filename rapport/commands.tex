@@ -12,9 +12,9 @@
 \newcommand{\question}[1]{{\small \textcolor{Grey}{#1}}}
 \newcommand{\spc}{\textvisiblespace}
 \newcommand{\fig}[1]{Figure \ref{#1}}
-\newcommand{\app}[1]{Appendix \ref{#1},~p.~\pageref{#1}}
+\newcommand{\app}[2][code]{Appendix \ref{#1} (\ref{#2}),~p.~\pageref{#2}}
 \newcommand{\lst}[1]{Listing \ref{#1}}
-\newcommand{\codeapp}[1]{\lstinputlisting{#1}}
+\newcommand{\codeapp}[1]{\lstinputlisting[nolol]{#1}}
 % Code Import
 \newcommand{\code}[2]{\lstinputlisting[caption=\texttt{#2}, label=#1]{#1}}
 \newcommand{\codepart}[4]{\lstinputlisting[caption=#2, firstline=#3,
@@ -39,6 +39,7 @@
 \setlength{\headsep}{15pt}
 
 % Listings settings
+\renewcommand{\lstlistlistingname}{Source Code Listings}
 \lstset{
     basicstyle=\footnotesize\ttfamily,
     keywordstyle = \color{Green},

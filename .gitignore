@@ -4,7 +4,7 @@ __pycache__/
 *.aux
 *.fdb_latexmk
 *.fls
-*.log
+*.lo*
 *.out*
 *.toc
 *.blg

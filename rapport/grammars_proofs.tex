@@ -1,0 +1,130 @@
+\documentclass[BA.tex]{subfiles}
+\begin{document}
+Because of the desire to give feedback, the surface syntax for proofs in
+natural language was designed to be inclusive and allow for errors rather
+than restrict acceptable proofs to correct ones. This idea of inclusion
+also extends to the syntax for the formulae.
+
+\sss{Inclusive grammar for formulae}
+The \chk{chosen} syntax for formulae is a close match to the equivalent
+ \bp\ syntax, and but for one change \ours\ would simply be an extention
+ of it. As shown in \fig{nlform}, \abs\ is no longer \chk{signified} by
+ \f{bot}, as is the case in the \bp\ syntax, but rather by both a sequence 
+ of regular characters (\verb+_|_+) and a special character (\(\bot\)). 
+ The same goes for the operators, except for implication which has an
+ additional regular character signifier, to allow for individual preferences
+ in typing implication arrows. Having multiple signifiers for each
+ operator, and \chk{the \abs\ formula}, ensures that the grammar
+ accepts both typed and pretty-printed formulae. Furthermore, having a
+ non-terminal for each of the aforementioned \chk{elements} makes it
+ very simple to extend the grammar with more signifiers later on, or change
+ the existing ones, without having to change the 
+ \chk{structure of the grammar}.
+
+\begin{figure}[!hb]
+\subfile{grammar_symbols}
+\caption{An inclusive grammar for formulae}
+\label{nlform}
+\end{figure}
+
+\sss{Design decisions: logical operators and linguistic ambiguity}
+When formulating a grammar for logical formulae in natural language, it
+ might seem like an obvious choice to use the \chk{linguistic counterparts}
+ for the \chk{mathematical} terms
+ (\emph{and}, \emph{or}, \emph{not}, \emph{if ... then},  and \emph{\abs})
+ as signifiers instead of the \chk{symbol} representation used. However, 
+ the English language, \chk{like most - if not all - natural languages}, is
+ ambiguous. While a statement like:
+ \begin{quote}
+    The dog barks \emph{and} the cat meows.
+ \end{quote}
+ seems unambiguous, the same is not the case for the following:
+ \begin{quote}
+    The dog barks \emph{or} the cat meows.
+ \end{quote}
+ Is the \emph{or} to be interpreted as inclusive or exclusive? 
+ The intuition for most will be exclusive, but the logical disjunction
+ operator is inclusive. And what about more complex composite formulae,
+ and the negation of those? 
+ 
+ As it turns out, not even the simple conjunction can be considered 
+ unambiguous; in a study\cite{negation} of the understanding and
+ formulation of compound assertions (conjunctions, disjunctions, 
+ conditionals, and negations of these) in English, only 86\% of the
+ participants interpreted the conjunctions \chk{in accordance with the
+ standards of propositional logic}\cite[p.~4]{negation}. The study also
+ showed that the interpretation of disjunctions as either
+ inclusive or exclusive varied, with only 9\% of participants \chk{seeing}
+ them as inclusive, against 59\% exclusive\cite[\emph{ibid.}]{negation}.
+ Furthermore, this bias towards an exclusive interpretation was completely
+ reversed in the case of negated disjunctions where 86\% gave an inclusive
+ interpretation:
+ \begin{quote}
+ The compound, \emph{A or B},
+ was treated as exclusive [...] rather than inclusive [...]
+ in affirmations, but as inclusive [...] rather than exclusive [...] 
+ in negations. The compound, \emph{If A then B}, was
+ often treated as a biconditional [...] in affirmations, but
+ never in negations.\cite[p.~5]{negation}
+ \end{quote}
+ Since interpretation not only varies between individuals but also 
+ depends on context, simply defining e.g. disjunctions as one or the other
+ will result in enforcing a counterintuitive interpretation in many cases,
+ regardless of which interpretation is picked.
+ 
+ On top of that, standard English, while allowing for
+ complex sentences using subordinate clauses, does not lend itself well to
+ compound contructions nested to arbitrary depth. Although there is no 
+ inherent precedence distinction between conjunctions and disjunctions, it
+ \emph{is} possible to guide \chk{the proper interpretation} by using 
+ subordinators of different length:
+ \begin{quote}
+ \ttfamily
+    p \emph{and} q \emph{or else} r \hfill (p \(\land\) q) \(\lor\) r~ \\
+    p \emph{and also} q \emph{or} r\hfill p \(\land\) (q \(\lor\) r)
+ \end{quote}
+ This solution, however, does not work for arbitratily deep nestings, nor
+ does it solve the inclusive/exclusive problem for disjunctions.
+
+ Rather than introduce a complex new set of rules to narrow (and possibly
+ counter) intuitive understanding of conjunctions, disjunctions,
+ conditionals, and the negations of these, the syntax uses
+ \chk{symbolic} notation, for which there already exists a set standard
+ for unambiguous interpretation and which is an inherent part of
+ propositional logic and thus necessarily on the syllabus of the course.
+
+\sss{Inclusive grammar for proofs}
+While the grammar for formulae is based closely on the equivalent \bp\
+ surface syntax, the grammar for proofs is a much closer match to the
+ abstract syntax for proofs. The \chk{definition} is shown in \fig{nlproof}
+ and will accept almost any \chk{combination of elements} representable
+ by the abstract \f{proofstep}. One exception is the distinction between
+ discharges and all other steps; \f{DISCHARGE} is the only non-terminal
+ that allows the acceptance of a step without a formula, and \f{DIS} is
+ \emph{not} included in the set of rules that can be used in acceptable
+ steps \emph{with} a formula. Furthermore, \f{DISCHARGE} steps are the only
+ steps, \chk{except for the very last one,} that are accepted without a step
+ ID, and they are \emph{only} accepted without one. 
+ 
+ Structurally, all non-discharge steps are composed of an \f{ARGUMENT} and
+ a \f{CONCLUSION} A non-terminal exists for every \f{rule} in the abstract syntax.
+
+ In terms on English grammar, the proof syntax accepts lists both with and
+ without Oxford comma\footnote{Also known as the serial comma; the term
+ denotes the comma before the \chk{connective} in a list. 
+ With Oxford comma: propositions, formulae, and proofs. 
+ Without: propositions, formulae and proofs.},
+ but ensures the use of obligatory comma after an \chk{adverbial phrase}
+ when it precedes the main clause. 
+
+\begin{figure}[!hb]
+\subfile{grammar_inclusive}
+\caption{An inclusive grammar for proofs by natural deduction written in
+natural language}
+\label{nlproof}
+\end{figure}
+
+\FIX{\sss{Design decisions: adaptabiility} Something on adaptability of the
+design}
+
+\end{document}
