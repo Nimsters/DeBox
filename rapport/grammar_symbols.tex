@@ -1,0 +1,16 @@
+\documentclass[BA.tex]{subfiles}
+\begin{document}
+{\ttfamily
+\noindent
+PROPOSITION   \tra PROP1 | PROP1 IMP PROPOSITION \\
+PROP1 $~~~~~~$\tra PROP2 | PROP1 OR PROP2\\
+PROP2 $~~~~~~$\tra PROP3 | PROP2 AND PROP3\\
+PROP3 $~~~~~~$\tra PROP4 | NEG PROP4\\
+PROP4 $~~~~~~$\tra BOT | (PROPOSITION) | {\bf id}\\
+IMP $~~~~~~~~$\tra \verb+=> + | \tra | \verb+->+\\
+OR $~~~~~~~~~$\tra \verb+\/ + | \(\lor\) \\
+AND $~~~~~~~~$\tra \verb+/\ + | \(\land\) \\
+NEG $~~~~~~~~$\tra \verb+ ~ + | \(\neg\) \\
+BOT $~~~~~~~~$\tra \verb+_|_+ | \(\bot\)
+}
+\end{document}

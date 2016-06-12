@@ -1,0 +1,21 @@
+\begin{tabbing}
+boxproof:\\
+We wish to prove (p\(\ra\)q)\(\lor\)(q\(\ra\)r).\\
+In accordance with the law of the excluded middle, we introduce q\(\lor\)\(\neg\)q [1].\\
+Ass\=ume \+ q [2].\\ 
+	Ass\=ume \+ p [3].\\
+		By copying 2, we get q here too [4].\\
+	\< \- Discharge assumption [3].\\
+	By applying the implication-introduction rule to [3]-[4], we get p\(\ra\)q [5].\\
+	By applying the first or-introduction rule to [5], we get (p\(\ra\)q)\(\lor\)(q\(\ra\)r) [6].\\
+\< \- Discharge assumption [2].\\
+Ass\=ume \+ \(\neg\)q [7].\\
+	Ass\=ume \+ q [8].\\
+		By applying the negation-elimination rule to [8] and [7], we get \(\bot\) [9].\\
+		By applying elimination of absurdity to [9], we get r [10].\\
+	\< \- Discharge assumption [8].\\
+	By applying the implication-introduction rule to [8]-[10], we get q\(\ra\)r [11].\\
+	By applying the second or-introduction rule to [11], we get (p\(\ra\)q)\(\lor\)(q\(\ra\)r) [12].\\
+\< \- Discharge assumption [7].\\
+By applying the or-elimination rule to [1], [2]-[6], and [7]-[12], we get (p\(\ra\)q)\(\lor\)(q\(\ra\)r) [13].\\
+\end{tabbing}

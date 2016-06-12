@@ -1,5 +1,62 @@
 \documentclass[BA.tex]{subfiles}
 \begin{document}
+Propositional logic as a formal language is defined in \book \cite[]{},
+ which uses Fitch-style notation for natural deduction proofs. In order
+ to specify our terminology in the following section, we repeat the 
+ side-by-side comparison from the introduction\footnote{\fig{boxnfitch}}
+ here in \fig{highlight},
+ with instances of different terms highlighted in different
+ colors.
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[t]{0.40\textwidth}
+\scriptsize
+~\\
+\input{imports/fshighlight}
+\vspace{13pt}
+\caption[]{Fitch-style}
+\label{sf:fshi}
+\end{subfigure}
+\(\qquad\)
+\begin{subfigure}[t]{0.50\textwidth}
+\scriptsize
+\lstinputlisting[numbers=none, identifierstyle=,
+    keywordstyle=, frame=none, breaklines=false, deletekeywords={*},
+    basicstyle=\scriptsize\ttfamily, escapeinside={(*}{*)}, 
+    emph={[4]ex121r},
+    emph={[1]@p, @prm, @qor, @piq, @qor1, @pir, @p1},
+    emph={[2]assumption, premise, imp_e, con_e1, imp_i, con_e2, con_i}, 
+    emph={[3]rbox, qbox},
+    emphstyle={[4]\color{Blue}},
+    emphstyle={[2]\color{Purple}}, 
+    emphstyle={[1]\color{DarkGreen}},
+    emphstyle={[3]\color{Olive}}]{imports/bphighlight}
+\caption[]{\bp\ encoding}
+\label{sf:boxhi}
+\end{subfigure}
+\caption[Highlighted examplification of terminology]{The highlighting
+illustrates the following terms: \textcolor{Purple}{rule},
+\textcolor{Blue}{title},
+\textcolor{JungleGreen}{operator},
+\textcolor{DarkGreen}{line-reference}, and 
+\textcolor{Olive}{box-reference}, \textcolor{OrangeRed}{sequent}.}
+\label{highlight}
+\end{figure}
+\noindent
+The highligting serves to illustrate the common terminology, and how the
+ specific terms \chk{differ in notation} between the two \chk{languages}.
+ In the following, we will also refer to \emph{line-steps} (lines),
+ which denote single-line deduction
+ steps (e.g. ll. 1, 5, 9, and 10 in (\subref{sf:fshi}) above), and \emph{
+ box-steps} (boxes), which denote groups of lines that form sub-proofs 
+ and are 
+ enclosed in frames \chk{and} parentheses in (\subref{sf:fshi}) and
+ (\subref{sf:boxhi}) respectively. \emph{Proof-step} denotes all steps of
+ deduction and thus \chk{covers} both line- and
+ box-steps. Finally, \emph{proof} denotes a sequent to be
+ proven plus the proof-steps by which one reaches the \chk{wanted} conlusion.
+
 
 \sss{Formal syntax}
 \chk{As mentioned in the introduction}, one of the goals of this project
@@ -10,27 +67,48 @@
  that implications (\verb+=>+) are right-associative, while conjunctions 
  (\verb+/\+) and disjunctions (\verb+\/+) are left-associative. It further
  shows the precedence levels, with negation (\verb+~+) binding the tightest
- and implication binding the lightest. The symbols for logical operators are
- represented by easily typed\footnote{By virtue of being available on 
- standard western computer keyboards.} characters, and match the
+ and implication binding the weakest. The symbols for logical operators are
+ represented by easily written\footnote{By virtue of being available on 
+ standard western computer keyboards.} \f{ASCII} characters, and match the
  operator specifications of \bp.
+ An extention for the formulae syntax is found in \fig{fproof}, 
+ which shows a formal
+ syntax for proofs, also based directly on the \bp\ syntax.
 
 \begin{figure}[t]
 \subfile{grammar_formal_formulae}
-\caption{A formal syntax for formulae, based on \bp\ syntax.}
+\caption[A {\bf formal} syntax for formulae]
+{A formal syntax for formulae, based on \bp\ syntax.}
 \label{fform}
 \end{figure}
 
 %\noindent
- An extention for this syntax is found in \fig{fproof}, which shows a formal
- syntax for proofs based directly on the \bp\ syntax.
- The essential components of a proof are the sequent to be
- proven and the steps of deduction by which it is done. 
  As seen in \fig{fproof}, the sequent in \our\ formal syntax
  follows standard mathematical notation, with the exception that the
  turnstyle, like the \chk{other} logical operators, is represented by
  easily typed characters (\verb+|-+) rather than the standard symbol 
- (\(\vd\)).
+ (\(\vd\)). To illustrate, \fig{bpex} shows two proofs
+ written in \bp\ syntax.
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[t]{0.45\textwidth}
+\scriptsize
+\verbatiminput{imports/bpex121r}
+~\\~\\~\\
+%\caption[]{}
+\label{sf:exr}
+\end{subfigure}
+\(\quad\)
+\begin{subfigure}[t]{0.45\textwidth}
+\scriptsize
+\verbatiminput{imports/bpex123q}
+%\caption[]{}
+\label{sf:exq}
+\end{subfigure}
+\caption[]{}
+\label{bpex}
+\end{figure}
  
  The deduction steps themselves are written using 
  Fitch-style notation\cite{boxhelp},

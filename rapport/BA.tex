@@ -1,25 +1,9 @@
 \documentclass[a4paper]{article}
 
 \input{Preamble}
-\titlelabel{}
-\newcommand{\tit}{Natural deduction proofs in (pseudo) natural language}
+\input{ProjectPreamble}
+
 \title{\tit}
-\fancyhead[c]{\tit}
-\newcommand{\we}{we}
-\newcommand{\We}{We}
-\newcommand{\our}{our}
-\newcommand{\ours}{ours}
-\newcommand{\us}{us}
-\newcommand{\abs}{contradiction}
-\newcommand{\bp}{\s{BoxProver}}
-\newcommand{\FIX}[1]{\textcolor{Red}{FIX THIS: #1}}
-\newcommand{\chk}[1]{\textcolor{Blue}{!#1?}}
-%\renewcommand{\FIX}[1]{}
-%\renewcommand{\chk}[1]{#1}
-\lstset{language=ML, 
-emph={BasicIO, TextIO, List, Int, Lexing, Lexer, Parser, Validation,
-Nonstdio, Auxiliaries},
-emphstyle={\color{Olive}}}
 
 \begin{document}
 \pagenumbering{Roman}
@@ -28,73 +12,24 @@ emphstyle={\color{Olive}}}
 \thispagestyle{empty}
 \end{titlepage}
 
-\subsection*{Resumé}
 \fancyfoot[]{}
 
-\subsection*{Abstract}
+\subfile{abstract.tex}
 
 \pagebreak
 \setcounter{tocdepth}{2}
 \tableofcontents
 \pagebreak
 \lstlistoflistings
-\listoffigures
 \pagebreak
+\listoffigures
+\clearpage
 \fancyfoot[c]{Page \thepage\ of \pageref{LastBody}}
 \pagenumbering{arabic}
 
 \section{Introduction} %Remove splits into subsections
-\subsection{Problem statement}
-    Is it possible to develop a tool for writing natural deduction proofs
-    in a subset of the English language that will read as natural language
-    (from here on, this subset will just be named `natural language'),
-    and have these proofs validated? Additionally, is it feasible to have
-    a round-tripping ability such that {\bf formal $\ra$ natural language
-    $\ra$ formal} is the identity function at the level of abstract syntax,
-    and {\bf natural language $\ra$ formal $\ra$ natural language} is the
-    identity function modulo lexical aspects such as whitespace and
-    punctuation.
-
-\subsection{Scope}
-    This project will limit itself to natural deduction proofs of
-    \emph{propositional} logic, and the validation is expected to be done
-    using the existing tool \s{BoxProver}\cite{box}. Furthermore, the tool
-    to be developed is specifically intended for use in the course `Logic
-    in computer science' at the University of Copenhagen, and for  
-    pedagogical reasons, the atoms used in the natural language syntax
-    will be characters rather than specified declarative sentences.
-
-\subsection{Motivation}
-    The course `Logic in computer science' rather closely follows the 
-    structure outlined in the textbook `Logic in computer science' by
-    Huth \& Ryan\cite{hr}. The introduction to formal logic is based on
-    reasoning about construction of (valid) arguments in natural 
-    language\cite[pp.~1-2]{hr}, which forms the basis for the presentation
-    of a formal notation using the symbols 
-    \(\neg, \lor, \land, \txt{ and } \ra\)\cite[p.~4]{hr}. 
-    The \emph{meaning} of these symbols is presented in natural language,
-    but with the exception of a few simple examples, the rest of the section 
-    on propositional logic, including the rules for natural deduction,
-    is presented solely in formal (i.e. symbol) notation.
-
-    Presenting students with a tool for writing natural deduction proofs
-    in natural language is hoped to bridge the potential gap between
-    understanding the structure and rules of natural deduction and
-    understanding the \emph{meaning} of the steps in such a process as well
-    as the conclusion reached. Furthermore, it is hoped the the
-    presentation of such proofs in natural language will emphasize the
-    \emph{independence} of the reached conclusion from the semantic 
-    content of atomic declarative sentences; \(p, p \ra q \vdash q\)
-    regardless
-    of what declarative sentences one may choose $p$ and $q$ to represent.
-
-\subsection{Results}
-
-\subsection{Example}
-
-\FIX{\section{Tools and programming language}} % Necessary? Other title?
-
-\newpage
+\subfile{introduction}
+\clearpage
 
 \section{Grammars}
 \FIX{SOMETHING BRIEF ABOUT CONTEXTFREE GRAMMARS}
@@ -134,11 +69,11 @@ emphstyle={\color{Olive}}}
 \bibliographystyle{plain}
 \bibliography{Bibliography}
 \label{LastBio}
-\pagebreak
+\clearpage
 \appendix
-\titlelabel{\thetitle . \quad}
 \section*{Appendices}\label{FirstApp}
 \addcontentsline{toc}{section}{Appendices}
+\titlelabel{\thetitle . \quad}
 \renewcommand \thesubsection{\alph{subsection}}
 \section{Code}\label{code}
 \ss{\tt{Proof.sml}}\label{Proof}

@@ -1,0 +1,18 @@
+%abbrev
+ex121r: {p}{q}{r}
+    proof((*{\color{OrangeRed}p => (q \verb+/\+ r) , |- \\
+\(~~~~~~~~~~~~\)(p => q) \verb+/\+  (p => r)}*)) =
+[p][q][r]
+p (*{\color{JungleGreen}\verb+=>+}*) (q (*{\color{JungleGreen}\verb+/\+}*) r) premise; [@prm]
+( p assumption; [@p]
+  (q (*{\color{JungleGreen}\verb+=>+}*) r) by imp_e @p @prm ; [@qor]
+  q by con_e1 @qor
+) ; [#qbox]
+p (*{\color{JungleGreen}\verb+=>+}*) q by imp_i #qbox ; [@piq]
+( p assumption; [@p1]
+  (q (*{\color{JungleGreen}\verb+/\+}*) r) by imp_e @p1 @prm ; [@qor1]
+  r by con_e2 @qor1
+) ; [#rbox]
+p (*{\color{JungleGreen}\verb+=>+}*) r by imp_i #rbox ; [@pir]
+(p ((*{\color{JungleGreen}\verb+=>+}*) q) (*{\color{JungleGreen}\verb+/\+}*) (p (*{\color{JungleGreen}\verb+=>+}*) r) by con_i @piq @pir
+.

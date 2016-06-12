@@ -1,0 +1,15 @@
+%abbrev
+ex121s: {p}{q}{r}
+    proof((p => q) /\ (p => r) , |- 
+           p => (q /\ r)) =
+[p][q][r]
+(p => q) /\ (p => r) premise; [@prem1]
+(p => q) by con_e1 @prem1 ; [@piq]
+(p => r) by con_e2 @prem1 ; [@pir]
+( p assumption; [@ass_p]
+  q by imp_e @ass_p @piq ; [@q]
+  r by imp_e @ass_p @pir ; [@r]
+  q /\ r by con_i @q @r
+) ; [#pi_qar_box]
+p => (q /\ r) by imp_i #pi_qar_box
+.
