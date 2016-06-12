@@ -1,8 +1,12 @@
 signature Validation =
 sig
 
-  val valid : Proof.proof -> bool * string
-
   exception ValidationError of string
+
+  val valid : Proof.proof -> bool * string
+  
+  val dummy : Proof.proof
+
+  val english : Proof.proof -> string
 
 end

@@ -4,7 +4,7 @@ OBJS := $(SRCS:.sml=.ui) $(SRCS:.sml=.uo)
 
 all : Main Test
 
-Main : $(OBJS) Parser.grm
+Main : $(OBJS) Parser.grm Main.sml
 	mosmlc -o Main Main.sml
 
 Test : Unittest.ui Auxiliaries.ui Proof.ui

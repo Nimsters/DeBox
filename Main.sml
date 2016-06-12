@@ -19,23 +19,30 @@ struct
 
   fun errorMess s = TextIO.output (TextIO.stdErr,s ^ "\n");
 
-  val _ = validate (List.nth(Mosml.argv (),1))
-          handle Parsing.yyexit ob => errorMess "Parser-exit\n"
-               | Parsing.ParseError ob =>
-                   let val Location.Loc (p1,p2)
-                             = Location.getCurrentLocation ()
-                       val (lin,col)
-			     = Lexer.getLineCol p2
-						(!Lexer.currentLine)
-						(!Lexer.lineStartPos)
-                   in
-                     errorMess ("Parse-error at line "
-                      ^ makestring lin ^ ", column " ^ makestring col)
-                   end
-               | Lexer.LexicalError (mess,(lin,col)) =>
-                     errorMess ("Lexical error: " ^mess^ " at line "
-                      ^ makestring lin ^ ", column " ^ makestring col)
-	           | Validation.ValidationError (mess) =>
-                     errorMess ("Validation error: " ^mess)
-               | SysErr (s,_) => errorMess ("Exception: " ^ s)
+  val _ = case (Mosml.argv ()) of
+            [_, "print"] => let val s = Validation.english Validation.dummy
+                            in
+                                TextIO.output(TextIO.stdOut, s^"\n")
+                            end
+          | [_, file]    => (validate (file)
+                handle Parsing.yyexit ob => errorMess "Parser-exit\n"
+                     | Parsing.ParseError ob =>
+                         let val Location.Loc (p1,p2)
+                                   = Location.getCurrentLocation ()
+                             val (lin,col)
+		               = Lexer.getLineCol p2
+		          			(!Lexer.currentLine)
+		          			(!Lexer.lineStartPos)
+                         in
+                           errorMess ("Parse-error at line "
+                            ^ makestring lin ^ ", column " ^ makestring col)
+                         end
+                     | Lexer.LexicalError (mess,(lin,col)) =>
+                           errorMess ("Lexical error: " ^mess^ " at line "
+                            ^ makestring lin ^ ", column " ^ makestring col)
+	                 | Validation.ValidationError (mess) =>
+                           errorMess ("Validation error: " ^mess)
+                     | SysErr (s,_) => errorMess ("Exception: " ^ s))
+          | _ => TextIO.output(TextIO.stdErr, "Wrong number of arguments\n")
+
 end

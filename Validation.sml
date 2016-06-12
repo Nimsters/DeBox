@@ -7,4 +7,8 @@ open Unittest
 
 fun valid proof = proofValidation proof;
 
+val dummy = dummyinput ();
+
+fun english proof = proofToString proof;
+
 end

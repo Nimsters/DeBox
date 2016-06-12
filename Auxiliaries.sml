@@ -96,12 +96,16 @@ fun ruleToString Cpy = "the copy rule"
   | ruleToString Mod = "Modus Tollens"
   | ruleToString Pbc = "proof by contradiction"
   | ruleToString Lem = "the law of the excluded middle"
+  (* dummies for structural rules to exhaust patternmatching *)
+  | ruleToString Prm = "premise"   
+  | ruleToString Ass = "assumption"
+  | ruleToString Dis = "discharge"
   ;
 
 
 (* fn: proofstep * char list -> string *)
 (* Patternmatching only gurantees acceptance of valid proofs, since it is 
- * only to be used with validated BoxProofs *)
+ * only to be used with validated proofs *)
 fun proofstepsToString ([], _) = ""
   | proofstepsToString ((NONE, Dis, [ass], "")::steps, ind as t::ts)    =
         "\n"^(implode ts)^"Discharge assumption "^(refsToString [ass])^"."
@@ -113,19 +117,22 @@ fun proofstepsToString ([], _) = ""
         "\n"^(implode tabs)^"We have the premise "^(formulaToString con)^
         " ["^self^"]."
         ^(proofstepsToString (steps, tabs))
-  | proofstepsToString ((SOME (c as OR _), Lem, [], self)::steps, tabs) =
+(*  | proofstepsToString ((SOME (c as OR _), Lem, [], self)::steps, tabs) =
         "\n"^(implode tabs)^"In accordance with "^(ruleToString Lem)^
         ", we introduce "^(formulaToString c)^" ["^self^"]."
-        ^(proofstepsToString (steps, tabs))
+        ^(proofstepsToString (steps, tabs)) *)
   | proofstepsToString ((SOME con, Cpy, [Line org], self)::steps, tabs) =
         "\n"^(implode tabs)^"By copying "^org^", we get "^
         (formulaToString con)^" here too ["^self^"]."
         ^(proofstepsToString (steps, tabs))
   | proofstepsToString ((SOME con, rule, refs, self)::steps, tabs)      =
-        let val post = if (self = "") then "." else " ["^self^"]."
+        let val (verb,post) = case steps of [] => ("conclude ", ".")
+                                          |  _ => ("get ", " ["^self^"].")
+            val prepphrase  = if (rule = Lem) then "" 
+                              else " to "^(refsToString refs)
         in
-            "\n"^(implode tabs)^"By applying "^(ruleToString rule)^" to "^
-            (refsToString refs)^", we get "^(formulaToString con)^post
+            "\n"^(implode tabs)^"By applying "^(ruleToString rule)^
+            prepphrase^", we "^verb^(formulaToString con)^post
             ^(proofstepsToString (steps, tabs))
         end
   | proofstepsToString _ = raise Match; (* Declare specific exception? *)
@@ -229,7 +236,7 @@ fun proofstepsToBoxProof ([], _) = ""
             "\n"^start^(formulaToBoxProof con)^argument^post
             ^(proofstepsToBoxProof (rest, indent))
         end
-  | proofstepsToBoxProof ((_, Dis, _,_)::steps, _) = raise Match
+  | proofstepsToBoxProof ((NONE,_, _,_)::steps, _) = raise Match
   ;
 
 fun wrap cs (s1, s2) = 
@@ -261,4 +268,32 @@ fun toBoxProof (title, seq as (forms, form), steplist) =
         "%abbrev\n"^title^":\n"^curls^proof^squares^"\n"^
         (proofstepsToBoxProof (steplist, []))(**)
     end;
+
+(* fn: unit -> proof *)
+fun dummyinput () =
+    ("boxproof",
+     ([],OR(IMP(Atom("p"),Atom("q")),IMP(Atom("q"),Atom("r")))),
+     [(SOME(OR(Atom("q"),NEG(Atom("q")))),Lem,[],"1"),
+      (SOME(Atom("q")),Ass,[],"2"),
+      (SOME(Atom("p")),Ass,[],"3"),
+      (SOME(Atom("q")),Cpy,[Line("2")],"4"),
+      (NONE,Dis,[Line("3")],""),
+      (SOME(IMP(Atom("p"),Atom("q"))),Iin,[Box("3","4")],"5"),
+      (SOME(OR(IMP(Atom("p"),Atom("q")),IMP(Atom("q"),Atom("r")))),
+            Oi1,[Line("5")],"6"),
+      (NONE,Dis,[Line("2")],""),
+      (SOME(NEG(Atom("q"))),Ass,[],"7"),
+      (SOME(Atom("q")),Ass,[],"8"),
+      (SOME(BOT),Nel,[Line("8"),Line("7")],"9"),
+      (SOME(Atom("r")),Bel,[Line("9")],"10"),
+      (NONE,Dis,[Line("8")],""),
+      (SOME(IMP(Atom("q"),Atom("r"))),Iin,[Box("8","10")],"11"),
+      (SOME(OR(IMP(Atom("p"),Atom("q")),IMP(Atom("q"),Atom("r")))),
+            Oi2,[Line("11")],"12"),
+      (NONE,Dis,[Line("7")],""),
+      (SOME(OR(IMP(Atom("p"),Atom("q")),IMP(Atom("q"),Atom("r")))),
+            Oel,[Line("1"),Box("2","6"),Box("7","12")],"13")
+      ]
+    )
+;
 end
