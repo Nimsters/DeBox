@@ -2,14 +2,60 @@
 \begin{document}
 Because of the desire to give feedback, the surface syntax for proofs in
 natural language was designed to be inclusive and allow for errors rather
-than restrict acceptable proofs to correct ones. This idea of inclusion
-also extends to the syntax for the formulae.
+than restrict acceptable proofs to correct ones.
+
+\sss{Inclusive grammar for proofs}
+To ensure acceptance of both correct and errouneous proofs, we 
+ \chk{define} the grammar for proofs in natural language based on the
+ abstract syntax for proofs rather than the formal surface syntax.
+ The definition is shown in \fig{nlproof}
+ and will accept almost any 
+ \emph{rule;conclusion;reference pattern}-combination representable
+ by the abstract \f{proofstep}. For instance, it accepts the use
+ of \emph{law of the excluded middle} with any number of references, or
+ the use of \emph{disjunction-introduction} to conclude an implication.
+ One exception to the grammars match with the abstract syntax is
+ the distinction between
+ discharges and all other steps; \f{DISCHARGE} is the only non-terminal
+ that allows the acceptance of a step without a formula, and \f{DIS} is
+ \emph{not} included in the set of rules that can be used in acceptable
+ steps \emph{with} a formula. Furthermore, \f{DISCHARGE} steps are the only
+ steps -- apart from the very last one -- that are accepted without a step
+ ID, and they are \emph{only} accepted without one. 
+ 
+ Structurally, all non-discharge steps are composed of an \f{ARGUMENT} and
+ a \f{CONCLUSION}, and both allow variation in composition.
+ Furthermore, a distinct non-terminal is defined for every 
+ \f{rule} in the abstract syntax, which allows for later addition of
+ variant rule representations (e.g. shorthand), without the need to
+ redefine the rest of the syntax definition.
+
+ In terms of English grammar, the proof syntax accepts lists both with and
+ without Oxford comma\footnote{Also known as the serial comma; the term
+ denotes the comma before the \chk{connective} in a list. 
+ With Oxford comma: `propositions, formulae, and proofs'. 
+ Without: `propositions, formulae and proofs'.},
+ but ensures the use of obligatory comma after an \chk{adverbial phrase}
+ when it precedes the main clause. 
+
+\begin{figure}[!ht]
+\scriptsize
+\subfile{grammar_inclusive}
+\caption{An inclusive grammar for proofs by natural deduction written in
+natural language}
+\label{nlproof}
+\end{figure}
+
+\FIX{\sss{Design decisions: Implicit boxes, explicit discharges}
+ Something something}
+
 
 \sss{Inclusive grammar for formulae}
-The chosen syntax for formulae is a close match to the equivalent
- \bp\ syntax, and but for one change \ours\ would simply be an extention
- of it. As shown in \fig{nlform}, \abs\ is no longer signified by
- \f{bot}, as is the case in the \bp\ syntax, but rather by both a sequence 
+In contrast to the general proof syntax, we base our grammar for
+ formulae on the formal syntax. In fact, but for one change \ours\ would 
+ classify as an extention of it.
+ As shown in \fig{nlform}, \abs\ is no longer signified by
+ \f{bot}, as is the case in the formal syntax, but rather by both a sequence 
  of \f{ASCII} characters (\verb+_|_+) and a Unicode character (\(\bot\)). 
  The same goes for the operators, except for implication which has an
  additional regular character signifier, to allow for individual preferences
@@ -19,7 +65,7 @@ The chosen syntax for formulae is a close match to the equivalent
  Furthermore, having a distinct non-terminal, and thus \f{token}
  for each of the aforementioned syntactic elements makes it
  very simple to extend the grammar with more signifiers later on, or change
- the existing ones, without having to rewrite any of the \s{PROP} 
+ the existing ones, without having to rewrite any of the \f{PROP} 
  non-terminals.
 
 \begin{figure}[!hb]
@@ -98,37 +144,5 @@ When formulating a grammar for logical formulae in natural language, it
  for unambiguous interpretation and which is an inherent part of
  propositional logic and thus necessarily on the syllabus of the course.
 
-\sss{Inclusive grammar for proofs}
-While the grammar for formulae is based closely on the equivalent \bp\
- surface syntax, the grammar for proofs is a much closer match to the
- abstract syntax for proofs. The definition is shown in \fig{nlproof}
- and will accept almost any \chk{combination of elements} representable
- by the abstract \f{proofstep}
- \FIX{Clraify what is meant by combination of elements; examples}
- . One exception is the distinction between
- discharges and all other steps; \f{DISCHARGE} is the only non-terminal
- that allows the acceptance of a step without a formula, and \f{DIS} is
- \emph{not} included in the set of rules that can be used in acceptable
- steps \emph{with} a formula. Furthermore, \f{DISCHARGE} steps are the only
- steps, apart from the very last one, that are accepted without a step
- ID, and they are \emph{only} accepted without one. 
- 
- Structurally, all non-discharge steps are composed of an \f{ARGUMENT} and
- a \f{CONCLUSION}. A non-terminal exists for every \f{rule} in the abstract syntax.
-
- In terms of English grammar, the proof syntax accepts lists both with and
- without Oxford comma\footnote{Also known as the serial comma; the term
- denotes the comma before the \chk{connective} in a list. 
- With Oxford comma: `propositions, formulae, and proofs'. 
- Without: `propositions, formulae and proofs'.},
- but ensures the use of obligatory comma after an \chk{adverbial phrase}
- when it precedes the main clause. 
-
-\begin{figure}[!hb]
-\subfile{grammar_inclusive}
-\caption{An inclusive grammar for proofs by natural deduction written in
-natural language}
-\label{nlproof}
-\end{figure}
 
 \end{document}

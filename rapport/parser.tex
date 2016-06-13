@@ -9,8 +9,8 @@ The grammar described in ``\nameref{nlgram}'' is implemented as a parser
  a parser for natural deduction proofs
  written in natural language. It was generated with the tool \yac ,
  using the abstract syntax implemented in \f{\nameref{Proof}}
- (see \app{Proof}). Like the abstract syntax, the parser definition is
- written in \chk{\s{Standard ML}}\FIX{Add something here}.
+ (see \app{Proof}). 
+
  As seen in \lst{../Parser.grm125}, tokens are defined to
  represent all terminals of the grammar for proofs in natural language,
  and all non-terminals are named; precedence levels and
@@ -20,14 +20,66 @@ The grammar described in ``\nameref{nlgram}'' is implemented as a parser
  \chk{(l. 13)}.
  \codepart{../Parser.grm}{Definition of \f{tokens} and assignment
  of types.}{1}{25}
- Following this, the structure of the grammar is defined by specifying all
- productions in the grammar.
+ Following this, the structure of the grammar is implemented by
+ specifying all productions for non-terminals and their embedded \sml\
+ actions. The is an \chk{almost} exact match to the syntax defined in
+ \afs{grams}, with the exception that the token \f{PLUS} covers both
+ `, and' and `and', thus reducing the number of productions in
+ \f{PrmList}:
+ \codepart{../Parser.grm}{The productions for \f{PrmList}}{43}{46}
+ and \f{References}:
+ \codepart{../Parser.grm}{The productions for \f{References}}{82}{89}
 
- %\codeapp{../Parser.grm}
- 
 \ss{Lexer}
 The lexer was generated from the lexer definition found in \app{Lexer}.
-\ss{Unparsing to \bp\ syntax}
-\FIX{\ss{Unparsing to natural language}}
-\FIX{\subfile{parsing_details}}
+ This definition uses regular expressions to specify what tokens to 
+ generate based on the textstream input. The current version of our
+ natural language syntax is very strict concerning e.g. the naming of 
+ rules and the phrasing of the sequent. This rigor is enforced in the 
+ lexer definition by matching the exact phrases rather than the individual
+ words:
+
+ \codepart{../Lexer.lex}{The specification for matching rules in
+ \f{Lexer.lex}}{48}{66}
+ These matches are followed by a regular expression for matching all strings
+ composed of alphanumeric characters including -- but never starting with -- 
+ hyphens and underscores:
+
+ \codepart{../Lexer.lex}{The specification for matching rules in
+ \f{Lexer.lex}}{67}{69}
+ These strings are passed to the \f{keyword} function, which distinguishes
+ general \f{ID} strings from keywords with \chk{their own} token,
+ including the assumption rule missing from \lst{../Lexer.lex4866}:
+ \codepart{../Lexer.lex}{The specification for matching keywords in
+ \f{Lexer.lex}}{22}{28}
+
+\ss{Unparsing}
+\sss{Abstract to \bp\ syntax}
+Unparsing to \bp\ syntax is implemented as a group of functions in the
+ \f{Auxiliaries} module (see \app{Auxiliaries}), each dealing with a
+ specific parts of the proof.
+
+ The top-level function is \f{toBoxProof}, shown in 
+ \lst{../Auxiliaries.sml255264}, which unparses the \f{sequent} and initiates
+ the indentation context (\f{[ ]}) for the unparsing of the rest of
+ the proof.
+ \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{proof} to \bp\ 
+ syntax.}{255}{264}
+ The unparsing of the steplist is handled by the function 
+ \f{proofstepsToBoxProof}, shown in
+ \lst{../Auxiliaries.sml210236}
+ and considers two matters of context. The first consist of
+ checking whether the current \s{proofstep} uses the assumption rule 
+ (\f{Ass}), and updating indentation context plus forming the \f{start}
+ of the string-representation of the \f{proofstep} accordingly (ll. 213-215).
+ The second checks the subsequent
+ step and updates the \f{steplist} and indentation context plus forms the
+ ending (\f{post}) of the \s{proofstep} string-representation accordingly;
+ if the subsequent step uses the discharge rule (ll.~217-221)
+
+ \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{steplist}
+ to \bp\ syntax.}{210}{236}
+ 
+
+\FIX{\sss{Abstract syntax to natural language}}
 \end{document}

@@ -252,8 +252,6 @@ fun findAtoms [] l      = l
     end
   ;
 
-fun checkTitle title = ""^title
-
 (* fn: proof -> string *)
 fun toBoxProof (title, seq as (forms, form), steplist) = 
     let val atoms   = findAtoms (form::forms) []

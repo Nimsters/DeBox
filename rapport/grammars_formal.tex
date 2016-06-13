@@ -197,8 +197,7 @@ The abstract syntax is implemented as types and datatypes in \s{Standard ML},
 At top-level, the abstract syntax follows the base structure of the
  \bp\ surface syntax, with a proof being represented by a title, a 
  sequent and a list of proof steps. This is implemented as the type
- \f{proof}, shown in \lst{../Proof.sml2828}, with a \f{string} 
- representing the title.
+ \f{proof} with a \f{string} representing the title:
  
 \codepart{../Proof.sml}{Implementation of the abstract syntax for\
 proofs \chk{at top level}}{28}{28}
@@ -207,16 +206,17 @@ proofs \chk{at top level}}{28}{28}
  syntax directly. Instead, there are only single-line steps, implemented
  as the type \f{proofstep} composed of a 
  \f{formula option}, a \f{rule}, a (possibly empty) \f{reference list}, 
- and a \f{string}. Thus, assumptions and discharges of assumptions are
+ and a \f{string}: 
+
+\codepart{../Proof.sml}{Implementation of the abstract syntax for proof\
+steps}{24}{24}
+ Thus, assumptions and discharges of assumptions are
  considered independent steps rather than composite parts of a box-step, as
  are all steps that occur between two such steps.
  The implementation is shown in 
  \lst{../Proof.sml2424} and ensures that all proofs are represented
  with boxes \chk{being implicit rather than an explicit part of the
  structure}.
-
-\codepart{../Proof.sml}{Implementation of the abstract syntax for proof\
-steps}{24}{24}
 
  This flattened structure, however, requires that the stating
  of premises, assumptions, and discharges are represented by rules of their
@@ -235,31 +235,33 @@ While boxes are not represented in the abstract syntax, the distinction
  These two kinds of references are implemented as constructors of the 
  \f{reference} datatype; the \f{Line} 
  constructor takes a \f{string} as its argument wheras the \f{Box}
- constructor takes a \f{(string * string)} tuple, as shown in 
- \lst{../Proof.sml2222}.
+ constructor takes a \f{(string * string)} tuple:
 
 \codepart{../Proof.sml}{Implementation of the abstract syntax for\
 references}{22}{22}
-
-\FIX{Explain why box references are a pair of strings}
+This implementation ensures that a \f{BOX reference} can hold the pair
+ of strings referencing the first and last lines of its component steps,
+ which not only mirrors Fitch-style reference notation but also allows
+ \chk{easy} verification of \f{BOX references} by looking up the individual 
+ strings in a reference table e.g. to check that the first one does
+ refer to an assumption.
 
 Like the top-level \f{proof} type, the implementation of the abstract syntax
  for sequents and formulae follows the \bp\ surface syntax closely.
- Formulae are implemented as the recursive datatype \f{formula}, shown in
- \lst{../Proof.sml38}, while sequents are implemented as the \f{sequent} 
- type consisting of a (possibly empty) \f{formula list} and a \f{formula},
- shown in \lst{../Proof.sml2626}.
+ Sequents are implemented as the \f{sequent} 
+ type consisting of a (possibly empty) \f{formula list} and a \f{formula}:
+
+\codepart{../Proof.sml}{Implementation of the\
+abstract syntax for sequents}{26}{26}
+ while formulae are implemented as the recursive datatype \f{formula},
+ shown in \lst{../Proof.sml38}.
+ The \f{formula} datatype has a
+ constructor for each logical
+ operator as well as for atoms and \abs\ (\f{BOT}):
 
 \codepart{../Proof.sml}{Implementation of the\
 abstract syntax for formulae}{3}{8}
 
- As \lst{../Proof.sml38} shows, the \f{formula} datatype has a
- constructor for each logical
- operator as well as for atoms and absurdity
- (\f{BOT}).
-
-\codepart{../Proof.sml}{Implementation of the\
-abstract syntax for sequents}{26}{26}
 
 \sss{Design decisions: Feedback as a teaching tool}
 The purpose of the tool \we\ have developed is to teach students to write 
