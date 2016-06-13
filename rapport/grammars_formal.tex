@@ -1,6 +1,7 @@
 \documentclass[BA.tex]{subfiles}
 \begin{document}
-Propositional logic as a formal language is defined in \book \cite[]{},
+Propositional logic as a formal language is defined in \book 
+\cite[pp.~31-36]{hr},
  which uses Fitch-style notation for natural deduction proofs. In order
  to specify our terminology in the following section, we repeat the 
  side-by-side comparison from the introduction\footnote{\fig{boxnfitch}}
@@ -21,7 +22,7 @@ Propositional logic as a formal language is defined in \book \cite[]{},
 \(\qquad\)
 \begin{subfigure}[t]{0.50\textwidth}
 \scriptsize
-\lstinputlisting[numbers=none, identifierstyle=,
+\lstinputlisting[nolol, numbers=none, identifierstyle=,
     keywordstyle=, frame=none, breaklines=false, deletekeywords={*},
     basicstyle=\scriptsize\ttfamily, escapeinside={(*}{*)}, 
     emph={[4]ex121r},
@@ -86,7 +87,7 @@ The highligting serves to illustrate the common terminology, and how the
  As seen in \fig{fproof}, the sequent in \our\ formal syntax
  follows standard mathematical notation, with the exception that the
  turnstyle, like the \chk{other} logical operators, is represented by
- easily typed characters (\verb+|-+) rather than the standard symbol 
+ \f{ASCII} characters (\verb+|-+) rather than the standard symbol 
  (\(\vd\)). To illustrate, \fig{bpex} shows two proofs
  written in \bp\ syntax.
 
@@ -106,7 +107,7 @@ The highligting serves to illustrate the common terminology, and how the
 %\caption[]{}
 \label{sf:exq}
 \end{subfigure}
-\caption[]{}
+\caption[]{Two examples of \bp\ syntax proofs}
 \label{bpex}
 \end{figure}
  
@@ -125,14 +126,14 @@ The highligting serves to illustrate the common terminology, and how the
  The rest of the syntax further 
  specifies the details of the \bp\ syntax, e.g. spacing requirements, and
  the concrete formulation of the start of the proof, which includes starting
- each proof with the string \f{\%abbrev} and a titlei, and listing all atoms
+ each proof with the string \f{\%abbrev} and a title, and listing all atoms
  in both curly and square
  brackets before and after stating the sequent, respectively.
 
 
 \begin{figure}[H]
 \subfile{grammar_formal_proofs}
-\caption{A formal syntax for proofs, based on \bp\ syntax.}
+\caption[A {\bf formal} syntax for proofs]{A formal syntax for proofs, based on \bp\ syntax.}
 \label{fproof}
 \end{figure}
 
@@ -147,7 +148,7 @@ and disjunctions. Some textbooks specify
 conjunctions and disjunctions are \emph{right}-associative like 
 implications\cite[p.~11]{math}\cite[p.~5]{calc}. The difference between
 left- and right-associative conjunctions and disjunctions is the
-interpretation of forulae like \(p \land q \land r\): when conjunctions are
+interpretation of formulae like \(p \land q \land r\): when conjunctions are
 \emph{left}-associative it is interpreted as \((p \land q) \land r\), but
 when \emph{right}-associative, the interpretation is \(p \land (q \land r)\).
 Since \(\land\) and \(\lor\) are associative operators, the two 
@@ -159,17 +160,18 @@ to \((p \ra q) \ra r\). Perhaps that is why textbooks agree on implications
 being right-associative while the disagreement concerning conjunctions and
 disjunctions seems to go unresolved.
 
-Textbooks also disagree on wether conjunctions and disjunctions
-are at the same precedence level\cite{hr} or conjunction bind tighter than
+Textbooks also disagree on whether conjunctions and disjunctions
+are at the same precedence level\cite{hr} or whether
+conjunction bind tighter than
 disjunctions\cite{math}\cite{calc}\cite{disc}. They do, however, all
 agree that associativity and precedence conventions increase readability
-by reducing the need for parenthesis while ensuring unambiguous
+by reducing the need for parentheses while ensuring unambiguous
 interpretation of 
 formulae\cite[p.~5]{hr}\cite[p.~46]{disc}\cite[p.~10]{math}\cite[p.~5]{calc}.
 Both associativity and precedence levels in the formal syntax was chosen 
 to match those of \bp\ for consistency and because the \bp\ syntax separates
 conjunctions and disjunctions with regard to precedence, thus ensuring the
-least possible need for parenthesis in formulae.
+least possible need for parentheses in formulae.
 
  Basing the formal syntax for formulae on the \bp\ syntax meant few
  deviations from textbook standards, but the \bp\ syntax for proofs lies 
@@ -196,7 +198,7 @@ At top-level, the abstract syntax follows the base structure of the
  \bp\ surface syntax, with a proof being represented by a title, a 
  sequent and a list of proof steps. This is implemented as the type
  \f{proof}, shown in \lst{../Proof.sml2828}, with a \f{string} 
- \chk{representing} the title.
+ representing the title.
  
 \codepart{../Proof.sml}{Implementation of the abstract syntax for\
 proofs \chk{at top level}}{28}{28}
@@ -206,11 +208,12 @@ proofs \chk{at top level}}{28}{28}
  as the type \f{proofstep} composed of a 
  \f{formula option}, a \f{rule}, a (possibly empty) \f{reference list}, 
  and a \f{string}. Thus, assumptions and discharges of assumptions are
- considered independent steps rather than composit parts of a box-step, as
+ considered independent steps rather than composite parts of a box-step, as
  are all steps that occur between two such steps.
  The implementation is shown in 
  \lst{../Proof.sml2424} and ensures that all proofs are represented
- without any boxes \chk{or their nesting to arbitrary depth}.
+ with boxes \chk{being implicit rather than an explicit part of the
+ structure}.
 
 \codepart{../Proof.sml}{Implementation of the abstract syntax for proof\
 steps}{24}{24}
@@ -229,7 +232,7 @@ steps}{24}{24}
 
 While boxes are not represented in the abstract syntax, the distinction
  between line- and box-\emph{references} is kept.
- These two \chk{kinds} of references are implemented as constructors of the 
+ These two kinds of references are implemented as constructors of the 
  \f{reference} datatype; the \f{Line} 
  constructor takes a \f{string} as its argument wheras the \f{Box}
  constructor takes a \f{(string * string)} tuple, as shown in 
@@ -237,6 +240,8 @@ While boxes are not represented in the abstract syntax, the distinction
 
 \codepart{../Proof.sml}{Implementation of the abstract syntax for\
 references}{22}{22}
+
+\FIX{Explain why box references are a pair of strings}
 
 Like the top-level \f{proof} type, the implementation of the abstract syntax
  for sequents and formulae follows the \bp\ surface syntax closely.
@@ -249,23 +254,20 @@ Like the top-level \f{proof} type, the implementation of the abstract syntax
 abstract syntax for formulae}{3}{8}
 
  As \lst{../Proof.sml38} shows, the \f{formula} datatype has a
- constructor for each \chk{logical}
+ constructor for each logical
  operator as well as for atoms and absurdity
- (\f{BOT}); the \f{BOT} constructor takes no arguments, the \f{Atom}
- constructor takes a \f{string}, the \f{NEG} constructor takes a \f{formula}
- as its argument,
- and the rest of the constructors all take a \f{(formula * formula)} tuple.
+ (\f{BOT}).
 
 \codepart{../Proof.sml}{Implementation of the\
-abstract syntax for formulae}{26}{26}
+abstract syntax for sequents}{26}{26}
 
 \sss{Design decisions: Feedback as a teaching tool}
-The purpose of the tool \we\ have develped is to teach students to write 
- valid proofs \chk{in} propositional logic. 
- \chk{Giving concise and relevant feedback
+The purpose of the tool \we\ have developed is to teach students to write 
+ valid proofs using rules of propositional logic. 
+ Giving concise and relevant feedback
  on errors is a big part of teaching any subject, and no less so when it
- comes to Logic in Computer Science.} Since \chk{\bp 's main function is to
- \emph{verify} proofs}, its syntax is designed to represent \emph{correct}
+ comes to Logic in Computer Science. Since \bp 's main function is to
+ \emph{verify} proofs, its syntax is designed to represent \emph{correct}
  proofs. As a result, the syntax is very strict, and making mistakes results
  in Twelf-generated error messages, which ``may sometimes look 
  cryptic''\cite[`Dealing with errors']{boxhelp}. Instead of halting on all
@@ -285,5 +287,4 @@ The purpose of the tool \we\ have develped is to teach students to write
  steps even when a properly constructed box does not. The chosen
  solution was, as mentioned above, to flatten the structure and replace
  boxes by their component steps.
-
 \end{document}

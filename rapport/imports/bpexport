@@ -19,6 +19,6 @@
         Oi2,[Line("11")],"12"),
   (NONE,Dis,[Line("7")],""),
   (SOME(OR(IMP(Atom("p"),Atom("q")),IMP(Atom("q"),Atom("r")))),
-        Oel,[Line("1"),Box("2","6"),Box("7","12")],"13")
+        Oel,[Line("1"),Box("2","6"),Box("7","12")],"")
   ]
 )

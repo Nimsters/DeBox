@@ -1,18 +1,18 @@
 \(\color{OrangeRed}p \ra q \land r ~\vdash ~(p \ra q) \land (p \ra r)\)
 \begin{logicproof}{2}
-    p \,\textcolor{JungleGreen}{\ra}\, q \,\textcolor{JungleGreen}{\land}\, r & \textcolor{Purple}{premise} \label{1prm1}\\
+    p \,\textcolor{JungleGreen}{\ra}\, q \,\textcolor{JungleGreen}{\land}\, r & \textcolor{Purple}{premise} \label{h1prm1}\\
         \begin{subproof}
-        p & \textcolor{Purple}{assumption} \label{1p1}\\
-        q \,\textcolor{JungleGreen}{\land}\, r & \textcolor{Purple}{\re{\ra}} \textcolor{DarkGreen}{\ref{1p1}}, \textcolor{DarkGreen}{\ref{1prm1}}\\
-        q & \textcolor{Purple}{\re[1]{\land} \label{1q}}
+        p & \textcolor{Purple}{assumption} \label{h1p1}\\
+        q \,\textcolor{JungleGreen}{\land}\, r & \textcolor{Purple}{\re{\ra}} \textcolor{DarkGreen}{\ref{h1p1}}, \textcolor{DarkGreen}{\ref{h1prm1}}\\
+        q & \textcolor{Purple}{\re[1]{\land} \label{h1q}}
         \end{subproof}
-    p \,\textcolor{JungleGreen}{\ra}\, q & \textcolor{Purple}{\ri{\ra}} \textcolor{Olive}{\ref{1p1}-\ref{1q}} \label{1pgq}\\
+    p \,\textcolor{JungleGreen}{\ra}\, q & \textcolor{Purple}{\ri{\ra}} \textcolor{Olive}{\ref{h1p1}-\ref{h1q}} \label{h1pgq}\\
         \begin{subproof}
-        p & \textcolor{Purple}{assumption} \label{1p2}\\
-        q \,\textcolor{JungleGreen}{\land}\, r & \textcolor{Purple}{\re{\ra}} \textcolor{DarkGreen}{\ref{1p2}}, \textcolor{DarkGreen}{\ref{1prm1}}\\
-        r & \textcolor{Purple}{\re[2]{\land}} \label{1r}
+        p & \textcolor{Purple}{assumption} \label{h1p2}\\
+        q \,\textcolor{JungleGreen}{\land}\, r & \textcolor{Purple}{\re{\ra}} \textcolor{DarkGreen}{\ref{h1p2}}, \textcolor{DarkGreen}{\ref{h1prm1}}\\
+        r & \textcolor{Purple}{\re[2]{\land}} \label{h1r}
         \end{subproof}
-    p \,\textcolor{JungleGreen}{\ra}\, r & \textcolor{Purple}{\ri{\ra}} \textcolor{Olive}{\ref{1p2}-\ref{1r}} \label{1pgr}\\
-    (p \,\textcolor{JungleGreen}{\ra}\, q) \,\textcolor{JungleGreen}{\land}\, (p \,\textcolor{JungleGreen}{\ra}\, r) & \textcolor{Purple}{\ri{\land}} \textcolor{DarkGreen}{\ref{1pgq}}, \textcolor{DarkGreen}{\ref{1pgr}}
+    p \,\textcolor{JungleGreen}{\ra}\, r & \textcolor{Purple}{\ri{\ra}} \textcolor{Olive}{\ref{h1p2}-\ref{h1r}} \label{h1pgr}\\
+    (p \,\textcolor{JungleGreen}{\ra}\, q) \,\textcolor{JungleGreen}{\land}\, (p \,\textcolor{JungleGreen}{\ra}\, r) & \textcolor{Purple}{\ri{\land}} \textcolor{DarkGreen}{\ref{h1pgq}}, \textcolor{DarkGreen}{\ref{h1pgr}}
 \end{logicproof}
 

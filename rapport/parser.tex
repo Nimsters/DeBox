@@ -3,9 +3,11 @@
 
 \ss{Parser}
 The grammar described in ``\nameref{nlgram}'' is implemented as a parser
- definition, \f{Parser.grm}. The full code can be found in \app{Parser}
- and was used to \chk{autogenerate} a parser for natural deduction proofs
- written in natural language. It was generated with the tool \s{MosML}-yacc,
+ definition with embedded
+ \sml\ actions, \f{Parser.grm}, which can be found in full in \app{Parser}
+ and was used to generate the source code for
+ a parser for natural deduction proofs
+ written in natural language. It was generated with the tool \yac ,
  using the abstract syntax implemented in \f{\nameref{Proof}}
  (see \app{Proof}). Like the abstract syntax, the parser definition is
  written in \chk{\s{Standard ML}}\FIX{Add something here}.
@@ -16,7 +18,8 @@ The grammar described in ``\nameref{nlgram}'' is implemented as a parser
  non-terminals are assigned a type using the datatype and type definitions
  from \f{Proof.sml}, and a start symbol for the grammar is specified
  \chk{(l. 13)}.
- \codepart{../Parser.grm}{\FIX{caption}}{1}{25}
+ \codepart{../Parser.grm}{Definition of \f{tokens} and assignment
+ of types.}{1}{25}
  Following this, the structure of the grammar is defined by specifying all
  productions in the grammar.
 

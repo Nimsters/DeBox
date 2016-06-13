@@ -6,7 +6,7 @@
 \title{\tit}
 
 \begin{document}
-\pagenumbering{Roman}
+\pagenumbering{Alph}
 \begin{titlepage}
 \maketitle
 \thispagestyle{empty}
@@ -31,7 +31,7 @@
 \subfile{introduction}
 \clearpage
 
-\section{Grammars}
+\section{Grammars}\label{grams}
 \FIX{SOMETHING BRIEF ABOUT CONTEXTFREE GRAMMARS}
 \ss{Propositional logic as a formal language}
 \subfile{grammars_formal}
@@ -39,22 +39,15 @@
 \ss{Grammar for proofs in natural language}\label{nlgram}
 \subfile{grammars_proofs}
 
-\section{Parsing and unparsing}
+\section{Parsing and unparsing}\label{punp}
 \subfile{parser}
 
-\section{Validation}
+\section{Validation}\label{vmod}
 \ss{The validation module}
 \ss{Decisions on specific implementation details}
 
 \section{Evaluation}
-\ss{Qualitative evaluations}
-\sss{Consistency with standard English}
-\sss{Consistency with common mathematical terminology}
-\sss{Consistency with \s{BoxProver} syntax}
-\ss{Testing of code}
 \sss{Unittesting}
-\sss{Usecases}
-\sss{Roundtripping}
 
 \section{Discussion}
 
@@ -75,6 +68,21 @@
 \addcontentsline{toc}{section}{Appendices}
 \titlelabel{\thetitle . \quad}
 \renewcommand \thesubsection{\alph{subsection}}
+\renewcommand \thesubsubsection{\roman{subsubsection}}
+
+\section{Output from \tt{Main.sml}}\label{output}
+\ss{Valid proof}
+\sss{Monitor output}
+\codeappout{imports/valid.out}
+\sss{\tt{validation\_example.txt}}
+\codeappout{../validation_example.txt}
+
+\ss{Invalid proof}
+\sss{Monitor output}
+\codeappout{imports/invalid.out}
+\sss{\tt{validation\_example\_invalid.txt}}
+\codeappout{../validation_example_invalid.txt}
+
 \section{Code}\label{code}
 \ss{\tt{Proof.sml}}\label{Proof}
 \codeapp{../Proof.sml}
@@ -97,6 +105,22 @@
 \ss{\tt{Auxiliaries.sml}}\label{Auxiliaries}
 \codeapp{../Auxiliaries.sml}
 
+\section{Tests}\label{tests}
+\ss{\tt{Tests.sml}}\label{Test}
+\codeapp{../Test.sml}
+
+\ss{Output (with option \tt{full})}\label{testout}
+\codeappout{imports/unitout}
+
+\ss{\tt{unittest\_log.txt}}\label{log}
+\codeappout{../unittest_log.txt}
+
+\section{Misc. code}\label{misc}
+\ss{Shell script for \bp\ conversion}
+\codeapp{../bpconverter}
+
+\label{LastPage} % NB!!! LastPage label!!!
+\ss{Makefile}\label{mkfile}
+\codeapp{../Makefile}
 \label{LastApp}
-\label{LastPage}
 \end{document}
