@@ -177,7 +177,7 @@ fun patternValidation (
     let val prefix                  = 
         getPrefix(valid, self)^"You are using "^ruleToString(rule)^", but "
         val line                    = (Line self, formula)
-        val bot                     = formulaToString BOT
+        val bot                     = "a contradiction"
         val (prms, all, opn, asums) = context
         val valid = case (rule, fList) of
             (Cpy, [f])          => feedback (formula = f, out, prefix^

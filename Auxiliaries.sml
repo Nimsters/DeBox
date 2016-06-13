@@ -117,13 +117,9 @@ fun proofstepsToString ([], _) = ""
         "\n"^(implode tabs)^"We have the premise "^(formulaToString con)^
         " ["^self^"]."
         ^(proofstepsToString (steps, tabs))
-(*  | proofstepsToString ((SOME (c as OR _), Lem, [], self)::steps, tabs) =
-        "\n"^(implode tabs)^"In accordance with "^(ruleToString Lem)^
-        ", we introduce "^(formulaToString c)^" ["^self^"]."
-        ^(proofstepsToString (steps, tabs)) *)
   | proofstepsToString ((SOME con, Cpy, [Line org], self)::steps, tabs) =
-        "\n"^(implode tabs)^"By copying "^org^", we get "^
-        (formulaToString con)^" here too ["^self^"]."
+        "\n"^(implode tabs)^"By copying ["^org^"], we get "^
+        (formulaToString con)^" ["^self^"]."
         ^(proofstepsToString (steps, tabs))
   | proofstepsToString ((SOME con, rule, refs, self)::steps, tabs)      =
         let val (verb,post) = case steps of [] => ("conclude ", ".")
@@ -292,7 +288,7 @@ fun dummyinput () =
             Oi2,[Line("11")],"12"),
       (NONE,Dis,[Line("7")],""),
       (SOME(OR(IMP(Atom("p"),Atom("q")),IMP(Atom("q"),Atom("r")))),
-            Oel,[Line("1"),Box("2","6"),Box("7","12")],"13")
+            Oel,[Line("1"),Box("2","6"),Box("7","12")],"")
       ]
     )
 ;

@@ -64,7 +64,7 @@ rule Token = parse
       | "By applying Modus Tollens"                     {Parser.MOD ()}
       | "By applying proof by contradiction"            {Parser.PBC ()}
       | "By applying the law of the excluded middle"    {Parser.LEM ()}
-      | ([`a`-`z`] | [`A`-`Z`])
+      | ([`a`-`z`] | [`A`-`Z`] | [`0`-`9`])
         ([`a`-`z`] | [`A`-`Z`] | [`-` `_`] | [`0`-`9`])*
                                            {keyword (getLexeme lexbuf)}
       | "\226\138\165"                                  {Parser.BOT ()}
