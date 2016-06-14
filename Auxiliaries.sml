@@ -28,9 +28,9 @@ fun formulaToString(Atom s)         = s
   | formulaToString(NEG f)          = "\194\172"^negToString(f)
   | formulaToString(AND (f1,f2))    = andToString(f1)^"\226\136\167"^
                                       negToString(f2)
-  | formulaToString(OR (f1, f2))    = impToString(f1)^"\226\136\168"^
+  | formulaToString(OR (f1, f2))    = orToString(f1)^"\226\136\168"^
                                       andToString(f2)
-  | formulaToString(IMP (f1, f2))   = impToString(f1)^"\226\134\146"^
+  | formulaToString(IMP (f1, f2))   = orToString(f1)^"\226\134\146"^
                                       formulaToString(f2)
 
 and negToString(a as Atom _)        = formulaToString(a)
@@ -42,8 +42,8 @@ and andToString(f as OR _)          = bracket(formulaToString(f))
   | andToString(f as IMP _)         = bracket(formulaToString(f))
   | andToString(f as _)             = formulaToString(f)
 
-and impToString(f as IMP _)         = bracket(formulaToString(f))
-  | impToString(f as _)             = formulaToString(f);
+and orToString(f as IMP _)         = bracket(formulaToString(f))
+  | orToString(f as _)             = formulaToString(f);
 
 fun referenceToString (Line s)      = "["^s^"]"
   | referenceToString (Box (s1,s2)) = "["^s1^"]-["^s2^"]";
@@ -144,9 +144,9 @@ fun formulaToBoxProof(Atom s)         = s
   | formulaToBoxProof(NEG f)          = " ~ "^negToBoxProof(f)
   | formulaToBoxProof(AND (f1,f2))    = andToBoxProof(f1)^" /\\ "^
                                       negToBoxProof(f2)
-  | formulaToBoxProof(OR (f1, f2))    = impToBoxProof(f1)^" \\/ "^
+  | formulaToBoxProof(OR (f1, f2))    = orToBoxProof(f1)^" \\/ "^
                                       andToBoxProof(f2)
-  | formulaToBoxProof(IMP (f1, f2))   = impToBoxProof(f1)^" => "^
+  | formulaToBoxProof(IMP (f1, f2))   = orToBoxProof(f1)^" => "^
                                       formulaToBoxProof(f2)
 
 and negToBoxProof(a as Atom _)        = formulaToBoxProof(a)
@@ -158,8 +158,8 @@ and andToBoxProof(f as OR _)          = bracket(formulaToBoxProof(f))
   | andToBoxProof(f as IMP _)         = bracket(formulaToBoxProof(f))
   | andToBoxProof(f as _)             = formulaToBoxProof(f)
 
-and impToBoxProof(f as IMP _)         = bracket(formulaToBoxProof(f))
-  | impToBoxProof(f as _)             = formulaToBoxProof(f)
+and orToBoxProof(f as IMP _)         = bracket(formulaToBoxProof(f))
+  | orToBoxProof(f as _)             = formulaToBoxProof(f)
   ;
 
 fun referenceToBoxProof (Line s)      = "@"^s
