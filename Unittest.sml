@@ -77,7 +77,7 @@ fun matchRefs ([], _,_,_,_)                             = (true, [])
                              "an assumption that has been discharged, "^
                              "thus the reference is not avialable at "^
                              "this point"
-        val repeated       = "is not unique"
+        val repeated       = " is not unique"
         val (valid, form)  = case (formO, formA) of
                  ([f], _)  => (true, SOME f)
                | ([], [])  => let val msg =
