@@ -54,6 +54,13 @@ The lexer was generated from the lexer definition found in \app{Lexer}.
  \f{Lexer.lex}}{22}{28}
 
 \ss{Unparsing}
+
+In the following, we will go through the key parts of
+ the implementation of unparsing to \bp\ and natural language syntax. Some
+ functions are not discussed in detail, as their implementation
+ is very straight forward; the interested reader may consult the appendices
+ for the specific implementation of these.
+
 \sss{Abstract to \bp\ syntax}
 Unparsing to \bp\ syntax is implemented as a group of functions in the
  \f{Auxiliaries} module (see \app{Auxiliaries}), each dealing with a
@@ -61,25 +68,102 @@ Unparsing to \bp\ syntax is implemented as a group of functions in the
 
  The top-level function is \f{toBoxProof}, shown in 
  \lst{../Auxiliaries.sml255264}, which unparses the \f{sequent} and initiates
- the indentation context (\f{[ ]}) for the unparsing of the rest of
+ the indentation context for the unparsing of the rest of
  the proof.
  \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{proof} to \bp\ 
  syntax.}{255}{264}
- The unparsing of the steplist is handled by the function 
- \f{proofstepsToBoxProof}, shown in
- \lst{../Auxiliaries.sml210236}
- and considers two matters of context. The first consist of
- checking whether the current \s{proofstep} uses the assumption rule 
- (\f{Ass}), and updating indentation context plus forming the \f{start}
- of the string-representation of the \f{proofstep} accordingly (ll. 213-215).
- The second checks the subsequent
- step and updates the \f{steplist} and indentation context plus forms the
- ending (\f{post}) of the \s{proofstep} string-representation accordingly;
- if the subsequent step uses the discharge rule (ll.~217-221)
+ The auxiliary functions \f{findAtoms} and \f{wrap} are used to construct 
+ the lists of atoms (ll.~257-259), and \f{sequentToBoxProof} forms a
+ string-representation of the sequent, with a turnstile (\verb+|-+) added
+ between the premises and the conclusion. To illustrate, the following
+ start of a proof:
+ \codepart{imports/bpexport}{The \f{title} and \f{sequent} of a proof in
+ abstract syntax}{1}{2}
+ is unparsed to:
+ \codepart{../validation_boxproof.txt}{The title and sequent of a proof in \bp\
+ syntax.}{1}{4}
+ Finally
+ (\lst{../Auxiliaries.sml255264}, l.~263),
+ \f{toBoxProof} calls \f{proofstepsToBoxProof} 
+ which takes the current
+ indentation context as a parameter. 
+ The context is represented by a \f{char list}
+ and is initialised here by passing the empty list.
+
+ The function  \f{proofstepsToBoxProof} is shown in
+ \lst{../Auxiliaries.sml210236} and unparses the steplist by recursion.
+ Each recursive step unparses one \f{proofstep} by forming its 
+ \f{string} representation and handles two matters of context:
+ indentation and box construction.
 
  \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{steplist}
  to \bp\ syntax.}{210}{236}
- 
+ First, a check is made on the the current \f{proofstep} (ll. 213-215);
+ if it uses the assumption rule (\f{Ass}), the indentation for subsequent
+ lines is increased by one tab (\verb+#"\t"+) and an opening parenthesis is
+ added to the start of the \f{string}, marking the opening
+ of a box.
 
-\FIX{\sss{Abstract syntax to natural language}}
+ Next, a check is made on the subsequent step and the \f{step list} and 
+ the indentation context are updated accordingly, plus the end of the
+ \f{string} is formed as context dictates.
+ If the subsequent step uses the discharge rule (ll.~217-221), then the
+ indentation is decreased, if possible,  by one tab character (l.~217) and
+ the discharge step is removed from the \f{step list}. Also, the proper
+ \bp\ syntax for closing a box is added to the end of the \f{string},
+ including whitespace for increased readability (l.~220).
+ If, instead, there are nor more subsequent steps (l.~222), a full stop
+ forms the end of the \f{string} to mark the end of the proof.
+ In all other cases, the subsequent steps remain unchanged, and the proper
+ line ending in \bp\ syntax forms the end of the \f{string}.
+
+ Finally, the full \f{string} is formed and concatenated with the return
+ value for the recursive call, which passes the remaining steps and the
+ updated identation context (ll.~224-234).
+ To illustrate, the following steps:
+ \codepart{imports/bpexport}{Sample \f{proofsteps} in abstract syntax}{5}{7}
+ is unparsed to:
+ \codepart{../validation_boxproof.txt}{Sample proofsteps in \bp\ syntax.}{7}{9}
+where we also see the effect of the added whitespace.
+
+The functions \f{ruleToBoxProof}, and \f{refsToBoxProof} handle unparsing
+ of the \f{rule}, and \f{reference list} of a proof, respectively.
+ The conclusion formula is unparsed by the mutually recursive formulas
+ \f{formulaToBoxProof}, \f{negToBoxProof}, \f{andToBoxProof}, and
+ \f{orToBoxProof}, shown in \lst{}, and ensures proper bracketing according
+ to the precedence levels and associativity specified in the syntax
+ (see \afs{formsyn}).
+ 
+ \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{formula}
+ to \bp\ syntax.}{141}{163}
+
+
+\sss{Abstract syntax to natural language}
+Since the natural language syntax is a much closer match to the abstract
+ syntax, the unparsing proportionally less complicated. For \f{proof}, it
+ is simply a matter of adding whitespace and punctuation to the title and 
+ sequent, and prefixing the resulting string
+ to the string representation of the \f{proofstep list}:
+ 
+ \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{proof} to 
+ natural language.}{136}{139}
+ The formulas of the sequent are unparsed by a group of functions very 
+ similar to the ones shown in \lst{../Auxiliaries.sml141163}; the only
+ difference (besides their names) being the string representation of
+ operators and \abs :
+ \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{proof} to 
+ natural language.}{25}{34}
+ where the strings are the \sml\ representations of \(\bot\), \(\neg\),
+ \(\land\), \(\lor\), and \(\ra\).
+ 
+ The unparsing of the \f{prooftep list} is also quite straigt forward, and
+ mainly conserns indentation, and wording based on the \f{rule} used:
+
+ \codepart{../Auxiliaries.sml}{Implementation of unparsing \f{proofstep
+ list} to 
+ natural language.}{106}{134}
+ Since the discharges are explicit in the natural language syntax, the list
+ is simply parsed one \f{proofstep} at a time, although a check of the
+ \emph{existence} of subsequent lines is
+ made to ensure correct wording of the last line (ll.~124-126).
 \end{document}
