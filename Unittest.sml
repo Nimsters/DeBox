@@ -67,24 +67,38 @@ fun findForm (reference:reference, table) =
  *     * string * outstream -> bool * formula list *)
 (* Validates references and returns forms using the two reference tables *)
 fun matchRefs ([], _,_,_,_)                             = (true, [])
+(*  | matchRefs ((Box (a,c))::rs, allRefs, openRefs, prefix, out)   =
+*)
   | matchRefs (r::rs, allRefs, openRefs, prefix, out)   =
     let val formO          = findForm (r, openRefs)
         val formA          = findForm (r, allRefs) 
         val start          = prefix^"The reference "^(referenceToString r)
+        val closed         = " occurs under or is itself "^
+                             "an assumption that has been discharged, "^
+                             "thus the reference is not avialable at "^
+                             "this point"
+        val repeated       = "is not unique"
         val (valid, form)  = case (formO, formA) of
                  ([f], _)  => (true, SOME f)
-               | ([], [])  => (feedback (false, out, start^
-                               " does not exist."), NONE)
-               | ([], [f]) => (feedback (false, out, start^" occurs under "^
-                               "or is itself "^
-                               "an assumption that has been discharged, "^
-                               "thus the reference is not avialable at "^
-                               "this point."), SOME f)
-               | ([], _)   => (false, NONE)
-               | (fl, _)   => (feedback (false, out, start^
-                               " is not unique; "^
-                               "in the following, the last occurrence has "^
-                               "been used."),SOME (hd fl))
+               | ([], [])  => let val msg =
+                                (case r of 
+                                  Line _ => start^" does not exist."
+                                | Box  (a,c) => prefix^"Either ["^a^
+                                "] does not match a properly discharged "^
+                                "assumption or ["^c^"] does not match "^
+                                "its conclusion (or both)."
+                                )
+                              in
+                    (feedback (false, out, msg), NONE)
+                              end
+               | ([], [f]) => (feedback (false, out, start^closed^"."),
+                                SOME f)
+               | ([], fl)   => (feedback (false, out, start^repeated^
+                                ", and every instance "),
+                                NONE)
+               | (fl, _)   => (feedback (false, out, start^repeated^
+                               "; the last occurrence has been used."),
+                               SOME (hd fl))
         val prefix         = if valid then prefix else " "
         val (rest, flist)  = matchRefs(rs, allRefs, openRefs, prefix, out)
     in
@@ -371,12 +385,13 @@ fun ruleValidation(valid, context, (prop, rule, refs, self), out) =
                                 | SOME f => (premises, 
                                             (Line self, f)::allRefs, 
                                             (Line self, f)::openRefs, asums)
+        val valid = valid  andalso available
         val (validUse, context) = 
             if validPattern andalso ((length forms) = (length refs))
             then patternValidation(pattern, refs, context, valid, self, out)
             else (false, false_context)
     in
-        (valid andalso validUse andalso available, context)
+        (valid andalso validUse, context)
     end;
 
 (* Validation of a single step in the current context *)
