@@ -143,7 +143,8 @@ fun boxValidation (context as (_, _, _, []), _, valid, self, out) =
         val valid       = isListed andalso
                           (feedback (a = ass, out, (getPrefix(valid, self))^
                            "The assumption you are trying to discharge, "^
-                           "is not the one most recently made.")) andalso 
+                           "is not the most recently made "^
+                           " of the undischarged assumptions.")) andalso 
                            valid
         val (l, valid)  = case last of Line s  => (s, valid)
                                  | Box (_,  s) => (s, feedback (false, out, 
