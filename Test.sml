@@ -58,6 +58,32 @@ val pV_dis_box  = (Box ("p","not_r"), IMP(p, n_r))
 val pV_n_r_box  = (Box ("not_r", "not_r"), IMP(n_r, n_r))
 val sV_step_T   = (NONE, Dis, [Line "assumption"], "")
 val sV_step_F   = (NONE, Dis, [Line "meh"], "")
+val proof_val   =
+("unittest_valid",
+([AND(IMP(p,q),IMP(p,r))],
+    IMP(p,AND(q,r))),
+[(SOME(AND(IMP(p,q),IMP(p,r))),Prm,[],"prm"),
+ (SOME(IMP(p,q)),Ae1,[Line("prm")],"piq"),
+ (SOME(IMP(p,r)),Ae2,[Line("prm")],"pir"),
+ (SOME(p),Ass,[],"p"),
+ (SOME(q),Iel,[Line("p"),Line("piq")],"q"),
+ (SOME(r),Iel,[Line("p"),Line("pir")],"r"),
+ (SOME(AND(q,r)),Ain,[Line("q"),Line("r")],"qar"),
+ (NONE,Dis,[Line("p")],""),
+ (SOME(IMP(p,AND(q,r))),Iin,[Box("p","qar")],"")])
+val proof_inv   =
+("unittest_invalid",
+([AND(IMP(p,q),IMP(p,r))],
+    IMP(p,AND(q,r))),
+[(SOME(AND(IMP(p,q),IMP(p,r))),Prm,[],"prm"),
+ (SOME(IMP(p,q)),Ae1,[Line("prm")],"prm"),
+ (SOME(IMP(p,r)),Ae2,[Line("prm")],"pir"),
+ (SOME(p),Ass,[],"p"),
+ (SOME(q),Iel,[Line("p"),Line("pir")],"q"),
+ (SOME(r),Iel,[Line("p"),Line("pir")],"r"),
+ (SOME(AND(q,r)),Ain,[Line("q")],"qar"),
+ (NONE,Dis,[Line("q")],""),
+ (SOME(IMP(p,AND(q,r))),Iin,[Box("p","qar")],"")])
 
 val tests       = []
 (* Tests of auxiliary functions *)
@@ -559,13 +585,21 @@ val tests       = add ("Box validation - assumption not listed",
                         (false,([], pV_n_r_box::pV_lists, 
                                     pV_n_r_box::pV_lists, [Line "p"])), 
                         tests)
-
+(* ID validation *)
 val tests       = add ("ID validation - Unique ID", 
                         idValidation("unique", pV_lists, log),
                        true, tests)
 val tests       = add ("ID validation - Existing ID",
                         idValidation("p", pV_lists, log),
                        false, tests)
+(* Proof validation *)
+val tests       = add ("Proof validation - Valid", 
+                        proofValidation(proof_val),
+                       (true, "validation_unittest_valid.txt"), tests)
+val tests       = add ("Proof validation - Invalid",
+                        proofValidation(proof_inv),
+                       (false, "validation_unittest_invalid.txt"), tests)
+
 val return      = case (Mosml.argv ()) 
                     of [_,"full"] => "\n" | _ => "\r"
 in
