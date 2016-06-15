@@ -51,11 +51,14 @@ val pV_lists    = rev [
                     (Box ("p", "r"), b_pir), (Box ("q", "r"), b_qir),
                     (Line "dbl_neg_p", f_dbl), (Line "not_r", n_r) 
                   ]
+val pV_dis_box  = (Box ("p","not_r"), IMP(p, n_r))
+val pV_pnr_box  = (Box ("p","not_r"), IMP(p, IMP(n_r, n_r)))
+val pV_n_r_box  = (Box ("not_r", "not_r"), IMP(n_r, n_r))
 val pV_context0 = ([p, q], pV_lists, pV_lists, [])
 val pV_context1 = ([], pV_lists, pV_lists, [Line "p"])
 val pV_context2 = ([], pV_lists, pV_lists, [Line "not_r", Line "p"])
-val pV_dis_box  = (Box ("p","not_r"), IMP(p, n_r))
-val pV_n_r_box  = (Box ("not_r", "not_r"), IMP(n_r, n_r))
+val pV_context3 = ([], (pV_n_r_box)::pV_lists, (pV_n_r_box)::pV_lists,
+                    [Line "p"])
 val sV_step_T   = (NONE, Dis, [Line "assumption"], "")
 val sV_step_F   = (NONE, Dis, [Line "meh"], "")
 val proof_val   =
@@ -558,32 +561,38 @@ val tests       = add ("Specific pattern - Oel, mismatched referents",
                             (Line "or_el", p)::pV_lists, [Line "p"])),
                        tests)
 (* Box validation tests *)
-val tests       = add ("Box validation - valid",
+val tests       = add ("Box validation - Valid",
                         boxValidation(pV_context1, ("p", p), 
                             true, "box", log),
                         (true, ([], pV_dis_box::pV_lists, [pV_dis_box],[])), 
                         tests)
-val tests       = add ("Box validation - no assumptions",
+val tests       = add ("Box validation - No assumptions",
                         boxValidation(pV_context0, ("p", p), 
                             true, "box", log),
                         (false,(pV_context0)), 
                         tests)
-val tests       = add ("Box validation - assumption just made",
+val tests       = add ("Box validation - Assumption just made",
                         boxValidation(pV_context2, ("not_r", n_r), 
                             true, "box", log),
                         (false,([], pV_n_r_box::pV_lists, 
                                     pV_n_r_box::(tl pV_lists), [Line "p"])), 
                         tests)
-val tests       = add ("Box validation - assumption not most recent",
-                        boxValidation(pV_context2, ("p", p), 
-                            true, "box", log),
-                        (false,([], pV_dis_box::pV_lists, [pV_dis_box], [])), 
-                        tests)
-val tests       = add ("Box validation - assumption not listed",
+val tests       = add ("Box validation - Assumption not listed",
                         boxValidation(pV_context1, ("not_r", n_r), 
                             true, "box", log),
                         (false,([], pV_n_r_box::pV_lists, 
                                     pV_n_r_box::pV_lists, [Line "p"])), 
+                        tests)
+val tests       = add ("Box validation - Assumption not most recent",
+                        boxValidation(pV_context2, ("p", p), 
+                            true, "box", log),
+                        (false,([], pV_dis_box::pV_lists, [pV_dis_box], [])), 
+                        tests)
+val tests       = add ("Box validation - Preceeded by discharge",
+                        boxValidation(pV_context3, ("p", p), 
+                            true, "box", log),
+                        (false,([], pV_pnr_box::pV_n_r_box::pV_lists, 
+                                   [pV_pnr_box], [])), 
                         tests)
 (* ID validation *)
 val tests       = add ("ID validation - Unique ID", 
