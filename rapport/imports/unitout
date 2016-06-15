@@ -101,12 +101,15 @@ Test 100, Specific pattern - Oel, valid: ........................true
 Test 101, Specific pattern - Oel, not OR: .......................true
 Test 102, Specific pattern - Oel, wrong conclusion: .............true
 Test 103, Specific pattern - Oel, mismatched referents: .........true
-Test 104, Box validation - valid: ...............................true
-Test 105, Box validation - no assumptions: ......................true
-Test 106, Box validation - assumption just made: ................true
-Test 107, Box validation - assumption not most recent: ..........true
-Test 108, Box validation - assumption not listed: ...............true
-Test 109, ID validation - Unique ID: ............................true
-Test 110, ID validation - Existing ID: ..........................true
-Tests run: 110                                                        
+Test 104, Box validation - Valid: ...............................true
+Test 105, Box validation - No assumptions: ......................true
+Test 106, Box validation - Assumption just made: ................true
+Test 107, Box validation - Assumption not listed: ...............true
+Test 108, Box validation - Assumption not most recent: ..........true
+Test 109, Box validation - Preceeded by discharge: ..............true
+Test 110, ID validation - Unique ID: ............................true
+Test 111, ID validation - Existing ID: ..........................true
+Test 112, Proof validation - Valid: .............................true
+Test 113, Proof validation - Invalid: ...........................true
+Tests run: 113                                                        
 Tests failed: 0
