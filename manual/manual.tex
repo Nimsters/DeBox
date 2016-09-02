@@ -1,0 +1,23 @@
+\documentclass[a4paper]{article}
+
+\input{Preamble}
+\input{ProjectPreamble}
+
+\title{\tit}
+
+\begin{document}
+\pagenumbering{Alph}
+\begin{titlepage}
+\maketitle
+\thispagestyle{empty}
+\end{titlepage}
+
+\fancyfoot[c]{Page \thepage\ of \pageref{LastBody}}
+\pagenumbering{arabic}
+
+\ss{Grammar for proofs in natural language}\label{nlgram}
+\subfile{grammars_proofs}
+
+\label{LastBody}
+\label{LastPage} % NB!!! LastPage label!!!
+\end{document}
