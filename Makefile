@@ -2,10 +2,10 @@
 SRCS := Parser.sml Lexer.sml Proof.sml Validation.sml Unittest.sml
 OBJS := $(SRCS:.sml=.ui) $(SRCS:.sml=.uo)
 
-all : Main Test
+all : DeBox
 
-Main : $(OBJS) Parser.grm Main.sml
-	mosmlc -o Main Main.sml
+DeBox : $(OBJS) Parser.grm DeBox.sml
+	mosmlc -o DeBox DeBox.sml
 
 Test : Unittest.ui Auxiliaries.ui Proof.ui
 	mosmlc -o Unittest Test.sml
@@ -42,5 +42,5 @@ Parser.ui Parser.uo : Parser.sig Parser.sml Proof.ui
 	mosmlc -c Parser.sig Parser.sml
 
 clean:
-	rm -f *.ui *.uo Parser.sig Parser.sml Lexer.sml Main Unittest
+	rm -f *.ui *.uo Parser.sig Parser.sml Parser.output Lexer.sml DeBox Unittest unittest_log.txt validation_unittest_invalid.txt validation_unittest_valid.txt
 

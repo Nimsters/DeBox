@@ -1,4 +1,4 @@
-structure Main =
+structure DeBox =
 struct
 
   fun createLexerStream ( is : BasicIO.instream ) =
