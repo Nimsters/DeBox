@@ -260,7 +260,7 @@ fun toBoxProof (title, seq as (forms, form), steplist) =
         val proof   = " proof"^(bracket (sequentToBoxProof seq))^" = "
     in
         "%abbrev\n"^title^":\n"^curls^proof^squares^"\n"^
-        (proofstepsToBoxProof (steplist, []))(**)
+        (proofstepsToBoxProof (steplist, []))^"\n"(**)
     end;
 
 (* fn: unit -> proof *)

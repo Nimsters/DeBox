@@ -12,13 +12,8 @@ struct
 
   fun validate filename =  
       let val proof     = parse filename
-          val (v, f)    = Validation.valid proof
-          val message   = 
-              if v 
-              then "Your proof is valid, and a BoxProver script of it "
-              else "Your proof is not valid, and a list of errors "
       in
-        TextIO.output (TextIO.stdOut, message^"can be found in:\n"^f^".\n")
+          (Validation.valid proof; ())
       end
 
   fun errorMess s = TextIO.output (TextIO.stdErr,s ^ "\n");
