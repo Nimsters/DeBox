@@ -1,0 +1,43 @@
+\documentclass[manual.tex]{subfiles}
+\begin{document}
+\newcommand{\id}{\f{[<id>]}}
+\newcommand{\idd}{\f{\id -\id}}
+{\ttfamily
+\noindent
+premise $~~~~~~~$\tra \txt{We have} <formula> \txt{as a premise} \id. \\
+assumption $~~~~$\tra \txt{Assume} <formula> \id.\\
+discharge $~~~~~$\tra \txt{Discharge assumption} \id.\\~\\
+\emph{or one of}
+\vspace{-3mm}
+\begin{align*}
+\f{copy} :&\txt{ By copying} \id\\
+\land_{i} :&\txt{ By applying the and-introduction rule to }\id\txt{ and }\id\\
+&\txt{ By applying the conjunction-introduction rule to }\id\txt{ and }\id\\
+\land_{e1} :&\txt{ By applying the first and-elimination rule to }\id\\
+&\txt{ By applying the first conjunction-elimination rule to }\id\\
+\land_{e2} :&\txt{ By applying the second and-elimination rule to }\id\\
+&\txt{ By applying the second conjunction-elimination rule to }\id\\
+\lor_{i1} :&\txt{ By applying the first or-introduction rule to }\id\\
+&\txt{ By applying the first disjunction-introduction rule to }\id\\
+\lor_{i2} :&\txt{ By applying the second or-introduction rule to }\id\\
+&\txt{ By applying the second disjunction-introduction rule to }\id\\
+\lor_e :&\txt{ By applying the or-elimination rule to }\id\txt{, }\idd\txt{, and }\idd\\
+&\txt{ By applying the disjunction-elimination rule to }\id\txt{, }\idd\txt{ and }\idd\\
+\ra_i  :&\txt{ By applying the implication-introduction rule to }\idd\\
+\ra_e :&\txt{ By applying the implication-elimination rule to }\id\txt{ and }\id\\
+&\txt{ By applying Modus Ponens to }\id\txt{ and }\id\\
+\neg_i :&\txt{ By applying the negation-introduction rule to }\idd\\
+\neg_e :&\txt{ By applying the negation-elimination rule to }\id\txt{ and }\id\\
+\neg\neg_i :&\txt{ By applying introduction of double-negation to }\id\\
+\neg\neg_e :&\txt{ By applying elimination of double-negation to }\id\\
+\bot_e :&\txt{ By applying elimination of absurdity to }\id\\
+\f{MT} :&\txt{ By applying Modus Tollens to }\id\txt{ and }\id\\
+\f{PBC} :&\txt{ By applying proof by contradiction to }\idd\\
+\f{LEM} :&\txt{ By applying the law of the excluded middle}
+\end{align*}
+\emph{followed by either}
+$~~~~~$\txt{, we get }<formula> \id. \\
+\emph{OR (if last line)} 
+$~~~~~~$\txt{, we conclude }<formula>.
+}
+\end{document}
