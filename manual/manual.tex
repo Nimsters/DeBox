@@ -16,7 +16,7 @@
 
 \setcounter{tocdepth}{2}
 \tableofcontents
-\pagebreak
+%\pagebreak
 %\lstlistoflistings
 %\pagebreak
 \listoffigures
@@ -24,13 +24,15 @@
 \fancyfoot[c]{Page \thepage\ of \pageref{LastBody}}
 \pagenumbering{arabic}
 
+\subfile{intro}
+\clearpage
 \subfile{writing}
 \clearpage
 \subfile{validating}
 \subfile{parse-check}
 \clearpage
+\label{LastBody}
 \subfile{quick-ref}
 
-\label{LastBody}
 \label{LastPage} % NB!!! LastPage label!!!
 \end{document}
