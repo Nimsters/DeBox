@@ -9,7 +9,6 @@ __pycache__/
 *.toc
 *.blg
 *.bbl
-*.txt
 *.ui
 *.uo
 Parsing/*

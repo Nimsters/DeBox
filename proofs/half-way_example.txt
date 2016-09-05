@@ -1,0 +1,4 @@
+Half-way_example:
+From the premise (p => q) /\ (p => r), we wish to prove p => q /\ r.
+We have the premise (p => q) /\ (p => r) [premise].
+By applying the first and-elimination rule to [premise], we get p => q [p_imp_q].

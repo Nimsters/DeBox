@@ -1,0 +1,4 @@
+simple_example:
+From the premise p, we wish to prove p \/ q.
+We have the premise p [p].
+By applying the first or-introduction rule to [p], we conclude p \/ q.

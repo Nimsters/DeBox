@@ -1,0 +1,16 @@
+longer_example:
+We wish to prove p => p /\ q \/ p /\ ~q.
+Assume p [a_p].
+    By applying the law of the excluded middle, we get q \/ ~q [qnq].
+    Assume q [a_q].
+	By applying the and-introduction rule to [a_p] and [a_q], we get p /\ q [pq].
+	By applying the first or-introduction rule to [pq], we get p /\ q \/ p /\ ~q [goal1].
+    Discharge assumption [a_q].
+    Assume ~q [a_nq].
+	By applying the and-introduction rule to [a_p] and [a_nq], we get p /\ ~q [pnq].
+	By applying the second or-introduction rule to [pnq], we get p /\ q \/ p /\ ~q [goal2].
+    Discharge assumption [a_nq].
+    By applying the or-elimination rule to [qnq], [a_q]-[goal1], and [a_nq]-[goal2], we get p /\ q \/ p /\ ~q [and_or_and].
+Discharge assumption [a_p].
+By applying the implication-introduction rule to [a_p]-[and_or_and], we conclude p => p /\ q \/ p /\ ~q.
+
