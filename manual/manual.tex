@@ -12,10 +12,25 @@
 \thispagestyle{empty}
 \end{titlepage}
 
+\fancyfoot[]{}
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\pagebreak
+%\lstlistoflistings
+%\pagebreak
+\listoffigures
+\clearpage
 \fancyfoot[c]{Page \thepage\ of \pageref{LastBody}}
 \pagenumbering{arabic}
 
-\subfile{grammars_proofs}
+\subfile{writing}
+\clearpage
+%\subfile{validating}
+%\clearpage
+\subfile{quick-ref}
+\clearpage
+\subfile{parse-check}
 
 \label{LastBody}
 \label{LastPage} % NB!!! LastPage label!!!

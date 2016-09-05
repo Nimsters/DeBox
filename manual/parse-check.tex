@@ -1,0 +1,22 @@
+\documentclass[manual.tex]{subfiles}
+\begin{document}
+
+\section{Parse-error checklist}
+\begin{itemize}
+\item Parse error in col 0:
+    \begin{enumerate}[{\bf ?}]
+      \item Did you forget to end the previous line with a period?
+      \item Did you mis-spell the rule on this line?
+    \end{enumerate}
+\item Parse error on last line, col after formula:
+    \begin{enumerate}[{\bf ?}]
+      \item Did you use `, we get' but have no \f{[<ref>]} for the line?
+      \item Did you use `, we conclude' and have a \f{[<ref>]} for the line?
+    \end{enumerate}
+\item General:
+    \begin{enumerate}[{\bf ?}]
+      \item Do you have double spaces somewhere on the line?
+    \end{enumerate}
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,103 @@
+\documentclass[manual.tex]{subfiles}
+\begin{document}
+
+\section{Writing proofs}
+
+All proofs follow the same structure, consisting of three main parts:
+\begin{enumerate}
+\item The title followed by a colon.
+\item The sequent to be proven.
+\item The steps by which the conclusion is reached.
+\end{enumerate}
+
+\paragraph{The title} can be any string consisting of alphanumerical 
+characters, hyphens, and underscores, and \emph{must} be followed by
+a colon. Like this:
+\begin{figure}[!hb]
+example\_title:
+\caption{Example of a proof title.}
+\label{ex:title}
+\end{figure}
+
+\paragraph{The sequent} should be phrased in one of three different ways, 
+ depending on the number of premises:
+
+\begin{itemize}
+\item {\bf None:}\\ We wish to prove \f{<formula>}.
+\item {\bf One:}\\ From the premise \f{<premise>}, we wish to prove 
+    \f{<formula>}.
+\item {\bf Two or more:}\\ From the premises \f{<premise 1, ...,>} and 
+    \f{<premise n>}, we wish to prove \f{<formula>}.
+\end{itemize}
+The sequent (like each step) \emph{must} end with a period. Formulae (both
+premises and intended goal) are written using strings (alphanumeric 
+characters, hyphens, underscores) for propositional atoms, and using
+symbols for logical operators and to signify absurdity. 
+These can be written using
+ \f{ASCII} characters or the appropiate Unicode character -- see figure
+ \ref{operators} below. 
+ For implication, both \f{=>} and \f{->} are accepted,
+ to allow for individual preferences. 
+ 
+\begin{figure}[!hb]
+\subfile{grammar_symbols}
+\caption{Logical operators and $\bot$}
+\label{operators}
+\end{figure}
+
+\sss{Proof steps}
+Each step is the natural language equivalent of a line in a 
+ fitch-style proof\footnote{With the exception of assumption discharges,
+ since the domain of an assumption is illustrated by a framing box in
+ fitch-style notation}, and is either structural or deductive.
+
+\paragraph{Structural steps} provide context for following steps, and come
+in three varieties:
+\begin{itemize}
+  \item Stating premises\\
+      $\.$ All premises must be stated before any other steps are taken.\\
+      $\.$ Premises must be stated in the order in which they appear in
+      the sequent.
+  \item Stating assumptions\\
+      $\.$ All assumptions must be discharged before the proof is closed.
+  \item Discharging assumptions\\
+      $\.$ Only the most recently made \emph{undischarged} assumption may 
+      be disharged.
+\end{itemize}
+
+\paragraph{Deductive steps} advance the proof by applying one of the 
+rules of natural deduction in the current context. Each rule has exactly
+ one equivalent wording in English, to emphasize the formalism of natural
+ deduction proofs, and these can be found in the Quick-reference on 
+ page~\pageref{qr}.
+
+Rather than refer to previous steps by number, each step is given a unique
+ reference id, listed in square brackets after the formula obtained in
+ the step. These ids follow the same rules as titles and atoms, and are
+ required in all steps except discharges (which optain no new formulae)
+ and the concluding step of a proof.
+
+Some rules reference a range of lines (\f{[<first>]-[<last>]}). These are
+the equivalent of boxes in fitch-style notation, and \f{[<first>]} should
+always refer to an assumption while \f{[<last>]} should always refer to
+the line immidiately before the discharge of that assumption.
+\\~\\
+To illustrate all this, figure \ref{ex:proof} shows an example of a proof:
+
+\begin{figure}[!hb]
+\sffamily
+\input{valid.nl} ~\vspace{-5mm}
+\caption{Example of a proof.}
+\label{ex:proof}
+\end{figure}
+
+\noindent{\bf Note:}\\
+ In terms of English grammar, the proof syntax accepts lists both with and
+ without Oxford comma\footnote{Also known as the serial comma; the term
+ denotes the comma before the connective in a list. 
+ With Oxford comma: `propositions, formulae, and proofs'. 
+ Without: `propositions, formulae and proofs'.},
+ but ensures the use of obligatory comma after an adverbial phrase
+ when it precedes the main clause (e.g. in `By applying ... {\bf ,} we get
+ ...'). 
+\end{document}
