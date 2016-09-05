@@ -1,4 +1,24 @@
 \documentclass[manual.tex]{subfiles}
 \begin{document}
+\section{Validating proofs}
+To validate a proof, run the program \f{DeBox} with the relative
+path to your proof file as argument:
+\begin{figure}[!ht]
+\ttfamily
+\$ DeBox proofs/short\_example.txt
+\caption{Running \f{DeBox} on the short example proof provided}
+\label{ex:short}
+\end{figure}
+
+\paragraph{Valid} proofs will return a \s{BoxProver} notation proof to
+the standard output stream (usually the terminal). This can be piped to
+a file, which can be opened directly from \s{BoxProver}.
+
+\paragraph{Invalid} proofs, if accepted, will return a list of 
+errors to the standard 
+error stream (usually also the terminal). This can be piped to an error-log
+file, if desired. If not accepted, either lexer or parser errors are
+returned. Lexer errors should be decipherable, but the parser errors can
+be more tricky. To help with those, a check-list is provided below:
 
 \end{document}
