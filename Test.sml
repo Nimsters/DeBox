@@ -602,12 +602,14 @@ val tests       = add ("ID validation - Existing ID",
                         idValidation("p", pV_lists, log),
                        false, tests)
 (* Proof validation *)
+(* 
 val tests       = add ("Proof validation - Valid", 
                         proofValidation(proof_val),
-                       (true, "validation_unittest_valid.txt"), tests)
+                       (true), tests)
 val tests       = add ("Proof validation - Invalid",
                         proofValidation(proof_inv),
-                       (false, "validation_unittest_invalid.txt"), tests)
+                       (false), tests)
+*)
 
 val return      = case (Mosml.argv ()) 
                     of [_,"full"] => "\n" | _ => "\r"

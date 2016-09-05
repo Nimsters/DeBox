@@ -7,7 +7,7 @@ all : DeBox
 DeBox : $(OBJS) Parser.grm DeBox.sml
 	mosmlc -o DeBox DeBox.sml
 
-Test : Unittest.ui Auxiliaries.ui Proof.ui
+Test : $(OBJS)
 	mosmlc -o Unittest Test.sml
 
 Auxiliaries.uo Auxiliaries.ui : Auxiliaries.sml Proof.sml

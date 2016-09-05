@@ -56,6 +56,13 @@ rule Token = parse
       | "By applying the or-elimination rule"           {Parser.OEL ()}
       | "By applying the implication-introduction rule" {Parser.IIN ()}
       | "By applying the implication-elimination rule"  {Parser.IEL ()}
+      | "By applying the conjunction-introduction rule"         {Parser.AIN ()}
+      | "By applying the first conjunction-elimination rule"    {Parser.AE1 ()}
+      | "By applying the second conjunction-elimination rule"   {Parser.AE2 ()}
+      | "By applying the first disjunction-introduction rule"    {Parser.OI1 ()}
+      | "By applying the second disjunction-introduction rule"   {Parser.OI2 ()}
+      | "By applying the disjunction-elimination rule"           {Parser.OEL ()}
+      | "By applying Modus Ponens"  {Parser.IEL ()}
       | "By applying the negation-introduction rule"    {Parser.NIN ()}
       | "By applying the negation-elimination rule"     {Parser.NEL ()}
       | "By applying introduction of double-negation"   {Parser.DIN ()}
