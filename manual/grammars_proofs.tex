@@ -1,148 +1,153 @@
 \documentclass[manual.tex]{subfiles}
 \begin{document}
-Because of the desire to give feedback, the surface syntax for proofs in
-natural language was designed to be inclusive and allow for errors rather
-than restrict acceptable proofs to correct ones.
+\ss{Writing proofs}
 
-\sss{Inclusive grammar for proofs}
-To ensure acceptance of both correct and errouneous proofs, we 
- \chk{define} the grammar for proofs in natural language based on the
- abstract syntax for proofs rather than the formal surface syntax.
- The definition is shown in \fig{nlproof}
- and will accept almost any 
- \emph{rule;conclusion;reference pattern}-combination representable
- by the abstract \f{proofstep}. For instance, it accepts the use
- of \emph{law of the excluded middle} with any number of references, or
- the use of \emph{disjunction-introduction} to conclude an implication.
- One exception to the grammars match with the abstract syntax is
- the distinction between
- discharges and all other steps; \f{DISCHARGE} is the only non-terminal
- that allows the acceptance of a step without a formula, and \f{DIS} is
- \emph{not} included in the set of rules that can be used in acceptable
- steps \emph{with} a formula. Furthermore, \f{DISCHARGE} steps are the only
- steps -- apart from the very last one -- that are accepted without a step
- ID, and they are \emph{only} accepted without one. 
- 
- Structurally, all non-discharge steps are composed of an \f{ARGUMENT} and
- a \f{CONCLUSION}, and both allow variation in composition.
- Furthermore, a distinct non-terminal is defined for every 
- \f{rule} in the abstract syntax, which allows for later addition of
- variant rule representations (e.g. shorthand), without the need to
- redefine the rest of the syntax definition.
+All proofs follow the same structure, consisting of three main parts:
+\begin{enumerate}
+\item The title followed by a colon.
+\item The sequent to be proven.
+\item The steps by which the conclusion is reached.
+\end{enumerate}
 
- In terms of English grammar, the proof syntax accepts lists both with and
- without Oxford comma\footnote{Also known as the serial comma; the term
- denotes the comma before the \chk{connective} in a list. 
- With Oxford comma: `propositions, formulae, and proofs'. 
- Without: `propositions, formulae and proofs'.},
- but ensures the use of obligatory comma after an \chk{adverbial phrase}
- when it precedes the main clause. 
-
-\begin{figure}[!ht]
-\scriptsize
-\subfile{grammar_inclusive}
-\caption{An inclusive grammar for proofs by natural deduction written in
-natural language}
-\label{nlproof}
+\paragraph{The title} can be any string consisting of alphanumerical 
+characters, hyphens, and underscores, and \emph{must} be followed by
+a colon. Like this:
+\begin{figure}[!hb]
+example\_title:
+\caption{Example of a proof title.}
+\label{ex:title}
 \end{figure}
 
-\FIX{\sss{Design decisions: Implicit boxes, explicit discharges}
- Something something}
+\paragraph{The sequent} should be phrased in one of three different ways, 
+ depending on the number of premises:
 
-
-\sss{Inclusive grammar for formulae}
-In contrast to the general proof syntax, we base our grammar for
- formulae on the formal syntax. In fact, but for one change \ours\ would 
- classify as an extention of it.
- As shown in \fig{nlform}, \abs\ is no longer signified by
- \f{bot}, as is the case in the formal syntax, but rather by both a sequence 
- of \f{ASCII} characters (\verb+_|_+) and a Unicode character (\(\bot\)). 
- The same goes for the operators, except for implication which has an
- additional regular character signifier, to allow for individual preferences
- in typing implication arrows. Having multiple signifiers for each
- operator, and \chk{the \abs\ formula}, ensures that the grammar
- accepts both formulae with \s{ASCII} and with Unicode operators.
- Furthermore, having a distinct non-terminal, and thus \f{token}
- for each of the aforementioned syntactic elements makes it
- very simple to extend the grammar with more signifiers later on, or change
- the existing ones, without having to rewrite any of the \f{PROP} 
- non-terminals.
-
+\begin{itemize}
+\item {\bf None:}\\ We wish to prove \f{<formula>}.
+\item {\bf One:}\\ From the premise \f{<premise>}, we wish to prove 
+    \f{<formula>}.
+\item {\bf Two or more:}\\ From the premises \f{<premise 1, ...,>} and 
+    \f{<premise n>}, we wish to prove \f{<formula>}.
+\end{itemize}
+The sequent (like each step) \emph{must} end with a period. Formulae (both
+premises and intended goal) are written using strings (alphanumeric 
+characters, hyphens, underscores) for propositional atoms, and using
+symbols for logical operators and to signify absurdity. 
+These can be written using
+ \f{ASCII} characters or the appropiate Unicode character -- see figure
+ \ref{operators} below. 
+ For implication, both \f{=>} and \f{->} are accepted,
+ to allow for individual preferences. 
+ 
 \begin{figure}[!hb]
 \subfile{grammar_symbols}
-\caption{A grammar for propositional formulae using symbol notation}
-\label{nlform}
+\caption{Logical operators and $\bot$}
+\label{operators}
 \end{figure}
 
-\sss{Design decisions: logical operators and linguistic ambiguity}
-When formulating a grammar for logical formulae in natural language, it
- might seem like an obvious choice to use the english words
- for the logical terms
- (\emph{and}, \emph{or}, \emph{not}, \emph{if ... then},  and \emph{\abs})
- as signifiers instead of the \chk{symbol} representation used. However, 
- the English language, \chk{like most - if not all - natural languages}, is
- ambiguous. While a statement like:
- \begin{quote}
-    The dog barks \emph{and} the cat meows.
- \end{quote}
- seems unambiguous, the same is not the case for the following:
- \begin{quote}
-    The dog barks \emph{or} the cat meows.
- \end{quote}
- Is the \emph{or} to be interpreted as inclusive 
- (i.e. `either ... or ... but not both') or exclusive
- (i.e. `at least one of ... and ..., possibly both')? 
- The intuition for most will be exclusive, but the logical disjunction
- operator is inclusive. And what about more complex composite formulae,
- and the negation of those? 
- 
- As it turns out, not even the simple conjunction can be considered 
- unambiguous; in a study\cite{negation} of the understanding and
- formulation of compound assertions (conjunctions, disjunctions, 
- conditionals, and negations of these) in English, only 86\% of the
- participants interpreted the conjunctions in accordance with the
- standard semantics of propositional logic\cite[p.~4]{negation}.
- The study also
- showed that the interpretation of disjunctions as either
- inclusive or exclusive varied, with only 9\% of participants reading
- them as inclusive, against 59\% exclusive\cite[\emph{ibid.}]{negation}.
- Furthermore, this bias towards an exclusive interpretation was completely
- reversed in the case of negated disjunctions where 86\% gave an inclusive
- interpretation:
- \begin{quote}
- The compound, \emph{A or B},
- was treated as exclusive [...] rather than inclusive [...]
- in affirmations, but as inclusive [...] rather than exclusive [...] 
- in negations. The compound, \emph{If A then B}, was
- often treated as a biconditional [...] in affirmations, but
- never in negations.\cite[p.~5]{negation}
- \end{quote}
- Since interpretation not only varies between individuals but also 
- depends on context, simply defining e.g. disjunctions as one or the other
- will result in enforcing a counterintuitive interpretation in many cases,
- regardless of which interpretation is picked.
- 
- On top of that, standard English, while allowing for
- complex sentences using subordinate clauses, does not lend itself well to
- compound contructions nested to arbitrary depth. Although there is no 
- inherent precedence distinction between conjunctions and disjunctions, it
- \emph{is} possible to guide the correct reading, and thus base a fixed
- nesting structure on this, by using 
- subordinators of different length:
- \begin{quote}
- \ttfamily
-    p \emph{and} q \emph{or else} r \hfill (p \(\land\) q) \(\lor\) r~ \\
-    p \emph{and also} q \emph{or} r\hfill p \(\land\) (q \(\lor\) r)
- \end{quote}
- This solution, however, does not work for arbitrarily deep nestings, nor
- does it solve the inclusive/exclusive problem for disjunctions.
+\sss{Proof steps}
+Each step is the natural language equivalent of a line in a 
+ fitch-style proof\footnote{With the exception of assumption discharges,
+ since the domain of an assumption is illustrated by a framing box in
+ fitch-style notation}, and is either structural or deductive.
 
- Rather than introduce a complex new set of rules to narrow (and possibly
- counter) the intuitive understanding of conjunctions, disjunctions,
- conditionals, and the negations of these, the syntax uses
- \chk{symbolic} notation, for which there already exists a set standard
- for unambiguous interpretation and which is an inherent part of
- propositional logic and thus necessarily on the syllabus of the course.
+\paragraph{Structural steps} provide context for following steps, and come
+in three varieties:
+\begin{itemize}
+  \item Stating premises\\
+      $\.$ All premises must be stated before any other steps are taken.\\
+      $\.$ Premises must be stated in the order in which they appear in
+      the sequent.
+  \item Stating assumptions\\
+      $\.$ All assumptions must be discharged before the proof is closed.
+  \item Discharging assumptions\\
+      $\.$ Only the most recently made \emph{undischarged} assumption may 
+      be disharged.
+\end{itemize}
+
+\paragraph{Deductive steps} advance the proof by applying one of the 
+rules of natural deduction in the current context. Each rule has exactly
+ one equivalent wording in English, to emphasize the formalism of natural
+ deduction proofs, and these can be found in the Quick-reference on 
+ page~\pageref{qr}.
+
+Rather than refer to previous steps by number, each step is given a unique
+ reference id, listed in square brackets after the formula obtained in
+ the step. These ids follow the same rules as titles and atoms, and are
+ required in all steps except discharges (which optain no new formulae)
+ and the concluding step of a proof.
+
+Some rules reference a range of lines (\f{[<first>]-[<last>]}). These are
+the equivalent of boxes in fitch-style notation, and \f{[<first>]} should
+always refer to an assumption while \f{[<last>]} should always refer to
+the line immidiately before the discharge of that assumption.
+
+To illustrate all this, figure \ref{ex:proof} shows an example of a proof:
+
+\begin{figure}[!hb]
+\input{valid.nl}
+\caption{Example of a proof title.}
+\label{ex:proof}
+\end{figure}
+
+{\bf Note:}\\
+ In terms of English grammar, the proof syntax accepts lists both with and
+ without Oxford comma\footnote{Also known as the serial comma; the term
+ denotes the comma before the connective in a list. 
+ With Oxford comma: `propositions, formulae, and proofs'. 
+ Without: `propositions, formulae and proofs'.},
+ but ensures the use of obligatory comma after an adverbial phrase
+ when it precedes the main clause (e.g. in `By applying ... {\bf ,} we get
+ ...'). 
+
+\clearpage
+\section{Parse-error checklist}
+\begin{itemize}
+\item Parse error in col 0:
+    \begin{enumerate}[{\bf ?}]
+      \item Did you forget to end the previous line with a period?
+      \item Did you mis-spell the rule on this line?
+    \end{enumerate}
+\item Parse error on last line, col after formula:
+    \begin{enumerate}[{\bf ?}]
+      \item Did you use `, we get' but have no \f{[<ref>]} for the line?
+      \item Did you use `, we conclude' and have a \f{[<ref>]} for the line?
+    \end{enumerate}
+\item General:
+    \begin{enumerate}[{\bf ?}]
+      \item Do you have double spaces somewhere on the line?
+    \end{enumerate}
+\end{itemize}
+
+\clearpage
+\section{Quick-reference}\label{qr}
+
+\paragraph{Title, atoms, and references} ~\\
+Alphanumeric characters, hyphens, underscores.
+Title must be followed by a `:'.
+
+\paragraph{Sequents} ~
+\begin{itemize}
+\item We wish to prove \f{<formula>}.
+\item From the premise \f{<premise>}, we wish to prove \f{<formula>}.
+\item From the premises \f{<premise 1, ...,>} and 
+        \f{<premise n>}, we wish to prove \f{<formula>}.
+\end{itemize}
+
+\paragraph{Symbols} ~
+
+\begin{figure}[H]
+\subfile{grammar_symbols}
+\end{figure}
+
+\paragraph{Steps} ~
+
+\begin{figure}[H]
+\scriptsize
+\subfile{grammar_restrictive}
+\caption{Proof steps}
+\label{steps}
+\end{figure}
+
 
 
 \end{document}

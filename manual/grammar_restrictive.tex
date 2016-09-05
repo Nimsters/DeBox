@@ -1,50 +1,36 @@
 \documentclass[manual.tex]{subfiles}
 \begin{document}
-\newcommand{\id}{{\bf id}}
+\newcommand{\id}{\f{[<ref>]}}
+\newcommand{\idd}{\f{\id -\id}}
 {\ttfamily
 \noindent
-PROOF $~~~~~$\tra \id: SEQUENT DEDUCTION\\
-SEQUENT $~~~$\tra \txt{We wish to prove} FORMULA | 
-                  \txt{From} PREMISES\txt{, we wish to prove} FORMULA\\
-PREMISES $~~$\tra \txt{the premise } FORMULA
-                | \txt{the premises} FORMULA \txt{and} FORMULA
-                | \txt{the premises} PRMLIST\\
-PRMLIST $~~~$\tra FORMULA\txt{, } FORMULA\txt{, and } FORMULA 
-                | FORMULA\txt{, } PRMLIST\\
-DEDUCTION $~$\tra STEPS CONCLUSION | PRMSTEPS STEPS CONCLUSION\\
-PRMSTEPS $~~$\tra PRM | PRM PRMSTEPS\\
-PRM $~~~~~~~$\tra \txt{We have} FORMULA \txt{as a premise [\id]} \\
-STEPS $~~~~~$\tra STEP | STEP STEPS\\
-STEP $~~~~~~$\tra LINE [\id]. | BOX\\
-BOX $~~~~~~~$\tra OPEN STEPS CLOSE\\
-OPEN $~~~~~~$\tra \txt{Assume} FORMULA [\id].\\
-CLOSE $~~~~~$\tra \txt{Discharge assumption [\id].}\\
-LINE $~~~~~~$\tra \txt{By} ARGUMENT \txt{we get} FORMULA\\
-CONCLUSION   \tra \txt{By} ARGUMENT \txt{we conclude} FORMULA.\\
-ARGUMENT $~~$\tra \txt{applying} PATTERN | \txt{copying [\id]}\\
-PATTERN $~~~$\tra LEM | RULE1\txt{ to }[\id] 
-            | RULE2\txt{ to }[\id]\txt{ and }[\id] |
-            RULEB\txt{ to }[\id]-[\id]\\
-$~~~~~~~~~~~~~~$
- ORELM\txt{ to }[\id]\txt{, }[\id]-[\id]\txt{, and }[\id]-[\id]\\
-RULE1 $~~~~~$\tra AE1 | AE2 | OI1 | OI2 | DEL | DIN | BEL\\
-RULE2 $~~~~~$\tra MOD | AIN | IEL | NEL |\\
-RULEB $~~~~~$\tra IIN | NIN | PBC\\
-AIN $~~~~~~~$\tra\txt{the and-introduction rule}\\
-AE1 $~~~~~~~$\tra\txt{the first and-elimination rule}\\
-AE2 $~~~~~~~$\tra\txt{the second and-elimination rule}\\
-OI1 $~~~~~~~$\tra\txt{the first or-introduction rule}\\
-OI2 $~~~~~~~$\tra\txt{the second or-introduction rule}\\
-OEL $~~~~~~~$\tra\txt{the or-elimination rule}\\
-IIN $~~~~~~~$\tra\txt{the implication-introduction rule}\\
-IEL $~~~~~~~$\tra\txt{the implication-elimination rule}\\
-NIN $~~~~~~~$\tra\txt{the negation-introduction rule}\\
-NEL $~~~~~~~$\tra\txt{the negation-elimination rule}\\
-DIN $~~~~~~~$\tra\txt{introduction of double-negation}\\
-DEL $~~~~~~~$\tra\txt{elimination of double-negation}\\
-BEL $~~~~~~~$\tra\txt{elimination of absurdity}\\
-MOD $~~~~~~~$\tra\txt{Modus Tollens}\\
-PBC $~~~~~~~$\tra\txt{proof by contradiction}\\
-LEM $~~~~~~~$\tra \txt{the law of the excluded middle}\\
+premise $~~~~~~~$\tra \txt{We have} <formula> \txt{as a premise} \id. \\
+assumption $~~~~$\tra \txt{Assume} <formula> \id.\\
+discharge $~~~~~$\tra \txt{Discharge assumption} \id.\\~\\
+\emph{or one of}
+\vspace{-3mm}
+\begin{align*}
+\f{copy} &\ra\txt{By copying} \id\\
+\land_{i} &\ra\txt{By applying the and-introduction rule to }\id\txt{ and }\id\\
+\land_{e1} &\ra\txt{By applying the first and-elimination rule to }\id\\
+\land_{e2} &\ra\txt{By applying the second and-elimination rule to }\id\\
+\lor_{i1} &\ra\txt{By applying the first or-introduction rule to }\id\\
+\lor_{i2} &\ra\txt{By applying the second or-introduction rule to }\id\\
+\lor_e &\ra\txt{By applying the or-elimination rule to }\id\txt{, }\idd\txt{, and }\idd\\
+\ra_i  &\ra\txt{By applying the implication-introduction rule to }\idd\\
+\ra_e &\ra\txt{By applying the implication-elimination rule to }\id\txt{ and }\id\\
+\neg_i &\ra\txt{By applying the negation-introduction rule to }\idd\\
+\neg_e &\ra\txt{By applying the negation-elimination rule to }\id\txt{ and }\id\\
+\neg\neg_i &\ra\txt{By applying introduction of double-negation to }\id\\
+\neg\neg_e &\ra\txt{By applying elimination of double-negation to }\id\\
+\bot_e &\ra\txt{By applying elimination of absurdity to }\id\\
+\f{MT} &\ra\txt{By applying Modus Tollens to }\id\txt{ and }\id\\
+\f{PBC} &\ra\txt{By applying proof by contradiction to }\idd\\
+\f{LEM} &\ra\txt{By applying the law of the excluded middle}
+\end{align*}
+\emph{followed by either}
+$~~~~~$\txt{, we get }<formula> \id. \\
+\emph{OR (if last line)} 
+$~~~~~~$\txt{, we conclude }<formula>.
 }
 \end{document}
